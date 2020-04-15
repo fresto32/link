@@ -35,6 +35,8 @@ export default class Application
   camera: Camera
   /** World */
   world: World
+  /** Light */
+  light: THREE.HemisphereLight
 
   /**
    * Constructor
@@ -55,6 +57,7 @@ export default class Application
     this.setCamera()
     this.setPasses()
     this.setWorld()
+    this.setLight()
   }
   
   /**
@@ -98,6 +101,9 @@ export default class Application
       this.renderer.physicallyCorrectLights = true
       //this.renderer.gammaOutPut = true
       this.renderer.autoClear = false
+      this.renderer.setSize(this.sizes.viewport.width, 
+                            this.sizes.viewport.height,
+                            false)
   }
 
   /**
@@ -146,6 +152,15 @@ export default class Application
       camera: this.camera,
     })
     this.scene.add(this.world.container)
+  }
+
+  /**
+   * Set Light
+   */
+  setLight()
+  {
+    this.light = new THREE.HemisphereLight('white', 'black', 3)
+    this.scene.add(this.light)
   }
 
   /**
