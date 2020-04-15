@@ -18,7 +18,6 @@ export default class SpawnIsland
     // Setting up scenegraph
     this.setBackground()
     this.setBorder()
-    this.setPyramids()
   }
 
   /**
@@ -49,30 +48,5 @@ export default class SpawnIsland
     const geometry = new THREE.PlaneBufferGeometry(302, 202, 10, 10);
     this.border = new THREE.Mesh(geometry, material)
     this.container.add(this.border)
-  }
-
-  /**
-   * Set Pyramids
-   * 
-   * Some landmark additions to flesh out the concept
-   */
-  setPyramids()
-  {
-    const geometry = new THREE.ConeGeometry(50, 90, 5, 5, true);
-    const material = new THREE.MeshPhongMaterial({color: 0xffff00});
-    const cones = 
-    [
-      new THREE.Mesh(geometry, material),
-      new THREE.Mesh(geometry, material),
-      new THREE.Mesh(geometry, material),
-      new THREE.Mesh(geometry, material)
-    ]
-    cones.forEach(c => c.rotateX(Math.PI / 2))
-    cones[0].position.set(75,   50, 0.6)
-    cones[1].position.set(75,  -50, 0.6)
-    cones[2].position.set(-75,  50, 0.6)
-    cones[3].position.set(-75, -50, 0.6)
-
-    cones.forEach(c => this.container.add(c))
   }
 }

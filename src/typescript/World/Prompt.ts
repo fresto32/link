@@ -20,7 +20,6 @@ export default class Prompt
     // Setting up scenegraph
     this.setText()
     this.setBackground()
-    this.setBorder()
   }
 
   /**
@@ -65,24 +64,9 @@ export default class Prompt
   setBackground()
   {
     const backgroundMaterial = new THREE.MeshBasicMaterial({map: this.textTexture})
-    const backgroundGeometry = new THREE.PlaneBufferGeometry(300, 25, 10, 10);
+    const backgroundGeometry = new THREE.BoxBufferGeometry(15, 4, 3, 10, 10)
     this.background = new THREE.Mesh(backgroundGeometry, backgroundMaterial)
     this.background.position.z = 0.5
     this.container.add(this.background)
-  }
-
-  /**
-   * Set Border
-   * 
-   * The border is a single sided plane that is slightly larger than the 
-   * background plane.
-   */
-  setBorder()
-  {
-    const black = 0x000000
-    const borderMaterial = new THREE.MeshBasicMaterial({color: black})
-    const borderGeometry = new THREE.PlaneBufferGeometry(302, 27, 10, 10);
-    this.border = new THREE.Mesh(borderGeometry, borderMaterial)
-    this.container.add(this.border)
   }
 }

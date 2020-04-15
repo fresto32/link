@@ -36,7 +36,7 @@ export default class Application
   /** World */
   world: World
   /** Light */
-  light: THREE.HemisphereLight
+  light: THREE.DirectionalLight
 
   /**
    * Constructor
@@ -159,7 +159,12 @@ export default class Application
    */
   setLight()
   {
-    this.light = new THREE.HemisphereLight('white', 'black', 3)
+    this.light = new THREE.DirectionalLight("white", 3)
+    this.light.position.set(
+      this.camera.instance.position.x,
+      this.camera.instance.position.y,
+      this.camera.instance.position.z)
+    this.light.lookAt(this.camera.target)
     this.scene.add(this.light)
   }
 

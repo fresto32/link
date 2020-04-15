@@ -63,7 +63,7 @@ export default class
     this.container.matrixAutoUpdate = false
 
     // Objects
-    this.setPrompt()
+    //this.setPrompt()
     this.setSpawnIsland()
 
     // Positions
@@ -93,7 +93,6 @@ export default class
    */
   setPositions()
   {
-    this.prompt.container.position.set(0, 105, 0)
     this.spawnIsland.container.position.set(0, -10, 0)
   }
 }
