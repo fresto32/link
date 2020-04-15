@@ -55,12 +55,17 @@ export default class Camera
    */
   setInstance()
   {
-    this.instance = new THREE.PerspectiveCamera(40,  // fov
-                                                this.sizes.viewport.aspect,
-                                                0.1, // near
-                                                1000) // far
+    this.instance = 
+      new THREE.PerspectiveCamera(
+        40,  // fov
+        this.sizes.viewport.aspect,
+        0.1, // near
+        601) // far
     
-    this.instance.position.z = 100
+    this.instance.position.z = 500
+    this.instance.position.y = -200
+    this.instance.position.x = 0
+
     this.instance.lookAt(this.target)
 
     this.sizes.on('resize', () => 

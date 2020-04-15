@@ -5,6 +5,7 @@ import Resources from '../Resources'
 import Camera from '../Camera'
 
 import Prompt from './Prompt'
+import SpawnIsland from './SpawnIsland'
 
 export default class
 {
@@ -31,6 +32,8 @@ export default class
   container: THREE.Object3D
   /** Question Prompt */
   prompt: Prompt
+  /** Spawn Island */
+  spawnIsland: SpawnIsland
 
   /**
    * Constructor
@@ -60,32 +63,37 @@ export default class
     this.container.matrixAutoUpdate = false
 
     // Objects
-    this.setSphereExample()
     this.setPrompt()
+    this.setSpawnIsland()
+
+    // Positions
+    this.setPositions()
   }
 
-  setSphereExample()
-  {
-    const radius = 1
-    const widthSegments = 6
-    const heightSegments = 6
-    const sphereGeometry = new THREE.SphereBufferGeometry(radius, 
-                                                          widthSegments, 
-                                                          heightSegments)
-     
-    const material = new THREE.MeshPhongMaterial(
-      {
-        emissive: 0xFFFF00, 
-        shininess: 150
-      });
-    const mesh = new THREE.Mesh(sphereGeometry, material);
-    mesh.scale.set(1, 1, 1);
-    this.container.add(mesh);
-  }
-
+  /**
+   * Set Prompt
+   */
   setPrompt()
   {
     this.prompt = new Prompt()
     this.container.add(this.prompt.container)
+  }
+
+  /**
+   * Set Spawn Island
+   */
+  setSpawnIsland()
+  {
+    this.spawnIsland = new SpawnIsland()
+    this.container.add(this.spawnIsland.container)
+  }
+
+  /**
+   * Sets the positions of each object in the world
+   */
+  setPositions()
+  {
+    this.prompt.container.position.set(0, 105, 0)
+    this.spawnIsland.container.position.set(0, -10, 0)
   }
 }
