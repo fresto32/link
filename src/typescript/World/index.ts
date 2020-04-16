@@ -62,12 +62,14 @@ export default class
     this.container = new THREE.Object3D()
     this.container.matrixAutoUpdate = false
 
-    // Objects
-    //this.setPrompt()
-    this.setSpawnIsland()
+    this.resources.on('ready', () => 
+    {
+      // Objects
+      this.setSpawnIsland()
 
-    // Positions
-    this.setPositions()
+      // Positions
+      this.setPositions()
+    })
   }
 
   /**
