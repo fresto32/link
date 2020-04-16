@@ -57,7 +57,7 @@ export default class Camera
 
     this.target = new THREE.Vector3(0, 0, 0)
     this.oldTarget = new THREE.Vector3(0, 0, 0)
-    this.targetOffset= new THREE.Vector3(0, 0, 6.2)
+    this.targetOffset = new THREE.Vector3(0, 6.2, 0)
 
     this.setInstance()
   }
