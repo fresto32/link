@@ -1,25 +1,32 @@
 import * as THREE from 'three'
 
-export default class Prompt
+export default class Signpost
 {
   /** Container */
   container: THREE.Object3D
   /** Text Texture */
   textTexture: THREE.CanvasTexture
+  /** Text to write on sign post */
+  text: string
   /** Background Mesh */
   background: THREE.Mesh
   /** Border Mesh */
   border: THREE.Mesh
+  /** Signpost Mesh */
+  signpost: THREE.Mesh
 
-  constructor()
+  constructor(_text: string)
   {
     // Container
     this.container = new THREE.Object3D()
     this.container.matrixAutoUpdate = true
 
+    this.text = _text
+
     // Setting up scenegraph
     this.setText()
     this.setBackground()
+    this.setSignpost()
   }
 
   /**
@@ -30,9 +37,8 @@ export default class Prompt
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
 
-    const text = 'What is an example of an O(n) sorting algorithm?'
     const textHeight = 100
-    const metrics = context.measureText(text)
+    const metrics = context.measureText(this.text)
     const textWidth = metrics.width
     
     canvas.width = 2400
@@ -45,7 +51,7 @@ export default class Prompt
     context.textAlign = 'center'
     context.textBaseline = 'middle'
     context.fillStyle = '#000000'
-    context.fillText(text, canvas.width / 2, canvas.height / 2)
+    context.fillText(this.text, canvas.width / 2, canvas.height / 2)
 
     console.log(textWidth)
     console.log(textHeight)
@@ -63,10 +69,24 @@ export default class Prompt
    */
   setBackground()
   {
-    const backgroundMaterial = new THREE.MeshBasicMaterial({map: this.textTexture})
-    const backgroundGeometry = new THREE.BoxBufferGeometry(15, 4, 3, 10, 10)
-    this.background = new THREE.Mesh(backgroundGeometry, backgroundMaterial)
-    this.background.position.z = 0.5
+    const material = new THREE.MeshBasicMaterial({map: this.textTexture})
+    const geometry = new THREE.BoxBufferGeometry(7, 1, 1, 10, 10)
+    this.background = new THREE.Mesh(geometry, material)
+    this.background.position.y = -5.5
     this.container.add(this.background)
+  }
+
+  /**
+   * Set Signpost
+   * 
+   * The sign post is a brown box
+   */
+  setSignpost()
+  {
+    const material = new THREE.MeshBasicMaterial({color: '#964B00'})
+    const geometry = new THREE.BoxBufferGeometry(1, 4, 1, 10, 10)
+    this.signpost = new THREE.Mesh(geometry, material)
+    this.signpost.position.y = -8
+    this.container.add(this.signpost)
   }
 }

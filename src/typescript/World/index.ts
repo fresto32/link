@@ -6,6 +6,7 @@ import Camera from '../Camera'
 
 import Controls from './Controls'
 import Physics from './Physics'
+import Signpost from './Signpost'
 import SpawnIsland from './SpawnIsland'
 import Avatar from './Avatar'
 
@@ -40,8 +41,10 @@ export default class
   spawnIsland: SpawnIsland
   /** Avatar */
   avatar: Avatar
-  /** Spawn Island */
-  spawnIsland: SpawnIsland
+  /** Question Prompt */
+  prompt: Signpost
+  /** Options */
+  options: Signpost[]
 
   /**
    * Constructor
@@ -66,7 +69,7 @@ export default class
     this.renderer = _params.renderer
     this.camera = _params.camera
 
-    // Set up
+    // Container
     this.container = new THREE.Object3D()
     this.container.matrixAutoUpdate = false
 
@@ -87,8 +90,8 @@ export default class
       // Objects
       this.setSpawnIsland()
       this.setAvatar()
-      // Objects
-      this.setSpawnIsland()
+      this.setPrompt()
+      this.setOptions()
 
       // Positions
       this.setPositions()
@@ -106,6 +109,7 @@ export default class
       config: this.config,
       debug: this.debug
     })
+  }
   
   /**
    * Set Physics
@@ -126,8 +130,29 @@ export default class
    */
   setPrompt()
   {
-    this.prompt = new Prompt()
+    this.prompt = new Signpost('What is an example of an O(n) sorting algoritm?')
     this.container.add(this.prompt.container)
+  }
+
+  /**
+   * Set Options
+   */
+  setOptions()
+  {
+    this.options = 
+    [
+      new Signpost('Merge sort'),
+      new Signpost('Radix sort'),
+      new Signpost('Quick sort'),
+      new Signpost('Insertion sort')
+    ]
+
+    this.options[0].container.position.set(75, 0, 30)
+    this.options[1].container.position.set(75, 0, -30)
+    this.options[2].container.position.set(-75, 0, 30)
+    this.options[3].container.position.set(-75, 0, -30)
+
+    this.options.forEach(o => this.container.add(o.container))
   }
 
   /**
@@ -158,5 +183,6 @@ export default class
   setPositions()
   {
     this.spawnIsland.container.position.set(0, -10, 0)
+    this.prompt.container.position.set(0, 0, -5)
   }
 }
