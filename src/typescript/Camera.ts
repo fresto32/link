@@ -15,6 +15,8 @@ export default class Camera
   config: {debug: boolean}
   /** Debug */
   debug: dat.GUI
+  /** Debug Folder */
+  debugFolder: dat.GUI
   /** Renderer */
   renderer: THREE.WebGLRenderer
 
@@ -24,6 +26,8 @@ export default class Camera
   // Camera details
   instance: THREE.PerspectiveCamera
   target: THREE.Vector3
+  oldTarget: THREE.Vector3
+  targetOffset: THREE.Vector3
 
   constructor(
     _params: {
@@ -45,7 +49,15 @@ export default class Camera
     this.container = new THREE.Object3D()
     this.container.matrixAutoUpdate = false
 
+    if (this.debug)
+    {
+      this.debugFolder = this.debug.addFolder('camera')
+      this.debugFolder.open()
+    }
+
     this.target = new THREE.Vector3(0, 0, 0)
+    this.oldTarget = new THREE.Vector3(0, 0, 0)
+    this.targetOffset= new THREE.Vector3(0, 0, 6.2)
 
     this.setInstance()
   }
@@ -57,16 +69,17 @@ export default class Camera
   {
     this.instance = 
       new THREE.PerspectiveCamera(
-        40,  // fov
+        60,  // fov
         this.sizes.viewport.aspect,
         0.1, // near
         601) // far
     
-    this.instance.position.z = 500
-    this.instance.position.y = -200
-    this.instance.position.x = 0
+    this.instance.position.x = 0.75
+    this.instance.position.y = 1.3
+    this.instance.position.z = -15
 
-    this.instance.lookAt(this.target)
+    this.instance.lookAt(this.target.add(this.targetOffset))
+
 
     this.sizes.on('resize', () => 
     {
@@ -76,7 +89,23 @@ export default class Camera
 
     this.time.on('tick', () =>
     {
-      // TODO: move camera with tick
+      this.instance.lookAt(this.target.add(this.targetOffset))
+      const deltaX = this.target.x - this.oldTarget.x
+      const deltaY = this.target.y - this.oldTarget.y
+
+      this.instance.position.x += deltaX
+      this.instance.position.y += deltaY
     })
+
+    if (this.debug)
+    {
+      this.debugFolder.add(this.instance.position, 'x').name('position x').step(0.001).min(-20).max(20).listen()
+      this.debugFolder.add(this.instance.position, 'y').name('position y').step(0.001).min(-20).max(20).listen()
+      this.debugFolder.add(this.instance.position, 'z').name('position z').step(0.001).min(-20).max(20).listen()
+
+      this.debugFolder.add(this.targetOffset, 'x').name('offset x').step(0.001).min(-20).max(20).listen()
+      this.debugFolder.add(this.targetOffset, 'y').name('offset y').step(0.001).min(-20).max(20).listen()
+      this.debugFolder.add(this.targetOffset, 'z').name('offset z').step(0.001).min(-20).max(20).listen()
+    }
   }
 }

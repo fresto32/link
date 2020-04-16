@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as dat from 'dat.gui'
 import Time from './Utils/Time'
 import Sizes from './Utils/Sizes'
@@ -37,6 +38,8 @@ export default class Application
   world: World
   /** Light */
   light: THREE.DirectionalLight
+  /** Orbit Controls */
+  orbitControls: OrbitControls
 
   /**
    * Constructor
@@ -58,6 +61,7 @@ export default class Application
     this.setPasses()
     this.setWorld()
     this.setLight()
+    this.setOrbitControls()
   }
   
   /**
@@ -118,6 +122,17 @@ export default class Application
       config: this.config,
       renderer: this.renderer
     })
+
+    this.scene.add(this.camera.container)
+
+    this.time.on('tick', () => 
+    {
+      if (this.world.avatar !== undefined)
+      {
+        this.camera.oldTarget.copy(this.camera.target)
+        this.camera.target.copy(this.world.avatar.pirateCaptain.position)
+      }
+    })
   }
 
   /**
@@ -166,6 +181,18 @@ export default class Application
       this.camera.instance.position.z)
     this.light.lookAt(this.camera.target)
     this.scene.add(this.light)
+  /**
+   * Set Orbit Controls
+   */
+  setOrbitControls()
+  {
+    this.orbitControls = new OrbitControls(this.camera.instance, this.renderer.domElement);
+
+    this.time.on('tick', () =>
+    {
+      this.orbitControls.target.copy(this.camera.target)
+      this.orbitControls.update()
+    })
   }
 
   /**
