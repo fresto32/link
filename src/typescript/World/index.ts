@@ -4,7 +4,7 @@ import Sizes from '../Utils/Sizes'
 import Resources from '../Resources'
 import Camera from '../Camera'
 
-import Prompt from './Prompt'
+import Controls from './Controls'
 import SpawnIsland from './SpawnIsland'
 
 export default class
@@ -30,8 +30,8 @@ export default class
   // World Functionality
   /** Container */
   container: THREE.Object3D
-  /** Question Prompt */
-  prompt: Prompt
+  /** Controls */
+  controls: Controls
   /** Spawn Island */
   spawnIsland: SpawnIsland
 
@@ -62,6 +62,16 @@ export default class
     this.container = new THREE.Object3D()
     this.container.matrixAutoUpdate = false
 
+    // Set up
+    this.setup()
+  }
+
+  /** Sets up world */
+  setup()
+  {
+    // Setup
+    this.setControls()
+
     this.resources.on('ready', () => 
     {
       // Objects
@@ -71,7 +81,19 @@ export default class
       this.setPositions()
     })
   }
-
+  
+  /**
+   * Set Controls
+   */
+  setControls()
+  {
+    this.controls = new Controls({
+      time: this.time,
+      sizes: this.sizes,
+      config: this.config,
+      debug: this.debug
+    })
+  }
   /**
    * Set Prompt
    */
