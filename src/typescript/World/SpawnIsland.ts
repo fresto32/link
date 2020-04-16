@@ -118,6 +118,7 @@ export default class SpawnIsland
   {
     const shipWreck = this.resources.items.shipWreck.scene.children[0]
     this.setScale(shipWreck)
+    shipWreck.rotateY(Math.PI / 1.5)
     shipWreck.position.set(-75, 0.6, -50)
     this.container.add(shipWreck)
   }
