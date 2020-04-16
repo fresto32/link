@@ -46,6 +46,7 @@
     "@types/dat.gui": "^0.7.5",
     "@types/jquery": "^3.3.34",
     "@types/three": "latest",
+    "cannon": "^0.6.2",
     "dat.gui": "^0.7.7",
     "three": "latest"
   }

@@ -41,6 +41,7 @@ export default class Resources extends EventEmitter
       { name: 'formationLargeRock', source: 'src/models/pirateKit/formationLarge_rock.gltf' },
       { name: 'formationRock', source: 'src/models/pirateKit/formation_rock.gltf' },
       { name: 'formationStone', source: 'src/models/pirateKit/formation_stone.gltf' },
+      { name: 'pirateCaptain', source: 'src/models/pirateKit/pirate_captain.gltf' },
     ])
 
     this.loader.on('fileEnd', (_resource, _data) =>
