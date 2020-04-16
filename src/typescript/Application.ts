@@ -174,13 +174,22 @@ export default class Application
    */
   setLight()
   {
-    this.light = new THREE.DirectionalLight("white", 3)
-    this.light.position.set(
-      this.camera.instance.position.x,
-      this.camera.instance.position.y,
-      this.camera.instance.position.z)
-    this.light.lookAt(this.camera.target)
+    this.light = new THREE.DirectionalLight("white", 2.4)
+    this.light.position.set(-48, 80, -25)
+    this.light.lookAt(0, 0, 0)
     this.scene.add(this.light)
+
+    if (this.debug)
+    {
+      const lightDebugFolder = this.debug.addFolder('light')
+      lightDebugFolder.add(this.light.position, 'x').name('position x').step(0.001).min(-100).max(100).listen()
+      lightDebugFolder.add(this.light.position, 'y').name('position y').step(0.001).min(-100).max(100).listen()
+      lightDebugFolder.add(this.light.position, 'z').name('position z').step(0.001).min(-100).max(100).listen()
+      lightDebugFolder.add(this.light, 'intensity').step(0.001).min(-100).max(100).listen()
+
+    }
+  }
+
   /**
    * Set Orbit Controls
    */
