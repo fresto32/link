@@ -43,6 +43,8 @@ export default class Resources extends EventEmitter
       { name: 'formationRock', source: 'src/models/pirateKit/formation_rock.gltf' },
       { name: 'formationStone', source: 'src/models/pirateKit/formation_stone.gltf' },
       { name: 'pirateCaptain', source: 'src/models/pirateKit/pirate_captain.gltf' },
+      { name: 'grass', source: 'src/models/floor/grasslight-small.jpg', type: 'texture' },
+      { name: 'grassTuft', source: 'src/models/floor/grass01.png', type: 'texture' },
     ])
 
     this.loader.on('fileEnd', (_resource, _data) =>
