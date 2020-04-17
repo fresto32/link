@@ -1,4 +1,5 @@
 import EventEmitter from './EventEmitter'
+import { TextureLoader } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
@@ -40,19 +41,11 @@ export default class Loader extends EventEmitter
       extensions: ['jpg', 'png'],
       action: (_resource) =>
       {
-        const image = new Image()
-
-        image.addEventListener('load', () =>
+        const textureLoader = new TextureLoader()
+        textureLoader.load(_resource.source, (texture) =>
         {
-            this.fileLoadEnd(_resource, image)
+          this.fileLoadEnd(_resource, texture)
         })
-
-        image.addEventListener('error', () =>
-        {
-            this.fileLoadEnd(_resource, image)
-        })
-
-        image.src = _resource.source
       }
     })
 

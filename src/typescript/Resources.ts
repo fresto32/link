@@ -30,6 +30,7 @@ export default class Resources extends EventEmitter
 
     this.loader = new Loader()
     this.items = {}
+    this.textures = {}
 
     this.loader.load([
       { name: 'shipDark', source: 'src/models/pirateKit/ship_dark.gltf' },
@@ -46,15 +47,13 @@ export default class Resources extends EventEmitter
 
     this.loader.on('fileEnd', (_resource, _data) =>
     {
-      this.items[_resource.name] = _data
-
-      // Texture
       if(_resource.type === 'texture')
       {
-        const texture = new THREE.Texture(_data)
-        texture.needsUpdate = true
-
-        this.textures[`${_resource.name}`] = texture
+        this.textures[`${_resource.name}`] = _data
+      }
+      else
+      {
+        this.items[_resource.name] = _data
       }
 
       // Trigger progress
