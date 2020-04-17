@@ -92,16 +92,16 @@ export default class SpawnIsland
     palmShortModel.position.set(75, 0.6, -50)
     palmLongModel.position.set(75, 0.6, -48)
 
-    for (let i = 0; i < 60; i++) 
+    for (let i = 0; i < 80; i++) 
     {
       const palmShort = new THREE.Object3D()
       palmShort.copy(palmShortModel)
-      palmShort.position.x += Math.random() * 40 * (Math.random() > 0.5? -1 : 1)
+      palmShort.position.x += Math.random() * 60 * (Math.random() > 0.5? -1 : 1)
       palmShort.position.z += Math.random() * 40 * (Math.random() > 0.5? -1 : 1)
 
       const palmLong = new THREE.Object3D()
-      palmLong.copy(palmShortModel)
-      palmLong.position.x += Math.random() * 40 * (Math.random() > 0.5? -1 : 1)
+      palmLong.copy(palmLongModel)
+      palmLong.position.x += Math.random() * 60 * (Math.random() > 0.5? -1 : 1)
       palmLong.position.z += Math.random() * 40 * (Math.random() > 0.5? -1 : 1)
 
       this.container.add(palmShort)
