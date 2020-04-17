@@ -37,7 +37,7 @@ export default class Application
   /** World */
   world: World
   /** Light */
-  light: THREE.DirectionalLight
+  lights: THREE.DirectionalLight[]
   /** Orbit Controls */
   orbitControls: OrbitControls
 
@@ -174,19 +174,32 @@ export default class Application
    */
   setLight()
   {
-    this.light = new THREE.DirectionalLight("white", 2.4)
-    this.light.position.set(-48, 80, -25)
-    this.light.lookAt(0, 0, 0)
-    this.scene.add(this.light)
+    this.lights = []
 
-    if (this.debug)
+    let lightDebugFolder: dat.GUI
+    if (this.debug) lightDebugFolder = this.debug.addFolder('light')
+
+    let positions = 
+    [
+      new THREE.Vector3(-48, 80, -25),
+      new THREE.Vector3(48, 80, 25),
+    ]
+
+    for (let i = 0; i < 2; i++)
     {
-      const lightDebugFolder = this.debug.addFolder('light')
-      lightDebugFolder.add(this.light.position, 'x').name('position x').step(0.001).min(-100).max(100).listen()
-      lightDebugFolder.add(this.light.position, 'y').name('position y').step(0.001).min(-100).max(100).listen()
-      lightDebugFolder.add(this.light.position, 'z').name('position z').step(0.001).min(-100).max(100).listen()
-      lightDebugFolder.add(this.light, 'intensity').step(0.001).min(-100).max(100).listen()
-
+      const light = new THREE.DirectionalLight('white', 2.4)
+      light.position.copy(positions[i])
+      light.lookAt(0, 0, 0)
+      this.lights.push(light)
+      this.scene.add(light)
+      if (this.debug)
+      {
+        const lightDebug = lightDebugFolder.addFolder('light ' + i)
+        lightDebug.add(light.position, 'x').name('position x').step(0.001).min(-200).max(200).listen()
+        lightDebug.add(light.position, 'y').name('position y').step(0.001).min(-200).max(200).listen()
+        lightDebug.add(light.position, 'z').name('position z').step(0.001).min(-200).max(200).listen()
+        lightDebug.add(light, 'intensity').step(0.001).min(-10).max(10).listen()
+      }
     }
   }
 
