@@ -45,6 +45,12 @@ export default class Resources extends EventEmitter
       { name: 'pirateCaptain', source: 'src/models/pirateKit/pirate_captain.gltf' },
       { name: 'grass', source: 'src/models/floor/grasslight-small.jpg', type: 'texture' },
       { name: 'grassTuft', source: 'src/models/floor/grass01.png', type: 'texture' },
+      { name: 'skyboxBk', source: 'src/models/skybox/5/bay_bk.jpg', type: 'texture' },
+      { name: 'skyboxDn', source: 'src/models/skybox/5/bay_dn.jpg', type: 'texture' },
+      { name: 'skyboxFt', source: 'src/models/skybox/5/bay_ft.jpg', type: 'texture' },
+      { name: 'skyboxLf', source: 'src/models/skybox/5/bay_lf.jpg', type: 'texture' },
+      { name: 'skyboxRt', source: 'src/models/skybox/5/bay_rt.jpg', type: 'texture' },
+      { name: 'skyboxUp', source: 'src/models/skybox/5/bay_up.jpg', type: 'texture' },
     ])
 
     this.loader.on('fileEnd', (_resource, _data) =>

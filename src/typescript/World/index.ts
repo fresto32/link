@@ -92,6 +92,7 @@ export default class
       this.setAvatar()
       this.setPrompt()
       this.setOptions()
+      this.setSkybox()
 
       // Positions
       this.setPositions()
@@ -175,6 +176,28 @@ export default class
       physics: this.physics
     })
     this.container.add(this.avatar.container)
+  }
+
+  /**
+   * Set Skybox
+   */
+  setSkybox()
+  {
+    const materials: THREE.Material[] = []
+    const textures = this.resources.textures
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxFt}))
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxBk}))
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxUp}))
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxDn}))
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxRt}))
+    materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxLf}))
+
+    // Only render texture on the back side
+    materials.forEach(m => m.side = THREE.BackSide)
+
+    const geometry = new THREE.BoxGeometry(600, 600, 600)
+    const mesh = new THREE.Mesh(geometry, materials)
+    this.container.add(mesh)
   }
 
   /**

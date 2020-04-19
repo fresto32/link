@@ -89,9 +89,6 @@ export default class Application
       // Scene
       this.scene = new THREE.Scene()
 
-      // Pale blue background
-      this.scene.background = new THREE.Color(0xAFEEEE)
-
       // Renderer
       this.renderer = new THREE.WebGLRenderer({
           canvas: this.$canvas,

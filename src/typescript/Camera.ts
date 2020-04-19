@@ -72,7 +72,7 @@ export default class Camera
         60,  // fov
         this.sizes.viewport.aspect,
         0.1, // near
-        601) // far
+        580) // far
     
     this.instance.position.x = 0.75
     this.instance.position.y = 1.3
@@ -106,6 +106,9 @@ export default class Camera
       this.debugFolder.add(this.targetOffset, 'x').name('offset x').step(0.001).min(-20).max(20).listen()
       this.debugFolder.add(this.targetOffset, 'y').name('offset y').step(0.001).min(-20).max(20).listen()
       this.debugFolder.add(this.targetOffset, 'z').name('offset z').step(0.001).min(-20).max(20).listen()
+
+      this.debugFolder.add(this.instance, 'near').name('near').min(0).max(100).listen().onChange(() => this.instance.updateProjectionMatrix())
+      this.debugFolder.add(this.instance, 'far').name('far').min(0).max(1000).listen().onChange(() => this.instance.updateProjectionMatrix())
     }
   }
 }
