@@ -34,8 +34,8 @@ export default class Resources extends EventEmitter
 
     this.loader.load([
       { name: 'shipDark', source: 'src/models/pirateKit/ship_dark.gltf' },
-      { name: 'palmDetailedLong', source: 'src/models/pirateKit/palm_detailed_long.gltf' },
-      { name: 'palmDetailedShort', source: 'src/models/pirateKit/palm_detailed_short.gltf' },
+      { name: 'palmLong', source: 'src/models/pirateKit/palm_long.gltf' },
+      { name: 'palmShort', source: 'src/models/pirateKit/palm_short.gltf' },
       { name: 'shipWreck', source: 'src/models/pirateKit/ship_wreck.gltf' },
       { name: 'tower', source: 'src/models/pirateKit/tower.gltf' },
       { name: 'formationLargeStone', source: 'src/models/pirateKit/formationLarge_stone.gltf' },

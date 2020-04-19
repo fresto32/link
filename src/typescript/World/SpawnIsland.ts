@@ -95,8 +95,8 @@ export default class SpawnIsland
    */
   setPalmTrees()
   {
-    const palmShortModel = this.resources.items.palmDetailedShort.scene.children[0]
-    const palmLongModel = this.resources.items.palmDetailedLong.scene.children[0]
+    const palmShortModel = this.resources.items.palmShort.scene.children[0]
+    const palmLongModel = this.resources.items.palmLong.scene.children[0]
 
     this.setScale(palmShortModel)
     this.setScale(palmLongModel)
@@ -206,7 +206,7 @@ export default class SpawnIsland
 
     // Randomly position tufts over the map
     const positions: THREE.Vector3[] = []
-    for (let i = 0; i < 30000; i++)
+    for (let i = 0; i < 10000; i++)
     {
       const x = Math.random() * 150 * (Math.random() > 0.5? -1 : 1)
       const z = Math.random() * 100 * (Math.random() > 0.5? -1 : 1)
