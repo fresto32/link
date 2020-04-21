@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import Resources from '../Resources'
+import ObjectDimensions from './Helpers/ObjectDimensions'
 
 export default class SpawnIsland
 {
@@ -67,12 +68,41 @@ export default class SpawnIsland
    */
   setBorder()
   {
-    const black = 0x000000
-    const material = new THREE.MeshBasicMaterial({color: black})
-    const geometry = new THREE.PlaneBufferGeometry(302, 202, 10, 10);
-    this.border = new THREE.Mesh(geometry, material)
-    this.border.rotateX(-Math.PI / 2)
-    this.container.add(this.border)
+    const fenceVertical = this.resources.items.fence.scene.clone()
+    this.setScale(fenceVertical)
+    const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2)
+
+    const dimensions = ObjectDimensions(fenceHorizontal)
+
+    // Build fences for each side of the map...
+    // +z side
+    for (let i = -155; i < 145; i += dimensions.z)
+    {
+      const fence = fenceVertical.clone()
+      fence.position.set(i, 0.5, 95)
+      this.container.add(fence)
+    }
+    // -z side
+    for (let i = -155; i < 145; i += dimensions.z)
+    {
+      const fence = fenceVertical.clone()
+      fence.position.set(i, 0.5, -105)
+      this.container.add(fence)
+    }
+    // +x side
+    for (let i = -91; i <= 105; i += dimensions.z)
+    {
+      const fence = fenceHorizontal.clone()
+      fence.position.set(145, 0.5, i)
+      this.container.add(fence)
+    }
+    // -x side
+    for (let i = -91; i <= 105; i += dimensions.z)
+    {
+      const fence = fenceHorizontal.clone()
+      fence.position.set(-155, 0.5, i)
+      this.container.add(fence)
+    }
   }
 
   /**

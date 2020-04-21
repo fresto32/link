@@ -45,6 +45,8 @@ export default class Resources extends EventEmitter
       { name: 'formationRock', source: 'src/models/pirateKit/formation_rock.gltf' },
       { name: 'formationStone', source: 'src/models/pirateKit/formation_stone.gltf' },
       { name: 'pirateCaptain', source: 'src/models/pirateKit/pirate_captain.gltf' },
+        // Nature Kit
+      { name: 'fence', source: 'src/models/natureKit/fence_double.gltf' },
 
       // Textures...
         // Grass
