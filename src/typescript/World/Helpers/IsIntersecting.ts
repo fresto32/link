@@ -5,6 +5,7 @@ import * as THREE from 'three'
 //          - Ray casting
 //          - Distance between some planar point and the closest vertex in 
 //              object
+//          - Use Box3's BoundingBox feature
 
 export default function IsIntersecting(plane: THREE.Mesh, object: THREE.Group | THREE.Mesh): boolean
 {
