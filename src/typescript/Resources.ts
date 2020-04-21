@@ -33,6 +33,8 @@ export default class Resources extends EventEmitter
     this.textures = {}
 
     this.loader.load([
+      // Models...
+        // Pirate Kit
       { name: 'shipDark', source: 'src/models/pirateKit/ship_dark.gltf' },
       { name: 'palmLong', source: 'src/models/pirateKit/palm_long.gltf' },
       { name: 'palmShort', source: 'src/models/pirateKit/palm_short.gltf' },
@@ -43,8 +45,12 @@ export default class Resources extends EventEmitter
       { name: 'formationRock', source: 'src/models/pirateKit/formation_rock.gltf' },
       { name: 'formationStone', source: 'src/models/pirateKit/formation_stone.gltf' },
       { name: 'pirateCaptain', source: 'src/models/pirateKit/pirate_captain.gltf' },
+
+      // Textures...
+        // Grass
       { name: 'grass', source: 'src/models/floor/grasslight-small.jpg', type: 'texture' },
       { name: 'grassTuft', source: 'src/models/floor/grass01.png', type: 'texture' },
+        // Sky Box
       { name: 'skyboxBk', source: 'src/models/skybox/5/bay_bk.jpg', type: 'texture' },
       { name: 'skyboxDn', source: 'src/models/skybox/5/bay_dn.jpg', type: 'texture' },
       { name: 'skyboxFt', source: 'src/models/skybox/5/bay_ft.jpg', type: 'texture' },
