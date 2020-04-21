@@ -105,6 +105,11 @@ export default class Application
       this.renderer.setSize(this.sizes.viewport.width, 
                             this.sizes.viewport.height,
                             false)
+
+      if (this.config.debug)
+      {
+        this.scene.add(new THREE.AxesHelper(50))
+      }
   }
 
   /**
