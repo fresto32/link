@@ -1,129 +1,113 @@
-import EventEmitter from './EventEmitter'
-import { TextureLoader } from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import EventEmitter from './EventEmitter';
+import {TextureLoader} from 'three';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
 
-export default class Loader extends EventEmitter
-{
+export default class Loader extends EventEmitter {
   /** Number of items and textures to load */
-  toLoad: number
+  toLoad: number;
   /** Number of items and textures loaded */
-  loaded: number
+  loaded: number;
   /** Items and textures loaded */
-  items: any
+  items: any;
   /** THREE Loaders that are instantiated */
-  loaders: {extensions: string[], action: (any) => void}[]
+  loaders!: {extensions: string[]; action: (arg0: any) => void}[];
 
   /**
    * Constructor
    */
-  constructor()
-  {
-    super()
+  constructor() {
+    super();
 
-    this.setLoaders()
+    this.setLoaders();
 
-    this.toLoad = 0
-    this.loaded = 0
-    this.items = {}
+    this.toLoad = 0;
+    this.loaded = 0;
+    this.items = {};
   }
 
   /**
    * Set loaders
    */
-  setLoaders()
-  {
-    this.loaders = []
+  setLoaders() {
+    this.loaders = [];
 
     // Images
     this.loaders.push({
       extensions: ['jpg', 'png'],
-      action: (_resource) =>
-      {
-        const textureLoader = new TextureLoader()
-        textureLoader.load(_resource.source, (texture) =>
-        {
-          this.fileLoadEnd(_resource, texture)
-        })
-      }
-    })
+      action: _resource => {
+        const textureLoader = new TextureLoader();
+        textureLoader.load(_resource.source, texture => {
+          this.fileLoadEnd(_resource, texture);
+        });
+      },
+    });
 
     // Draco
-    const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('draco/')
-    dracoLoader.setDecoderConfig({ type: 'js' })
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('draco/');
+    dracoLoader.setDecoderConfig({type: 'js'});
 
     this.loaders.push({
       extensions: ['drc'],
-      action: (_resource) =>
-      {
-        dracoLoader.load(_resource.source, (_data) =>
-        {
-          this.fileLoadEnd(_resource, _data)
+      action: _resource => {
+        dracoLoader.load(_resource.source, _data => {
+          this.fileLoadEnd(_resource, _data);
 
           //DRACOLoader.releaseDecoderModule()
-        })
-      }
-    })
+        });
+      },
+    });
 
     // GLTF
-    const gltfLoader = new GLTFLoader()
-    gltfLoader.setDRACOLoader(dracoLoader)
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
 
     this.loaders.push({
       extensions: ['glb', 'gltf'],
-      action: (_resource) =>
-      {
-        gltfLoader.load(_resource.source, (_data) =>
-        {
-          this.fileLoadEnd(_resource, _data)
-        })
-      }
-    })
+      action: _resource => {
+        gltfLoader.load(_resource.source, _data => {
+          this.fileLoadEnd(_resource, _data);
+        });
+      },
+    });
 
     // FBX
-    const fbxLoader = new FBXLoader()
+    const fbxLoader = new FBXLoader();
 
     this.loaders.push({
       extensions: ['fbx'],
-      action: (_resource) =>
-      {
-        fbxLoader.load(_resource.source, (_data) =>
-        {
-          this.fileLoadEnd(_resource, _data)
-        })
-      }
-    })
+      action: _resource => {
+        fbxLoader.load(_resource.source, _data => {
+          this.fileLoadEnd(_resource, _data);
+        });
+      },
+    });
   }
 
   /**
    * Load
    */
-  load(_resources = [])
-  {
-    for(const _resource of _resources)
-    {
-      this.toLoad++
-      const extensionMatch = _resource.source.match(/\.([a-z]+)$/)
+  load(_resources: any) {
+    for (const _resource of _resources) {
+      this.toLoad++;
+      const extensionMatch = _resource.source.match(/\.([a-z]+)$/);
 
-      if(typeof extensionMatch[1] !== 'undefined')
-      {
-        const extension = extensionMatch[1]
-        const loader = this.loaders.find((_loader) => _loader.extensions.find((_extension) => _extension === extension))
+      if (typeof extensionMatch[1] !== 'undefined') {
+        const extension = extensionMatch[1];
+        const loader = this.loaders.find(_loader =>
+          _loader.extensions.find(_extension => _extension === extension)
+        );
 
-        if(loader)
-        {
-          loader.action(_resource)
+        if (loader) {
+          loader.action(_resource);
+        } else {
+          console.warn(`Cannot found loader for ${_resource}`);
         }
-        else
-        {
-          console.warn(`Cannot found loader for ${_resource}`)
-        }
-      }
-      else
-      {
-        console.warn(`Cannot found extension of ${_resource}`)
+      } else {
+        console.warn(`Cannot found extension of ${_resource}`);
       }
     }
   }
@@ -131,16 +115,14 @@ export default class Loader extends EventEmitter
   /**
    * File load end
    */
-  fileLoadEnd(_resource, _data)
-  {
-    this.loaded++
-    this.items[_resource.name] = _data
+  fileLoadEnd(_resource: any, _data: any) {
+    this.loaded++;
+    this.items[_resource.name] = _data;
 
-    this.trigger('fileEnd', [_resource, _data])
+    this.trigger('fileEnd', [_resource, _data]);
 
-    if(this.loaded === this.toLoad)
-    {
-      this.trigger('end', null)
+    if (this.loaded === this.toLoad) {
+      this.trigger('end', null);
     }
   }
 }

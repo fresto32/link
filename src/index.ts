@@ -1,3 +1,4 @@
-import Application from './typescript/Application'
+/* eslint-disable no-undef */
+import Application from './typescript/Application';
 
-let application = new Application($('#c')[0]);
+new Application($('#c')[0] as HTMLCanvasElement);
