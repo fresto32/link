@@ -196,7 +196,6 @@ export default class {
    * Sets the positions of each object in the world
    */
   setPositions() {
-    this.spawnIsland.container.position.set(0, -10, 0);
-    this.prompt.container.position.set(0, 0, -5);
+    //
   }
 }
