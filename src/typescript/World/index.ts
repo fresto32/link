@@ -167,6 +167,7 @@ export default class {
       time: this.time,
       resources: this.resources,
       physics: this.physics,
+      terrain: this.spawnIsland.terrain,
     });
     this.container.add(this.avatar.container);
   }

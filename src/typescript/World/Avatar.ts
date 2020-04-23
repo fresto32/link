@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Time from '../Utils/Time';
 import Resources from '../Resources';
 import Physics from './Physics';
+import setOnPlane from './Helpers/SetOnPlane';
 
 export default class Avatar {
   /** Container */
@@ -14,8 +15,15 @@ export default class Avatar {
   pirateCaptain!: THREE.Object3D;
   /** Physics */
   physics: Physics;
+  /** Terrain */
+  terrain: THREE.Mesh;
 
-  constructor(_params: {time: Time; resources: Resources; physics: Physics}) {
+  constructor(_params: {
+    time: Time;
+    resources: Resources;
+    physics: Physics;
+    terrain: THREE.Mesh;
+  }) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;
@@ -24,6 +32,7 @@ export default class Avatar {
     this.time = _params.time;
     this.resources = _params.resources;
     this.physics = _params.physics;
+    this.terrain = _params.terrain;
 
     // Setting up scenegraph
     this.setPirateCaptain();
@@ -41,7 +50,9 @@ export default class Avatar {
     this.container.add(this.pirateCaptain);
 
     this.time.on('tick', () => {
-      this.pirateCaptain.position.copy(this.physics.avatar.position);
+      const x = this.physics.avatar.position.x;
+      const z = this.physics.avatar.position.z;
+      setOnPlane(this.terrain, this.pirateCaptain, x, z);
     });
   }
 }
