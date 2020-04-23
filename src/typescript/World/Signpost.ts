@@ -3,6 +3,8 @@ import * as THREE from 'three';
 export default class Signpost {
   /** Container */
   container: THREE.Object3D;
+  /** Viewing Bounding Box */
+  viewingBoundingBox!: THREE.Box3;
   /** Text Texture */
   promptTexture!: THREE.CanvasTexture;
   /** Text to write on sign post */
@@ -58,6 +60,7 @@ export default class Signpost {
     this.setPoles();
     this.setPlanks();
     this.setSignagePlane();
+    this.setViewingBoundingBox();
   }
 
   /**
@@ -227,6 +230,43 @@ export default class Signpost {
     mesh.position.z = this.poleRadius + this.plankDepth;
 
     this.container.add(mesh);
+  }
+
+  /**
+   * Set Viewing Bounding Box
+   *
+   * The bounding box for which the signpost lights up.
+   */
+  setViewingBoundingBox() {
+    const width = this.distanceBetweenPoles * 3;
+    const depth = width * (2 / 3);
+    const height = 50;
+    const geometry = new THREE.BoxGeometry(width, height, depth);
+
+    // Invisible material...
+    const material = new THREE.MeshBasicMaterial();
+    material.visible = true;
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.z = depth / 2;
+    mesh.geometry.computeBoundingBox();
+    this.viewingBoundingBox = new THREE.Box3().setFromObject(mesh);
+  }
+
+  /**
+   * Light Up Signpost
+   */
+  switchSignpostLightOn() {
+    this.plankMaterial.emissive = new THREE.Color('white');
+    this.poleMaterial.emissive = new THREE.Color('brown');
+  }
+
+  /**
+   * Turn Off Signpost Light
+   */
+  switchSignpostLightOff() {
+    this.plankMaterial.emissive = new THREE.Color('black');
+    this.poleMaterial.emissive = new THREE.Color('black');
   }
 }
 
