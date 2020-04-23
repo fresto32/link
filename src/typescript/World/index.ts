@@ -125,7 +125,12 @@ export default class {
    */
   setPrompt() {
     this.prompt = new Signpost({
-      text: 'What is an example of an O(n) sorting algoritm?',
+      text: `What is an example of an O(n) sorting algoritm?
+      What is an example of an O(n) sorting algoritm?
+      What is an example of an O(n) sorting algoritm?
+      What is an example of an O(n) sorting algoritm?
+      What is an example of an O(n) sorting algoritm?
+      `,
     });
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);

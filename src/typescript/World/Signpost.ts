@@ -4,7 +4,7 @@ export default class Signpost {
   /** Container */
   container: THREE.Object3D;
   /** Text Texture */
-  textTexture!: THREE.CanvasTexture;
+  promptTexture!: THREE.CanvasTexture;
   /** Text to write on sign post */
   text: string;
   /** Background Mesh */
@@ -13,6 +13,36 @@ export default class Signpost {
   border!: THREE.Mesh;
   /** Signpost Mesh */
   signpost!: THREE.Mesh;
+
+  // Signpost properties
+  /** Distance between each pole */
+  distanceBetweenPoles!: number;
+  /** Height of each pole */
+  poleHeight!: number;
+  /** Radius of each pole */
+  poleRadius!: number;
+  /** Height of each plank */
+  plankHeight!: number;
+  /** Width of each plank */
+  plankWidth!: number;
+  /** Plank depth */
+  plankDepth!: number;
+  /** Offset of plank from pole outter edge */
+  plankEdgeOffset!: number;
+  /** Maximum Y position of the planks */
+  plankMaxHeight!: number;
+  /** Minimum Y position of the planks */
+  plankMinHeight!: number;
+  /** Spacing between each plank */
+  plankSpacing!: number;
+  /** Number of lines of prompt */
+  numberOfPromptLines!: number;
+
+  // Materials
+  /** Material of the planks which the signage is posted to */
+  plankMaterial!: THREE.MeshPhongMaterial;
+  /** Material of each of the two poles */
+  poleMaterial!: THREE.MeshPhongMaterial;
 
   constructor(_params: {text: string}) {
     // Container
@@ -23,67 +53,206 @@ export default class Signpost {
     this.text = _params.text;
 
     // Setting up scenegraph
-    this.setText();
-    this.setBackground();
-    this.setSignpost();
+    this.setPromptTexture();
+    this.setGeometricProperties();
+    this.setPoles();
+    this.setPlanks();
+    this.setSignagePlane();
   }
 
   /**
-   * Set Text
+   * Set Prompt Texture
+   *
+   * Generates the prompt texture to be printed on the signage plane.
    */
-  setText() {
+  setPromptTexture() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     if (context === null) throw console.error('Could not find context.');
 
+    // Split lines at 46 characters...
+    const lines = splitLines(this.text, 46);
+    this.numberOfPromptLines = lines.length;
+
     const textHeight = 100;
-    const metrics = context.measureText(this.text);
-    const textWidth = metrics.width;
 
     canvas.width = 2400;
-    canvas.height = 120;
+    canvas.height = 100 + textHeight * lines.length;
 
     context.fillStyle = '#FFF';
-
     context.font = 'normal ' + textHeight + 'px Arial';
-
-    context.textAlign = 'center';
+    context.textAlign = 'left';
     context.textBaseline = 'middle';
     context.fillStyle = '#000000';
-    context.fillText(this.text, canvas.width / 2, canvas.height / 2);
 
-    console.log(textWidth);
-    console.log(textHeight);
+    lines.forEach((line, i) => {
+      context.fillText(line, 200, 100 + i * textHeight);
+    });
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
 
-    this.textTexture = texture;
+    this.promptTexture = texture;
   }
 
   /**
-   * Set Background
+   * Set Geometric Properties
    *
-   * The background for the prompt text is a single sided plane.
+   * Sets all the signpost sizing members sizes and distances.
    */
-  setBackground() {
-    const material = new THREE.MeshBasicMaterial({map: this.textTexture});
-    const geometry = new THREE.BoxBufferGeometry(7, 1, 1, 10, 10);
-    this.background = new THREE.Mesh(geometry, material);
-    this.background.position.y = 4.5;
-    this.container.add(this.background);
+  setGeometricProperties() {
+    // Pole properties...
+    this.poleRadius = 0.5;
+    this.poleHeight = 2.5 + this.numberOfPromptLines * 2;
+
+    this.distanceBetweenPoles = 8;
+
+    // Plank properties...
+    this.plankHeight = this.poleRadius;
+    this.plankEdgeOffset = this.poleRadius * 1.5;
+    this.plankWidth =
+      this.plankEdgeOffset + this.distanceBetweenPoles + this.poleRadius * 2;
+    this.plankDepth = this.poleRadius / 2;
+
+    this.plankMaxHeight =
+      this.poleHeight - this.plankEdgeOffset - this.plankHeight / 2;
+    this.plankMinHeight = this.poleHeight / 3;
+
+    this.plankSpacing = 0.05;
   }
 
   /**
-   * Set Signpost
+   * Set Poles
    *
-   * The sign post is a brown box
+   * The two poles along either side of the signage.
    */
-  setSignpost() {
-    const material = new THREE.MeshBasicMaterial({color: '#964B00'});
-    const geometry = new THREE.BoxBufferGeometry(1, 4, 1, 10, 10);
-    this.signpost = new THREE.Mesh(geometry, material);
-    this.signpost.position.y = 2;
-    this.container.add(this.signpost);
+  setPoles() {
+    this.poleMaterial = new THREE.MeshPhongMaterial({color: 'brown'});
+    const tipHeight = 1.0;
+    const radialSegments = 15;
+    const heightSegments = 1;
+    const openEnded = true;
+    const thetaStart = Math.PI * 0.44;
+    const thetaLength = Math.PI * 2.0;
+
+    const tipGeometry = new THREE.CylinderBufferGeometry(
+      /* Radius Top = */ 0, // Thus, tip is completely enclosed
+      this.poleRadius,
+      tipHeight,
+      radialSegments,
+      heightSegments,
+      openEnded,
+      thetaStart,
+      thetaLength
+    );
+
+    const poleGeometry = new THREE.CylinderBufferGeometry(
+      this.poleRadius,
+      this.poleRadius,
+      this.poleHeight,
+      radialSegments,
+      heightSegments,
+      openEnded
+    );
+
+    // Adding poles...
+    const leftPole = new THREE.Mesh(poleGeometry, this.poleMaterial);
+    const rightPole = new THREE.Mesh(poleGeometry, this.poleMaterial);
+
+    leftPole.position.x = -(this.distanceBetweenPoles / 2);
+    rightPole.position.x = this.distanceBetweenPoles / 2;
+
+    leftPole.position.y = this.poleHeight / 2;
+    rightPole.position.y = this.poleHeight / 2;
+
+    this.container.add(leftPole);
+    this.container.add(rightPole);
+
+    // Adding pole tips...
+    const leftTip = new THREE.Mesh(tipGeometry, this.poleMaterial);
+    const rightTip = new THREE.Mesh(tipGeometry, this.poleMaterial);
+
+    leftTip.position.x = -(this.distanceBetweenPoles / 2);
+    rightTip.position.x = this.distanceBetweenPoles / 2;
+
+    leftTip.position.y = this.poleHeight + tipHeight / 2;
+    rightTip.position.y = this.poleHeight + tipHeight / 2;
+
+    this.container.add(leftTip);
+    this.container.add(rightTip);
   }
+
+  /**
+   * Set Planks
+   *
+   * Sets the planks that are attached to the poles.
+   */
+  setPlanks() {
+    this.plankMaterial = new THREE.MeshPhongMaterial({color: 'white'});
+
+    const plankGeometry = new THREE.BoxBufferGeometry(
+      this.plankWidth,
+      this.plankHeight,
+      this.plankDepth
+    );
+
+    for (
+      let i = this.plankMaxHeight;
+      i > this.plankMinHeight;
+      i -= this.plankHeight + this.plankSpacing
+    ) {
+      const plank = new THREE.Mesh(plankGeometry, this.plankMaterial);
+      plank.position.z = this.poleRadius;
+      plank.position.y = i;
+      this.container.add(plank);
+    }
+  }
+
+  /**
+   * Sets the Signage Text
+   *
+   * The text is placed on a white plane that is attached to the planks.
+   */
+  setSignagePlane() {
+    const material = new THREE.MeshBasicMaterial({map: this.promptTexture});
+
+    const geometry = new THREE.PlaneBufferGeometry(
+      this.plankWidth! * (5 / 6),
+      this.plankHeight * 2.3 * this.numberOfPromptLines
+    );
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.y =
+      (this.plankMaxHeight - this.plankMinHeight) / 2 + this.plankMinHeight;
+    mesh.position.z = this.poleRadius + this.plankDepth;
+
+    this.container.add(mesh);
+  }
+}
+
+function splitLines(text: string, maxLineLength = 46): string[] {
+  const lines: string[] = [];
+
+  while (text.length > maxLineLength) {
+    // Get maximum line length...
+    let proposedLine = text.substr(0, maxLineLength);
+    let i = proposedLine.length;
+
+    // Keep pruning from maximum line length until a space is found...
+    if (proposedLine.slice(-1) !== ' ') {
+      while (proposedLine[i - 1] !== ' ')
+        proposedLine = proposedLine.substr(0, i--);
+    }
+
+    // Return the line minus the space character...
+    lines.push(text.substr(0, i - 1));
+
+    // Remove the pushed line from text...
+    text = text.substr(i - 1);
+  }
+
+  // If there's any text leftover, add it...
+  if (text.length > 0) lines.push(text);
+
+  return lines;
 }
