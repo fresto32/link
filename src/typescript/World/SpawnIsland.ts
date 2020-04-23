@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import Resources from '../Resources';
 import ObjectDimensions from './Helpers/ObjectDimensions';
+import setOnPlane from './Helpers/SetOnPlane';
 
 export default class SpawnIsland {
   /** Container */
   container: THREE.Object3D;
   /** Background Mesh */
-  background!: THREE.Mesh;
+  terrain!: THREE.Mesh;
   /** Border Mesh */
   border!: THREE.Mesh;
   /** Resources */
@@ -21,7 +22,7 @@ export default class SpawnIsland {
     this.resources = _params.resources;
 
     // Setting up scenegraph
-    this.setBackground();
+    this.setTerrain();
     this.setBorder();
     this.setPirateBoat();
     this.setPalmTrees();
@@ -32,11 +33,11 @@ export default class SpawnIsland {
   }
 
   /**
-   * Set Background
+   * Set Terrain
    *
-   * The background for the spawn island is a single sided plane.
+   * The terrain for the spawn island is a single sided plane.
    */
-  setBackground() {
+  setTerrain() {
     const texture = this.resources.textures.grass;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -48,11 +49,14 @@ export default class SpawnIsland {
       emissive: 'green',
     });
 
-    const backgroundGeometry = new THREE.PlaneBufferGeometry(300, 200, 10, 10);
-    this.background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-    this.background.rotateX(-Math.PI / 2);
-    this.background.position.y = 0.5;
-    this.container.add(this.background);
+    const geometry = new THREE.PlaneGeometry(320, 220, 5, 5);
+    this.terrain = new THREE.Mesh(geometry, backgroundMaterial);
+    this.terrain.rotateX(-Math.PI / 2);
+    this.terrain.position.y = 0;
+    geometry.vertices.forEach(v => {
+      v.z = Math.random() * 30;
+    });
+    this.container.add(this.terrain);
   }
 
   /**
@@ -62,7 +66,7 @@ export default class SpawnIsland {
    * background plane.
    */
   setBorder() {
-    const fenceVertical = this.resources.items.fence.scene.clone();
+    const fenceVertical = this.resources.items.fence.scene.children[0].clone();
     this.setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
@@ -70,27 +74,27 @@ export default class SpawnIsland {
 
     // Build fences for each side of the map...
     // +z side
-    for (let i = -155; i < 145; i += dimensions.z) {
+    for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
-      fence.position.set(i, 0.5, 95);
+      setOnPlane(this.terrain, fence, i, 100, 'z', 'x');
       this.container.add(fence);
     }
     // -z side
-    for (let i = -155; i < 145; i += dimensions.z) {
+    for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
-      fence.position.set(i, 0.5, -105);
+      setOnPlane(this.terrain, fence, i, -100, 'z', 'x');
       this.container.add(fence);
     }
     // +x side
-    for (let i = -91; i <= 105; i += dimensions.z) {
+    for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
-      fence.position.set(145, 0.5, i);
+      setOnPlane(this.terrain, fence, 150, i, 'z', 'z');
       this.container.add(fence);
     }
     // -x side
-    for (let i = -91; i <= 105; i += dimensions.z) {
+    for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
-      fence.position.set(-155, 0.5, i);
+      setOnPlane(this.terrain, fence, -150, i, 'z', 'z');
       this.container.add(fence);
     }
   }
@@ -103,7 +107,7 @@ export default class SpawnIsland {
   setPirateBoat() {
     const shipDark = this.resources.items.shipDark.scene.children[0];
     this.setScale(shipDark);
-    shipDark.position.set(75, 0.6, 50);
+    setOnPlane(this.terrain, shipDark, 75, 50);
     this.container.add(shipDark);
   }
 
@@ -119,23 +123,22 @@ export default class SpawnIsland {
     this.setScale(palmShortModel);
     this.setScale(palmLongModel);
 
-    palmShortModel.position.set(75, 0.6, -50);
-    palmLongModel.position.set(75, 0.6, -48);
+    const x = 75;
+    const z = -50;
 
     for (let i = 0; i < 80; i++) {
       const palmShort = new THREE.Object3D();
-      palmShort.copy(palmShortModel);
-      palmShort.position.x +=
-        Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
-      palmShort.position.z +=
-        Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
 
+      const x1 = x + Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
+      const z1 = z + Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
+      palmShort.copy(palmShortModel);
+      setOnPlane(this.terrain, palmShort, x1, z1);
+
+      const x2 = x + Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
+      const z2 = z + Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
       const palmLong = new THREE.Object3D();
       palmLong.copy(palmLongModel);
-      palmLong.position.x +=
-        Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
-      palmLong.position.z +=
-        Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
+      setOnPlane(this.terrain, palmLong, x2, z2);
 
       this.container.add(palmShort);
       this.container.add(palmLong);
@@ -151,7 +154,7 @@ export default class SpawnIsland {
     const shipWreck = this.resources.items.shipWreck.scene.children[0];
     this.setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
-    shipWreck.position.set(-75, 0.6, -50);
+    setOnPlane(this.terrain, shipWreck, -75, -50);
     this.container.add(shipWreck);
   }
 
@@ -163,7 +166,7 @@ export default class SpawnIsland {
   setTower() {
     const tower = this.resources.items.tower.scene.children[0];
     this.setScale(tower);
-    tower.position.set(-75, 0.6, 50);
+    setOnPlane(this.terrain, tower, -75, 50);
     this.container.add(tower);
   }
 
@@ -175,23 +178,20 @@ export default class SpawnIsland {
   setRockFormations() {
     const items = this.resources.items;
     const formations = [
-      items.formationLargeStone.scene,
-      items.formationLargeRock.scene,
-      items.formationStone.scene,
-      items.formationRock.scene,
+      items.formationLargeStone.scene.children[0],
+      items.formationLargeRock.scene.children[0],
+      items.formationStone.scene.children[0],
+      items.formationRock.scene.children[0],
     ];
 
     this.setScales(formations);
 
     for (let i = 0; i < 10; i++) {
       for (let k = 0; k < 4; k++) {
-        const formation = new THREE.Object3D();
-        formation.copy(formations[k]);
-        formation.position.x +=
-          Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1);
-        formation.position.z +=
-          Math.random() * 55 * (Math.random() > 0.5 ? -1 : 1);
-        formation.position.y = 0.6;
+        const formation = formations[k].clone(true);
+        const x = Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1);
+        const z = Math.random() * 55 * (Math.random() > 0.5 ? -1 : 1);
+        setOnPlane(this.terrain, formation, x, z);
         this.container.add(formation);
       }
     }
@@ -225,7 +225,7 @@ export default class SpawnIsland {
     for (let i = 0; i < 10000; i++) {
       const x = Math.random() * 150 * (Math.random() > 0.5 ? -1 : 1);
       const z = Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1);
-      const y = 0.6;
+      const y = 0;
       positions.push(new THREE.Vector3(x, y, z));
     }
 
@@ -252,7 +252,7 @@ export default class SpawnIsland {
         // First plane
         const grassPlane = new THREE.Mesh(geometry);
         grassPlane.rotateY(angle);
-        grassPlane.position.copy(position);
+        setOnPlane(this.terrain, grassPlane, position.x, position.z);
         grassPlane.updateMatrix();
         mergedGeometry.merge(
           grassPlane.geometry as THREE.Geometry,
@@ -264,7 +264,7 @@ export default class SpawnIsland {
         //   it would mess up the normals
         const grassOtherPlane = new THREE.Mesh(geometry);
         grassOtherPlane.rotateY(angle + Math.PI);
-        grassOtherPlane.position.copy(position);
+        setOnPlane(this.terrain, grassOtherPlane, position.x, position.z);
         mergedGeometry.merge(
           grassOtherPlane.geometry as THREE.Geometry,
           grassOtherPlane.matrix
