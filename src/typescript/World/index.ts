@@ -127,7 +127,7 @@ export default class {
     this.prompt = new Signpost({
       text: 'What is an example of an O(n) sorting algoritm?',
     });
-    setOnPlane(this.spawnIsland.terrain, this.prompt.container, 0, 0);
+    setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
   }
 
@@ -142,10 +142,10 @@ export default class {
       new Signpost({text: 'Insertion sort'}),
     ];
 
-    setOnPlane(this.spawnIsland.terrain, this.options[0].container, 75, 30);
-    setOnPlane(this.spawnIsland.terrain, this.options[1].container, 75, -30);
-    setOnPlane(this.spawnIsland.terrain, this.options[2].container, -75, 30);
-    setOnPlane(this.spawnIsland.terrain, this.options[3].container, -75, -30);
+    setOnPlane(this.spawnIsland.ground, this.options[0].container, 75, 30);
+    setOnPlane(this.spawnIsland.ground, this.options[1].container, 75, -30);
+    setOnPlane(this.spawnIsland.ground, this.options[2].container, -75, 30);
+    setOnPlane(this.spawnIsland.ground, this.options[3].container, -75, -30);
 
     this.options.forEach(o => this.container.add(o.container));
   }
@@ -169,7 +169,7 @@ export default class {
       time: this.time,
       resources: this.resources,
       physics: this.physics,
-      terrain: this.spawnIsland.terrain,
+      ground: this.spawnIsland.ground,
     });
     this.container.add(this.avatar.container);
   }

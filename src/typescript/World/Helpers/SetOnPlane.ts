@@ -34,8 +34,8 @@ export default function setOnPlane(
    * TODO:
    *
    * Individualized piece of code: Since the plane that we will be selecting is
-   * always the SpawnIsland's terrain, we align the vertices of the plane as we
-   * align the SpawnIsland's terrain.
+   * always the SpawnIsland's ground, we align the vertices of the plane as we
+   * align the SpawnIsland's ground.
    *
    * In the future, this specificity ought to be removed to allow for greater
    * extensibility.

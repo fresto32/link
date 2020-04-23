@@ -15,14 +15,14 @@ export default class Avatar {
   pirateCaptain!: THREE.Object3D;
   /** Physics */
   physics: Physics;
-  /** Terrain */
-  terrain: THREE.Mesh;
+  /** Ground */
+  ground: THREE.Mesh;
 
   constructor(_params: {
     time: Time;
     resources: Resources;
     physics: Physics;
-    terrain: THREE.Mesh;
+    ground: THREE.Mesh;
   }) {
     // Container
     this.container = new THREE.Object3D();
@@ -32,7 +32,7 @@ export default class Avatar {
     this.time = _params.time;
     this.resources = _params.resources;
     this.physics = _params.physics;
-    this.terrain = _params.terrain;
+    this.ground = _params.ground;
 
     // Setting up scenegraph
     this.setPirateCaptain();
@@ -52,7 +52,7 @@ export default class Avatar {
     this.time.on('tick', () => {
       const x = this.physics.avatar.position.x;
       const z = this.physics.avatar.position.z;
-      setOnPlane(this.terrain, this.pirateCaptain, x, z);
+      setOnPlane(this.ground, this.pirateCaptain, x, z);
     });
   }
 }
