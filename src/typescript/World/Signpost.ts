@@ -14,12 +14,13 @@ export default class Signpost {
   /** Signpost Mesh */
   signpost!: THREE.Mesh;
 
-  constructor(_text: string) {
+  constructor(_params: {text: string}) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;
 
-    this.text = _text;
+    // Params
+    this.text = _params.text;
 
     // Setting up scenegraph
     this.setText();

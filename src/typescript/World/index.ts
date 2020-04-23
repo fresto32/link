@@ -123,9 +123,9 @@ export default class {
    * Set Prompt
    */
   setPrompt() {
-    this.prompt = new Signpost(
-      'What is an example of an O(n) sorting algoritm?'
-    );
+    this.prompt = new Signpost({
+      text: 'What is an example of an O(n) sorting algoritm?',
+    });
     this.container.add(this.prompt.container);
   }
 
@@ -134,10 +134,10 @@ export default class {
    */
   setOptions() {
     this.options = [
-      new Signpost('Merge sort'),
-      new Signpost('Radix sort'),
-      new Signpost('Quick sort'),
-      new Signpost('Insertion sort'),
+      new Signpost({text: 'Merge sort'}),
+      new Signpost({text: 'Radix sort'}),
+      new Signpost({text: 'Quick sort'}),
+      new Signpost({text: 'Insertion sort'}),
     ];
 
     this.options[0].container.position.set(75, 0, 30);
