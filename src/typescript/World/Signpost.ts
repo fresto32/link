@@ -70,7 +70,7 @@ export default class Signpost {
     const material = new THREE.MeshBasicMaterial({map: this.textTexture});
     const geometry = new THREE.BoxBufferGeometry(7, 1, 1, 10, 10);
     this.background = new THREE.Mesh(geometry, material);
-    this.background.position.y = -5.5;
+    this.background.position.y = 4.5;
     this.container.add(this.background);
   }
 
@@ -83,7 +83,7 @@ export default class Signpost {
     const material = new THREE.MeshBasicMaterial({color: '#964B00'});
     const geometry = new THREE.BoxBufferGeometry(1, 4, 1, 10, 10);
     this.signpost = new THREE.Mesh(geometry, material);
-    this.signpost.position.y = -8;
+    this.signpost.position.y = 2;
     this.container.add(this.signpost);
   }
 }

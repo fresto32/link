@@ -9,6 +9,7 @@ import Physics from './Physics';
 import Signpost from './Signpost';
 import SpawnIsland from './SpawnIsland';
 import Avatar from './Avatar';
+import setOnPlane from './Helpers/SetOnPlane';
 
 export default class {
   // Utilities
@@ -126,6 +127,7 @@ export default class {
     this.prompt = new Signpost({
       text: 'What is an example of an O(n) sorting algoritm?',
     });
+    setOnPlane(this.spawnIsland.terrain, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
   }
 
@@ -140,10 +142,10 @@ export default class {
       new Signpost({text: 'Insertion sort'}),
     ];
 
-    this.options[0].container.position.set(75, 0, 30);
-    this.options[1].container.position.set(75, 0, -30);
-    this.options[2].container.position.set(-75, 0, 30);
-    this.options[3].container.position.set(-75, 0, -30);
+    setOnPlane(this.spawnIsland.terrain, this.options[0].container, 75, 30);
+    setOnPlane(this.spawnIsland.terrain, this.options[1].container, 75, -30);
+    setOnPlane(this.spawnIsland.terrain, this.options[2].container, -75, 30);
+    setOnPlane(this.spawnIsland.terrain, this.options[3].container, -75, -30);
 
     this.options.forEach(o => this.container.add(o.container));
   }
