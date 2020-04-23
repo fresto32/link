@@ -152,7 +152,10 @@ export default class {
    * Set Spawn Island
    */
   setSpawnIsland() {
-    this.spawnIsland = new SpawnIsland({resources: this.resources});
+    this.spawnIsland = new SpawnIsland({
+      resources: this.resources,
+      debug: this.debug,
+    });
     this.container.add(this.spawnIsland.container);
   }
 

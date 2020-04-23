@@ -12,14 +12,17 @@ export default class SpawnIsland {
   border!: THREE.Mesh;
   /** Resources */
   resources: Resources;
+  /** Debug */
+  debug: dat.GUI;
 
-  constructor(_params: {resources: Resources}) {
+  constructor(_params: {resources: Resources; debug: dat.GUI}) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;
 
     // Params
     this.resources = _params.resources;
+    this.debug = _params.debug;
 
     // Setting up scenegraph
     this.setTerrain();
