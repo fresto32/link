@@ -173,7 +173,7 @@ export default class Physics {
 
   setAvatar() {
     this.avatar = {position: new THREE.Vector3()};
-    this.avatar.position.set(0, -9.2, 0);
+    this.avatar.position.set(0, 0, 0);
 
     this.time.on('tick', () => {
       const speed = 1;
