@@ -4,7 +4,7 @@
   "description": "three.js + typescript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha './lib/**/*.test.js'",
     "start": "webpack-dev-server --inline --open",
     "check": "gts check",
     "clean": "gts clean",
@@ -40,11 +40,17 @@
   },
   "dependencies": {
     "@types/cannon": "^0.1.4",
+    "@types/chai": "^4.2.11",
     "@types/dat.gui": "^0.7.5",
     "@types/jquery": "^3.3.34",
+    "@types/mocha": "^7.0.2",
+    "@types/sinon": "^9.0.0",
     "@types/three": "latest",
     "cannon": "^0.6.2",
+    "chai": "^4.2.0",
     "dat.gui": "^0.7.7",
+    "mocha": "^7.1.1",
+    "sinon": "^9.0.2",
     "three": "latest"
   }
 }
