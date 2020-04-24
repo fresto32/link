@@ -106,6 +106,28 @@ export default class Resources extends EventEmitter {
         source: 'src/models/skybox/5/bay_up.jpg',
         type: 'texture',
       },
+
+      // Options
+      {
+        name: 'mergeSort',
+        source: 'src/models/options/merge_sort.png',
+        type: 'texture',
+      },
+      {
+        name: 'quickSort',
+        source: 'src/models/options/quick_sort.png',
+        type: 'texture',
+      },
+      {
+        name: 'insertionSort',
+        source: 'src/models/options/insertion_sort.png',
+        type: 'texture',
+      },
+      {
+        name: 'radixSort',
+        source: 'src/models/options/radix_sort.png',
+        type: 'texture',
+      },
     ]);
 
     this.loader.on('fileEnd', (_resource: any, _data: any) => {
