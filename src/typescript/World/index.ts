@@ -11,6 +11,7 @@ import OptionSignpost from './OptionSignpost';
 import SpawnIsland from './SpawnIsland';
 import Avatar from './Avatar';
 import setOnPlane from './Helpers/SetOnPlane';
+import Sounds from './Sounds';
 
 export default class {
   // Utilities
@@ -46,6 +47,8 @@ export default class {
   prompt!: Signpost;
   /** Options */
   options!: OptionSignpost[];
+  /** Sounds */
+  sounds!: Sounds;
 
   /**
    * Constructor
@@ -79,6 +82,7 @@ export default class {
   /** Sets up world */
   setup() {
     // Setup
+    this.setSounds();
     this.setControls();
 
     this.resources.on('ready', () => {
@@ -94,6 +98,13 @@ export default class {
       // Positions
       this.setPositions();
     });
+  }
+
+  /**
+   * Set Sounds
+   */
+  setSounds() {
+    this.sounds = new Sounds({time: this.time, debug: this.debug});
   }
 
   /**
