@@ -131,16 +131,16 @@ export default class {
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
 
-    this.time.on('tick', () => {
-      /**
-       * Option bounding box is relative to local coordinates. We must update
-       * the avatar position to local coordinates for use of
-       * boundingBox.containsPoint(...).
-       */
-      const localAvatarPosition = this.avatar.pirateCaptain.position.clone();
-      localAvatarPosition.sub(this.prompt.container.position);
+    // Update the position and rotation of the viewing bounding box.
+    this.prompt.container.updateMatrix();
+    this.prompt.viewingBoundingBox.applyMatrix4(this.prompt.container.matrix);
 
-      if (this.prompt.viewingBoundingBox.containsPoint(localAvatarPosition)) {
+    this.time.on('tick', () => {
+      if (
+        this.prompt.viewingBoundingBox.containsPoint(
+          this.avatar.pirateCaptain.position
+        )
+      ) {
         this.prompt.switchSignpostLightOn();
       } else {
         this.prompt.switchSignpostLightOff();
@@ -176,19 +176,22 @@ export default class {
     setOnPlane(this.spawnIsland.ground, this.options[2].container, -75, 30);
     setOnPlane(this.spawnIsland.ground, this.options[3].container, -75, -30);
 
-    this.options.forEach(o => this.container.add(o.container));
+    this.options.forEach(o => {
+      o.container.rotateY(Math.PI * 2 * Math.random());
+      this.container.add(o.container);
+
+      // Update the position and rotation of the viewing bounding box.
+      o.container.updateMatrix();
+      o.viewingBoundingBox.applyMatrix4(o.container.matrix);
+    });
 
     this.time.on('tick', () => {
       this.options.forEach(option => {
-        /**
-         * Option bounding box is relative to local coordinates. We must update
-         * the avatar position to local coordinates for use of
-         * boundingBox.containsPoint(...).
-         */
-        const localAvatarPosition = this.avatar.pirateCaptain.position.clone();
-        localAvatarPosition.sub(option.container.position);
-
-        if (option.viewingBoundingBox.containsPoint(localAvatarPosition)) {
+        if (
+          option.viewingBoundingBox.containsPoint(
+            this.avatar.pirateCaptain.position
+          )
+        ) {
           option.switchSignpostLightOn();
         } else {
           option.switchSignpostLightOff();

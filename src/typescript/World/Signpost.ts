@@ -280,13 +280,10 @@ export default class Signpost {
     const height = 50;
     const geometry = new THREE.BoxGeometry(width, height, depth);
 
-    // Invisible material...
-    const material = new THREE.MeshBasicMaterial();
-    material.visible = true;
-
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry);
     mesh.position.z = depth / 2;
     mesh.geometry.computeBoundingBox();
+
     this.viewingBoundingBox = new THREE.Box3().setFromObject(mesh);
   }
 
