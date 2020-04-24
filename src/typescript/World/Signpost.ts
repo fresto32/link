@@ -296,20 +296,24 @@ function splitLines(text: string, maxLineLength = 46): string[] {
 
   while (text.length > maxLineLength) {
     // Get maximum line length...
-    let proposedLine = text.substr(0, maxLineLength);
-    let i = proposedLine.length;
+    const proposedLine = text.substr(0, maxLineLength);
 
-    // Keep pruning from maximum line length until a space is found...
-    if (proposedLine.slice(-1) !== ' ') {
-      while (proposedLine[i - 1] !== ' ')
-        proposedLine = proposedLine.substr(0, i--);
-    }
+    let searchChar = '';
+
+    // Handle newline character...
+    if (proposedLine.includes('\n')) searchChar = '\n';
+    else searchChar = ' ';
+
+    // Keep pruning from maximum line length until searchChar is found...
+    let i = proposedLine.length;
+    while (proposedLine[i - 1] !== searchChar) i--;
+    //proposedLine = proposedLine.substr(0, i--);
 
     // Return the line minus the space character...
     lines.push(text.substr(0, i - 1));
 
     // Remove the pushed line from text...
-    text = text.substr(i - 1);
+    text = text.substr(i);
   }
 
   // If there's any text leftover, add it...
