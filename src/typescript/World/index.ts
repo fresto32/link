@@ -7,6 +7,7 @@ import Camera from '../Camera';
 import Controls from './Controls';
 import Physics from './Physics';
 import Signpost from './Signpost';
+import OptionSignpost from './OptionSignpost';
 import SpawnIsland from './SpawnIsland';
 import Avatar from './Avatar';
 import setOnPlane from './Helpers/SetOnPlane';
@@ -44,7 +45,7 @@ export default class {
   /** Question Prompt */
   prompt!: Signpost;
   /** Options */
-  options!: Signpost[];
+  options!: OptionSignpost[];
 
   /**
    * Constructor
@@ -130,22 +131,6 @@ export default class {
     });
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
-
-    // Update the position and rotation of the viewing bounding box.
-    this.prompt.container.updateMatrix();
-    this.prompt.viewingBoundingBox.applyMatrix4(this.prompt.container.matrix);
-
-    this.time.on('tick', () => {
-      if (
-        this.prompt.viewingBoundingBox.containsPoint(
-          this.avatar.pirateCaptain.position
-        )
-      ) {
-        this.prompt.switchSignpostLightOn();
-      } else {
-        this.prompt.switchSignpostLightOff();
-      }
-    });
   }
 
   /**
@@ -153,19 +138,19 @@ export default class {
    */
   setOptions() {
     this.options = [
-      new Signpost({
+      new OptionSignpost({
         text: 'Merge sort',
         picture: this.resources.textures.mergeSort,
       }),
-      new Signpost({
+      new OptionSignpost({
         text: 'Radix sort',
         picture: this.resources.textures.radixSort,
       }),
-      new Signpost({
+      new OptionSignpost({
         text: 'Quick sort',
         picture: this.resources.textures.quickSort,
       }),
-      new Signpost({
+      new OptionSignpost({
         text: 'Insertion sort',
         picture: this.resources.textures.insertionSort,
       }),
