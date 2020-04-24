@@ -125,12 +125,8 @@ export default class {
    */
   setPrompt() {
     this.prompt = new Signpost({
-      text: `What is an example of an O(n) sorting algoritm?
-      What is an example of an O(n) sorting algoritm?
-      What is an example of an O(n) sorting algoritm?
-      What is an example of an O(n) sorting algoritm?
-      What is an example of an O(n) sorting algoritm?
-      `,
+      text: 'What is an example of an O(n) sorting algoritm?',
+      picture: null,
     });
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
@@ -157,10 +153,22 @@ export default class {
    */
   setOptions() {
     this.options = [
-      new Signpost({text: 'Merge sort'}),
-      new Signpost({text: 'Radix sort'}),
-      new Signpost({text: 'Quick sort'}),
-      new Signpost({text: 'Insertion sort'}),
+      new Signpost({
+        text: 'Merge sort',
+        picture: this.resources.textures.mergeSort,
+      }),
+      new Signpost({
+        text: 'Radix sort',
+        picture: this.resources.textures.radixSort,
+      }),
+      new Signpost({
+        text: 'Quick sort',
+        picture: this.resources.textures.quickSort,
+      }),
+      new Signpost({
+        text: 'Insertion sort',
+        picture: this.resources.textures.insertionSort,
+      }),
     ];
 
     setOnPlane(this.spawnIsland.ground, this.options[0].container, 75, 30);

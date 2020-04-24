@@ -7,8 +7,10 @@ export default class Signpost {
   viewingBoundingBox!: THREE.Box3;
   /** Text Texture */
   promptTexture!: THREE.CanvasTexture;
-  /** Text to write on sign post */
+  /** Text to write to the signage*/
   text: string;
+  /** Picture to write to the signage */
+  picture: THREE.Texture | null;
   /** Background Mesh */
   background!: THREE.Mesh;
   /** Border Mesh */
@@ -37,8 +39,9 @@ export default class Signpost {
   plankMinHeight!: number;
   /** Spacing between each plank */
   plankSpacing!: number;
-  /** Number of lines of prompt */
-  numberOfPromptLines!: number;
+  /** Number of equivalent lines of prompt (this includes vertical space of text
+   * and picture) */
+  numberOfEquivalentTextLines!: number;
 
   // Materials
   /** Material of the planks which the signage is posted to */
@@ -46,13 +49,14 @@ export default class Signpost {
   /** Material of each of the two poles */
   poleMaterial!: THREE.MeshPhongMaterial;
 
-  constructor(_params: {text: string}) {
+  constructor(_params: {text: string; picture: THREE.Texture | null}) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;
 
     // Params
     this.text = _params.text;
+    this.picture = _params.picture;
 
     // Setting up scenegraph
     this.setPromptTexture();
@@ -67,6 +71,9 @@ export default class Signpost {
    * Set Prompt Texture
    *
    * Generates the prompt texture to be printed on the signage plane.
+   *
+   * This depends on if a picture is added as a resource and on the length of
+   * the prompt text.
    */
   setPromptTexture() {
     const canvas = document.createElement('canvas');
@@ -75,22 +82,52 @@ export default class Signpost {
 
     // Split lines at 46 characters...
     const lines = splitLines(this.text, 46);
-    this.numberOfPromptLines = lines.length;
+    this.numberOfEquivalentTextLines = lines.length;
 
     const textHeight = 100;
+    const horizontalPadding = textHeight * 2;
+
+    let imageDimensions = {
+      height: 0,
+      width: 0,
+      horizontalPadding: horizontalPadding,
+    };
 
     canvas.width = 2400;
-    canvas.height = 100 + textHeight * lines.length;
 
-    context.fillStyle = '#FFF';
+    if (this.picture !== null) {
+      imageDimensions = ImageDimensionsInCanvas(
+        context,
+        canvas,
+        textHeight * 8,
+        this.picture.image,
+        textHeight * 2,
+        textHeight * 2
+      );
+    }
+
+    canvas.height = 100 + textHeight * lines.length + imageDimensions.height;
+
     context.font = 'normal ' + textHeight + 'px Arial';
     context.textAlign = 'left';
     context.textBaseline = 'middle';
     context.fillStyle = '#000000';
 
     lines.forEach((line, i) => {
-      context.fillText(line, 200, 100 + i * textHeight);
+      context.fillText(line, horizontalPadding, textHeight + i * textHeight);
     });
+
+    if (this.picture !== null) {
+      context.drawImage(
+        this.picture.image,
+        imageDimensions.horizontalPadding,
+        textHeight + lines.length * textHeight,
+        imageDimensions.width,
+        imageDimensions.height
+      );
+      this.numberOfEquivalentTextLines +=
+        canvas.height / textHeight - this.numberOfEquivalentTextLines;
+    }
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
@@ -106,7 +143,7 @@ export default class Signpost {
   setGeometricProperties() {
     // Pole properties...
     this.poleRadius = 0.5;
-    this.poleHeight = 2.5 + this.numberOfPromptLines * 2;
+    this.poleHeight = 2.5 + this.numberOfEquivalentTextLines * 2;
 
     this.distanceBetweenPoles = 8;
 
@@ -221,7 +258,7 @@ export default class Signpost {
 
     const geometry = new THREE.PlaneBufferGeometry(
       this.plankWidth! * (5 / 6),
-      this.plankHeight * 2.3 * this.numberOfPromptLines
+      this.plankHeight * 2.3 * this.numberOfEquivalentTextLines
     );
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -302,4 +339,50 @@ function splitLines(text: string, maxLineLength = 46): string[] {
   if (text.length > 0) lines.push(text);
 
   return lines;
+}
+/**
+ * Calculates the dimensions of an image if it were placed in context given
+ * maximum canvas height and vertical and horizontal padding.
+ *
+ * @param context Canvas rendering context.
+ * @param canvas The Canvas of the context.
+ * @param canvasMaxHeight The maxmimum allowable canvas height.
+ * @param image The image which dimensions will be calculated for.
+ * @param verticalPadding The amount of padding from the top of the canvas
+ * to the image.
+ * @param horizontalPadding The amount of padding on either horizontal side of
+ * the image.
+ */
+function ImageDimensionsInCanvas(
+  context: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  canvasMaxHeight: number,
+  image: CanvasImageSource,
+  verticalPadding: number,
+  horizontalPadding: number
+) {
+  if (
+    image.height instanceof SVGAnimatedLength ||
+    image.width instanceof SVGAnimatedLength
+  ) {
+    throw console.error('SVGAnimatedLength sent to PlaceImageInCanvas(...).');
+  }
+
+  // Adjust image width and height to fill available horizontal space...
+  const imageAspectRatio = image.height / image.width;
+  let proposedImageWidth = canvas.width - horizontalPadding * 2;
+  let proposedImageHeight = canvas.width * imageAspectRatio;
+
+  if (proposedImageHeight > canvasMaxHeight - verticalPadding) {
+    // Adjust image width and height to fill available vertical space...
+    proposedImageHeight = canvasMaxHeight - verticalPadding;
+    proposedImageWidth = canvas.width * imageAspectRatio;
+    horizontalPadding = (canvas.width - proposedImageWidth) / 2;
+  }
+
+  return {
+    height: proposedImageHeight,
+    width: proposedImageWidth,
+    horizontalPadding: horizontalPadding,
+  };
 }
