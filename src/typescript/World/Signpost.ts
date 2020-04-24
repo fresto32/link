@@ -270,6 +270,13 @@ export default class Signpost {
   }
 }
 
+/**
+ * Splits text into a string array of lines. Each line is of length less than or
+ * equal to maxLineLength, where the ending of the line always ends on the
+ * completion of some word. Thus, no words are cut between one line and another.
+ * @param text The string to be split into lines.
+ * @param maxLineLength The maximum number of characters per line.
+ */
 function splitLines(text: string, maxLineLength = 46): string[] {
   const lines: string[] = [];
 
