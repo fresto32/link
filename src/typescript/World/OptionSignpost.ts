@@ -1,21 +1,26 @@
 import * as THREE from 'three';
 import Signpost from './Signpost';
+import Sounds from './Sounds';
 
 export default class Option extends Signpost {
   /** Viewing Bounding Box */
   viewingBoundingBox!: THREE.Box3;
   /** Is this a correct option? */
   isCorrectOption: boolean;
+  /** Sounds */
+  sounds: Sounds;
 
   constructor(_params: {
     text: string;
     picture: THREE.Texture | null;
     isCorrectOption: boolean;
+    sounds: Sounds;
   }) {
     super(_params);
 
     // Parameters
     this.isCorrectOption = _params.isCorrectOption;
+    this.sounds = _params.sounds;
 
     // Set Up
     this.setViewingBoundingBox();
@@ -62,9 +67,11 @@ export default class Option extends Signpost {
     if (this.isCorrectOption) {
       this.plankMaterial.emissive = new THREE.Color('green');
       this.poleMaterial.emissive = new THREE.Color('green');
+      this.sounds.play('positiveTone');
     } else {
       this.plankMaterial.emissive = new THREE.Color('red');
       this.poleMaterial.emissive = new THREE.Color('red');
+      this.sounds.play('glitch');
     }
   }
 }

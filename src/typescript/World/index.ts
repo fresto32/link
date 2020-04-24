@@ -153,21 +153,25 @@ export default class {
         text: 'Merge sort',
         picture: this.resources.textures.mergeSort,
         isCorrectOption: false,
+        sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Radix sort',
         picture: this.resources.textures.radixSort,
         isCorrectOption: true,
+        sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Quick sort',
         picture: this.resources.textures.quickSort,
         isCorrectOption: false,
+        sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Insertion sort',
         picture: this.resources.textures.insertionSort,
         isCorrectOption: false,
+        sounds: this.sounds,
       }),
     ];
 
