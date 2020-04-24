@@ -13,6 +13,7 @@ export default class Option extends Signpost {
   constructor(_params: {
     text: string;
     picture: THREE.Texture | null;
+    textTextureAnisotropy: number;
     isCorrectOption: boolean;
     sounds: Sounds;
   }) {

@@ -139,6 +139,7 @@ export default class {
     this.prompt = new Signpost({
       text: 'What is an example of an O(n) sorting algoritm?',
       picture: null,
+      textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
     });
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
     this.container.add(this.prompt.container);
@@ -152,24 +153,28 @@ export default class {
       new OptionSignpost({
         text: 'Merge sort',
         picture: this.resources.textures.mergeSort,
+        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Radix sort',
         picture: this.resources.textures.radixSort,
+        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: true,
         sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Quick sort',
         picture: this.resources.textures.quickSort,
+        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
       }),
       new OptionSignpost({
         text: 'Insertion sort',
         picture: this.resources.textures.insertionSort,
+        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
       }),
