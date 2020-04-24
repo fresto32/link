@@ -22,6 +22,7 @@ export default class Controls extends EventEmitter {
     down: boolean;
     left: boolean;
     right: boolean;
+    interact: boolean;
   };
   /** Keyboard */
   keyboard!: {
@@ -49,11 +50,13 @@ export default class Controls extends EventEmitter {
   }
 
   setActions() {
-    this.actions = {up: false, right: false, down: false, left: false};
-    this.actions.up = false;
-    this.actions.right = false;
-    this.actions.down = false;
-    this.actions.left = false;
+    this.actions = {
+      up: false,
+      right: false,
+      down: false,
+      left: false,
+      interact: false,
+    };
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
@@ -61,6 +64,7 @@ export default class Controls extends EventEmitter {
         this.actions.right = false;
         this.actions.down = false;
         this.actions.left = false;
+        this.actions.interact = false;
       }
     });
   }
@@ -76,7 +80,6 @@ export default class Controls extends EventEmitter {
     this.keyboard.events.keyDown = _event => {
       switch (_event.key) {
         case 'ArrowUp':
-        case 'z':
         case 'w':
           this.actions.up = true;
           break;
@@ -92,9 +95,15 @@ export default class Controls extends EventEmitter {
           break;
 
         case 'ArrowLeft':
-        case 'q':
         case 'a':
           this.actions.left = true;
+          break;
+
+        case 'Control':
+        case 'Enter':
+        case 'e':
+        case ' ':
+          this.actions.interact = true;
           break;
       }
     };
@@ -121,6 +130,13 @@ export default class Controls extends EventEmitter {
         case 'q':
         case 'a':
           this.actions.left = false;
+          break;
+
+        case 'Control':
+        case 'Enter':
+        case 'e':
+        case ' ':
+          this.actions.interact = false;
           break;
       }
     };

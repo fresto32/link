@@ -4,10 +4,20 @@ import Signpost from './Signpost';
 export default class Option extends Signpost {
   /** Viewing Bounding Box */
   viewingBoundingBox!: THREE.Box3;
+  /** Is this a correct option? */
+  isCorrectOption: boolean;
 
-  constructor(_params: {text: string; picture: THREE.Texture | null}) {
+  constructor(_params: {
+    text: string;
+    picture: THREE.Texture | null;
+    isCorrectOption: boolean;
+  }) {
     super(_params);
 
+    // Parameters
+    this.isCorrectOption = _params.isCorrectOption;
+
+    // Set Up
     this.setViewingBoundingBox();
   }
 
@@ -43,5 +53,18 @@ export default class Option extends Signpost {
   switchSignpostLightOff() {
     this.plankMaterial.emissive = new THREE.Color('black');
     this.poleMaterial.emissive = new THREE.Color('black');
+  }
+
+  /**
+   * InteractionLogic
+   */
+  interaction() {
+    if (this.isCorrectOption) {
+      this.plankMaterial.emissive = new THREE.Color('green');
+      this.poleMaterial.emissive = new THREE.Color('green');
+    } else {
+      this.plankMaterial.emissive = new THREE.Color('red');
+      this.poleMaterial.emissive = new THREE.Color('red');
+    }
   }
 }

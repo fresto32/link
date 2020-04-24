@@ -141,18 +141,22 @@ export default class {
       new OptionSignpost({
         text: 'Merge sort',
         picture: this.resources.textures.mergeSort,
+        isCorrectOption: false,
       }),
       new OptionSignpost({
         text: 'Radix sort',
         picture: this.resources.textures.radixSort,
+        isCorrectOption: true,
       }),
       new OptionSignpost({
         text: 'Quick sort',
         picture: this.resources.textures.quickSort,
+        isCorrectOption: false,
       }),
       new OptionSignpost({
         text: 'Insertion sort',
         picture: this.resources.textures.insertionSort,
+        isCorrectOption: false,
       }),
     ];
 
@@ -178,6 +182,10 @@ export default class {
           )
         ) {
           option.switchSignpostLightOn();
+
+          if (this.controls.actions.interact) {
+            option.interaction();
+          }
         } else {
           option.switchSignpostLightOff();
         }
