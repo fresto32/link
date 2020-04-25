@@ -24,7 +24,7 @@ export default class Application {
 
   // Functionality
   /** Config */
-  config!: {debug: boolean};
+  config!: {debug: boolean; touch: boolean};
   /** Debug */
   debug!: dat.GUI;
   /** Renderer */
@@ -68,7 +68,17 @@ export default class Application {
   setConfig() {
     //if (!this.config) this.config = { debug: window.location.hash === '#debug' }
     //else this.config.debug = window.location.hash === '#debug'
-    this.config = {debug: true};
+    this.config = {debug: true, touch: false};
+
+    window.addEventListener(
+      'touchstart',
+      () => {
+        this.config.touch = true;
+        this.world.controls.setTouch();
+        this.world.controls.touch.reveal();
+      },
+      {once: true}
+    );
   }
 
   /**

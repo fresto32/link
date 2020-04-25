@@ -14,7 +14,7 @@ export default class Physics {
 
   // Functionality
   /** Config */
-  config: {debug: boolean};
+  config: {debug: boolean; touch: boolean};
   /** Debug */
   debug: dat.GUI;
   /** Debug Foler */
@@ -59,7 +59,7 @@ export default class Physics {
   constructor(_params: {
     time: Time;
     sizes: Sizes;
-    config: {debug: boolean};
+    config: {debug: boolean; touch: boolean};
     debug: dat.GUI;
     controls: Controls;
   }) {
@@ -175,12 +175,22 @@ export default class Physics {
     this.avatar = {position: new THREE.Vector3()};
     this.avatar.position.set(0, 0, 0);
 
+    const speed = 1;
+
     this.time.on('tick', () => {
-      const speed = 1;
-      if (this.controls.actions.up) this.avatar.position.z -= speed;
-      if (this.controls.actions.down) this.avatar.position.z += speed;
-      if (this.controls.actions.left) this.avatar.position.x -= speed;
-      if (this.controls.actions.right) this.avatar.position.x += speed;
+      if (!this.config.touch) {
+        if (this.controls.actions.up) this.avatar.position.z -= speed;
+        if (this.controls.actions.down) this.avatar.position.z += speed;
+        if (this.controls.actions.left) this.avatar.position.x -= speed;
+        if (this.controls.actions.right) this.avatar.position.x += speed;
+      } else {
+        const angle = this.controls.touch.joystick.angle!.value;
+        if (angle === 0) return;
+        else if (angle > 1.4 && angle < 2.8) this.avatar.position.z -= speed;
+        else if (angle > -1.6 && angle < -0.2) this.avatar.position.z += speed;
+        else if (angle > -0.2 && angle < 1.4) this.avatar.position.x += speed;
+        else this.avatar.position.x -= speed;
+      }
     });
   }
 }

@@ -24,7 +24,7 @@ export default class {
 
   // Functionality
   /** Config */
-  config: {debug: boolean};
+  config: {debug: boolean; touch: boolean};
   /** Debug */
   debug: dat.GUI;
   /** Renderer */
@@ -57,7 +57,7 @@ export default class {
     time: Time;
     sizes: Sizes;
     resources: Resources;
-    config: {debug: boolean};
+    config: {debug: boolean; touch: boolean};
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
     camera: Camera;
