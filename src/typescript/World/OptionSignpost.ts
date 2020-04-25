@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import Signpost from './Signpost';
 import Sounds from './Sounds';
+import Firework from './Fireworks';
+import Time from '../Utils/Time';
+import Sizes from '../Utils/Sizes';
 
 export default class Option extends Signpost {
   /** Viewing Bounding Box */
@@ -9,6 +12,10 @@ export default class Option extends Signpost {
   isCorrectOption: boolean;
   /** Sounds */
   sounds: Sounds;
+  /** Time */
+  time: Time;
+  /** Sizes */
+  sizes: Sizes;
 
   constructor(_params: {
     text: string;
@@ -16,12 +23,16 @@ export default class Option extends Signpost {
     textTextureAnisotropy: number;
     isCorrectOption: boolean;
     sounds: Sounds;
+    time: Time;
+    sizes: Sizes;
   }) {
     super(_params);
 
     // Parameters
     this.isCorrectOption = _params.isCorrectOption;
     this.sounds = _params.sounds;
+    this.time = _params.time;
+    this.sizes = _params.sizes;
 
     // Set Up
     this.setViewingBoundingBox();
@@ -66,9 +77,49 @@ export default class Option extends Signpost {
    */
   interaction() {
     if (this.isCorrectOption) {
+      // Set material to be emissive
       this.plankMaterial.emissive = new THREE.Color('green');
       this.poleMaterial.emissive = new THREE.Color('green');
+
+      // Play positive sound
       this.sounds.play('positiveTone');
+
+      // Fire fireworks
+      const trajectoryHeight = 40;
+      const particleSpread = 10;
+      const numberOfParticles = 40;
+      const fireworks = [
+        new Firework({
+          sizes: this.sizes,
+          time: this.time,
+          startingPosition: new THREE.Vector3(
+            -this.distanceBetweenPoles / 2,
+            0,
+            0
+          ),
+          trajectoryHeight: trajectoryHeight,
+          particleSpread: particleSpread,
+          numberOfParticles: numberOfParticles,
+        }),
+        new Firework({
+          sizes: this.sizes,
+          time: this.time,
+          startingPosition: new THREE.Vector3(
+            this.distanceBetweenPoles / 2,
+            0,
+            0
+          ),
+          trajectoryHeight: trajectoryHeight,
+          particleSpread: particleSpread,
+          numberOfParticles: numberOfParticles,
+        }),
+      ];
+
+      // Launch each firework...
+      fireworks.forEach(firework => {
+        this.container.add(firework.container);
+        firework.launch();
+      });
     } else {
       this.plankMaterial.emissive = new THREE.Color('red');
       this.poleMaterial.emissive = new THREE.Color('red');

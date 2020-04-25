@@ -156,6 +156,8 @@ export default class {
         textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
+        time: this.time,
+        sizes: this.sizes,
       }),
       new OptionSignpost({
         text: 'Radix sort',
@@ -163,6 +165,8 @@ export default class {
         textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: true,
         sounds: this.sounds,
+        time: this.time,
+        sizes: this.sizes,
       }),
       new OptionSignpost({
         text: 'Quick sort',
@@ -170,6 +174,8 @@ export default class {
         textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
+        time: this.time,
+        sizes: this.sizes,
       }),
       new OptionSignpost({
         text: 'Insertion sort',
@@ -177,6 +183,8 @@ export default class {
         textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
         isCorrectOption: false,
         sounds: this.sounds,
+        time: this.time,
+        sizes: this.sizes,
       }),
     ];
 
