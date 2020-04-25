@@ -300,7 +300,7 @@ function splitLines(text: string, maxLineLength = 46): string[] {
 
     let searchChar = '';
 
-    // Handle newline character...
+    // Determine what char to search for...
     if (proposedLine.includes('\n')) searchChar = '\n';
     else searchChar = ' ';
 
