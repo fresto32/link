@@ -10,6 +10,8 @@ export default class Option extends Signpost {
   viewingBoundingBox!: THREE.Box3;
   /** Is this a correct option? */
   isCorrectOption: boolean;
+  /** Has this sign been interacted with already? */
+  hasHadInteraction: boolean;
   /** Sounds */
   sounds: Sounds;
   /** Time */
@@ -35,6 +37,7 @@ export default class Option extends Signpost {
     this.sizes = _params.sizes;
 
     // Set Up
+    this.hasHadInteraction = false;
     this.setViewingBoundingBox();
   }
 
@@ -60,6 +63,7 @@ export default class Option extends Signpost {
    * Light Up Signpost
    */
   switchSignpostLightOn() {
+    if (this.hasHadInteraction) return;
     this.plankMaterial.emissive = new THREE.Color('gray');
     this.poleMaterial.emissive = new THREE.Color('brown');
   }
@@ -68,6 +72,7 @@ export default class Option extends Signpost {
    * Turn Off Signpost Light
    */
   switchSignpostLightOff() {
+    if (this.hasHadInteraction) return;
     this.plankMaterial.emissive = new THREE.Color('black');
     this.poleMaterial.emissive = new THREE.Color('black');
   }
@@ -76,6 +81,8 @@ export default class Option extends Signpost {
    * InteractionLogic
    */
   interaction() {
+    if (this.hasHadInteraction) return;
+
     if (this.isCorrectOption) {
       // Set material to be emissive
       this.plankMaterial.emissive = new THREE.Color('green');
@@ -125,5 +132,7 @@ export default class Option extends Signpost {
       this.poleMaterial.emissive = new THREE.Color('red');
       this.sounds.play('glitch');
     }
+
+    this.hasHadInteraction = true;
   }
 }
