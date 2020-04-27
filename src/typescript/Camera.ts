@@ -84,7 +84,6 @@ export default class Camera {
       this.renderer.domElement
     );
 
-
     this.instance.lookAt(this.target.add(this.targetOffset));
 
     this.sizes.on('resize', () => {
@@ -93,10 +92,9 @@ export default class Camera {
     });
 
     this.time.on('tick', () => {
-      let diff = this.target.clone();
+      const diff = this.target.clone();
       this.instance.position.add(diff.sub(this.oldTarget));
       this.orbitControls.target.copy(this.target);
-      this.orbitControls.update();
     });
 
     if (this.debug) {
