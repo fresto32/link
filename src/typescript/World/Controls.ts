@@ -273,7 +273,7 @@ export default class Controls extends EventEmitter {
 
     // Events
     this.touch.joystick.touchIdentifier = null;
-    this.touch.joystick.events!.touchstart = _event => {
+    this.touch.joystick.events!.touchstart = (_event: TouchEvent) => {
       _event.preventDefault();
 
       const touch = _event.changedTouches[0];
@@ -305,7 +305,9 @@ export default class Controls extends EventEmitter {
     this.touch.joystick.events!.touchmove = _event => {
       _event.preventDefault();
 
-      const touches = [..._event.changedTouches];
+      const touches: Touch[] = [];
+      for (let i = 0; i < _event.changedTouches.length; i++)
+        touches.push(_event.changedTouches[i]);
       const touch = touches.find(
         _touch => _touch.identifier === this.touch.joystick.touchIdentifier
       );
@@ -319,7 +321,9 @@ export default class Controls extends EventEmitter {
     };
 
     this.touch.joystick.events!.touchend = _event => {
-      const touches = [..._event.changedTouches];
+      const touches: Touch[] = [];
+      for (let i = 0; i < _event.changedTouches.length; i++)
+        touches.push(_event.changedTouches[i]);
       const touch = touches.find(
         _touch => _touch.identifier === this.touch.joystick.touchIdentifier
       );
@@ -383,17 +387,17 @@ interface Joystick {
     value: number;
   };
   /** Identifier of the touch */
-  touchIdentifier: (() => void) | null;
+  touchIdentifier: number | null;
   /** Screen resize */
   resize: () => void;
   /** Touch events */
   events: {
     /** Beginning touch */
-    touchstart?: (val: any) => void;
+    touchstart?: (val: TouchEvent) => void;
     /** When touch has ended */
-    touchend?: (val: any) => void;
+    touchend?: (val: TouchEvent) => void;
     /** When cursor has moved */
-    touchmove?: (val: any) => void;
+    touchmove?: (val: TouchEvent) => void;
   };
 }
 
