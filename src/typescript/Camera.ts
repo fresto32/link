@@ -1,6 +1,6 @@
-import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
 export default class Camera {
   // Utilities
@@ -27,6 +27,10 @@ export default class Camera {
   target: THREE.Vector3;
   oldTarget: THREE.Vector3;
   targetOffset: THREE.Vector3;
+  positionOffset: THREE.Vector3;
+
+  /** Orbit Controls */
+  orbitControls!: OrbitControls;
 
   constructor(_params: {
     time: Time;
@@ -53,15 +57,9 @@ export default class Camera {
 
     this.target = new THREE.Vector3(0, 0, 0);
     this.oldTarget = new THREE.Vector3(0, 0, 0);
-    this.targetOffset = new THREE.Vector3(0, 6.2, 0);
+    this.targetOffset = new THREE.Vector3(0, 0, 0);
+    this.positionOffset = new THREE.Vector3(0, 10, 25);
 
-    this.setInstance();
-  }
-
-  /**
-   * Creates and sets up the camera instance
-   */
-  setInstance() {
     this.instance = new THREE.PerspectiveCamera(
       60, // fov
       this.sizes.viewport.aspect,
@@ -69,9 +67,22 @@ export default class Camera {
       580
     ); // far
 
-    this.instance.position.x = 0.75;
-    this.instance.position.y = 1.3;
-    this.instance.position.z = -15;
+    this.setupCamera();
+  }
+
+  /**
+   * Creates and sets up the camera instance
+   */
+  setupCamera() {
+    this.instance.position.x = 0;
+    this.instance.position.y = 15;
+    this.instance.position.z = 30;
+
+    this.orbitControls = new OrbitControls(
+      this.instance,
+      this.renderer.domElement
+    );
+
 
     this.instance.lookAt(this.target.add(this.targetOffset));
 
@@ -81,12 +92,10 @@ export default class Camera {
     });
 
     this.time.on('tick', () => {
-      this.instance.lookAt(this.target.add(this.targetOffset));
-      const deltaX = this.target.x - this.oldTarget.x;
-      const deltaY = this.target.y - this.oldTarget.y;
-
-      this.instance.position.x += deltaX;
-      this.instance.position.y += deltaY;
+      let diff = this.target.clone();
+      this.instance.position.add(diff.sub(this.oldTarget));
+      this.orbitControls.target.copy(this.target);
+      this.orbitControls.update();
     });
 
     if (this.debug) {
