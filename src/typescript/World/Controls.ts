@@ -32,7 +32,7 @@ export default class Controls extends EventEmitter {
     };
   };
   /** Touch Settings */
-  touch!: Touch;
+  touch!: TouchControls;
 
   constructor(_params: {
     time: Time;
@@ -48,7 +48,7 @@ export default class Controls extends EventEmitter {
     this.debug = _params.debug;
 
     this.setActions();
-    this.setKeyboard();
+    this.setKeyboardControls();
   }
 
   setActions() {
@@ -71,7 +71,7 @@ export default class Controls extends EventEmitter {
     });
   }
 
-  setKeyboard() {
+  setKeyboardControls() {
     this.keyboard = {
       events: {
         keyUp: undefined,
@@ -150,8 +150,8 @@ export default class Controls extends EventEmitter {
   /**
    * Set Touch Controls
    */
-  setTouch() {
-    this.touch = new Touch();
+  setTouchControls() {
+    this.touch = new TouchControls();
     /**
      * Joystick
      */
@@ -397,14 +397,14 @@ interface Joystick {
   };
 }
 
-interface Touch {
+interface TouchControls {
   /** Joystick */
   joystick: Partial<Joystick>;
   /** Reveal touch controls */
   reveal: () => void;
 }
 
-class Touch implements Touch {
+class TouchControls implements TouchControls {
   constructor() {
     this.joystick = {};
     this.joystick.angle = {

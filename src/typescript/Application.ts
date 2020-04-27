@@ -70,7 +70,7 @@ export default class Application {
       'touchstart',
       () => {
         this.config.touch = true;
-        this.world.controls.setTouch();
+        this.world.controls.setTouchControls();
         this.world.controls.touch.reveal();
       },
       {once: true}
