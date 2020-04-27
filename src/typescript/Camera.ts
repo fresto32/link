@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
