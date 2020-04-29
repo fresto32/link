@@ -308,6 +308,11 @@ export default class SpawnIsland {
   setScale(object: THREE.Object3D, scale = 4) {
     object.scale.set(scale, scale, scale);
   }
+  /**
+   * Sets common scale to objects
+   *
+   * @param objects objects to be scaled
+   */
   setScales(objects: THREE.Object3D[], scale = 4) {
     objects.forEach(o => this.setScale(o, scale));
   }
