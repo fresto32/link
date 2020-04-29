@@ -4,13 +4,13 @@ import Time from '../Utils/Time';
 export default class Sounds {
   // Utilities
   /** Time */
-  time: Time;
+  readonly time: Time;
 
   // Functionality
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
   /** Debug Foler */
-  debugFolder!: dat.GUI;
+  readonly debugFolder!: dat.GUI;
   /** The settings of each sound file */
   settings!: {
     name: string;

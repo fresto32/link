@@ -16,19 +16,19 @@ import Sounds from './Sounds';
 export default class {
   // Utilities
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  readonly sizes: Sizes;
   /** Resources */
-  resources: Resources;
+  readonly resources: Resources;
 
   // Functionality
   /** Config */
-  config: {debug: boolean; touch: boolean};
+  readonly config: {debug: boolean; touch: boolean};
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
   /** Renderer */
-  renderer: THREE.WebGLRenderer;
+  readonly renderer: THREE.WebGLRenderer;
   /** Camera */
   camera: Camera;
 

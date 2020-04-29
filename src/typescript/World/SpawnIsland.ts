@@ -13,9 +13,9 @@ export default class SpawnIsland {
   /** Border Mesh */
   border!: THREE.Mesh;
   /** Resources */
-  resources: Resources;
+  readonly resources: Resources;
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
 
   constructor(_params: {resources: Resources; debug: dat.GUI}) {
     // Container

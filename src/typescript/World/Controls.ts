@@ -5,15 +5,15 @@ import EventEmitter from '../Utils/EventEmitter';
 export default class Controls extends EventEmitter {
   // Utilities
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  readonly sizes: Sizes;
 
   // Functionality
   /** Config */
-  config: {debug: boolean};
+  readonly config: {debug: boolean};
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
 
   // Controls Functionality
   /** Actions */

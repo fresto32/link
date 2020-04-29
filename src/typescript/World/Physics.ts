@@ -8,15 +8,15 @@ import Controls from './Controls';
 export default class Physics {
   // Utilities
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  readonly sizes: Sizes;
 
   // Functionality
   /** Config */
-  config: {debug: boolean; touch: boolean};
+  readonly config: {debug: boolean; touch: boolean};
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
   /** Debug Foler */
   debugFolder!: dat.GUI;
   /** World */

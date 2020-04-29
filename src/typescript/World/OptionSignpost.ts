@@ -15,9 +15,9 @@ export default class Option extends Signpost {
   /** Sounds */
   sounds: Sounds;
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  readonly sizes: Sizes;
 
   constructor(_params: {
     text: string;

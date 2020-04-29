@@ -8,15 +8,15 @@ export default class Avatar {
   /** Container */
   container: THREE.Object3D;
   /** Resources */
-  resources: Resources;
+  readonly resources: Resources;
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Pirate Captain */
   pirateCaptain!: THREE.Object3D;
   /** Physics */
-  physics: Physics;
+  readonly physics: Physics;
   /** Ground */
-  ground: THREE.Mesh;
+  readonly ground: THREE.Mesh;
 
   constructor(_params: {
     time: Time;

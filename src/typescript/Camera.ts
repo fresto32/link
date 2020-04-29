@@ -6,19 +6,19 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 export default class Camera {
   // Utilities
   /** Time */
-  time: Time;
+  readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  readonly sizes: Sizes;
 
   // Functionality
   /** Config */
-  config: {debug: boolean};
+  readonly config: {debug: boolean};
   /** Debug */
-  debug: dat.GUI;
+  readonly debug: dat.GUI;
   /** Debug Folder */
-  debugFolder!: dat.GUI;
+  readonly debugFolder!: dat.GUI;
   /** Renderer */
-  renderer: THREE.WebGLRenderer;
+  readonly renderer: THREE.WebGLRenderer;
 
   // Container
   container: THREE.Object3D;

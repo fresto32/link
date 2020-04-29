@@ -6,9 +6,9 @@ export default class Firework {
   /** Container */
   container: THREE.Object3D;
   /** Sizes  */
-  sizes: Sizes;
+  readonly sizes: Sizes;
   /** Time */
-  time: Time;
+  readonly time: Time;
 
   // Fireworks Functionality
   /** Are we currently animating? */
