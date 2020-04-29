@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Resources from '../Resources';
 import ObjectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
+import generateObjectCluster from './Helpers/GenerateObjectCluster';
 
 export default class SpawnIsland {
   /** Container */
@@ -120,32 +121,12 @@ export default class SpawnIsland {
    * Sets some palm trees in the bottom right quadrant
    */
   setPalmTrees() {
-    const palmShortModel = this.resources.items.palmShort.scene.children[0];
-    const palmLongModel = this.resources.items.palmLong.scene.children[0];
-
-    this.setScale(palmShortModel);
-    this.setScale(palmLongModel);
-
-    const x = 75;
-    const z = -50;
-
-    for (let i = 0; i < 80; i++) {
-      const palmShort = new THREE.Object3D();
-
-      const x1 = x + Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
-      const z1 = z + Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
-      palmShort.copy(palmShortModel);
-      setOnPlane(this.ground, palmShort, x1, z1);
-
-      const x2 = x + Math.random() * 60 * (Math.random() > 0.5 ? -1 : 1);
-      const z2 = z + Math.random() * 40 * (Math.random() > 0.5 ? -1 : 1);
-      const palmLong = new THREE.Object3D();
-      palmLong.copy(palmLongModel);
-      setOnPlane(this.ground, palmLong, x2, z2);
-
-      this.container.add(palmShort);
-      this.container.add(palmLong);
-    }
+    const items = this.resources.items;
+    const palmModels: THREE.Object3D[] = [
+      items.palmShort.scene.children[0],
+      items.palmLong.scene.children[0],
+    ];
+    this.setModelCluster(palmModels, 80, 4, 75, -50, 60, 40);
   }
 
   /**
@@ -180,24 +161,16 @@ export default class SpawnIsland {
    */
   setRockFormations() {
     const items = this.resources.items;
-    const formations = [
-      items.formationLargeStone.scene.children[0],
+    const rocks: THREE.Object3D[] = [
       items.formationLargeRock.scene.children[0],
-      items.formationStone.scene.children[0],
       items.formationRock.scene.children[0],
     ];
-
-    this.setScales(formations);
-
-    for (let i = 0; i < 10; i++) {
-      for (let k = 0; k < 4; k++) {
-        const formation = formations[k].clone(true);
-        const x = Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1);
-        const z = Math.random() * 55 * (Math.random() > 0.5 ? -1 : 1);
-        setOnPlane(this.ground, formation, x, z);
-        this.container.add(formation);
-      }
-    }
+    const stones: THREE.Object3D[] = [
+      items.formationLargeStone.scene.children[0],
+      items.formationStone.scene.children[0],
+    ];
+    this.setModelCluster(rocks, 30, 2, 0, 0, 150, 100);
+    this.setModelCluster(stones, 30, 1.5, 0, 0, 150, 100);
   }
 
   /**
@@ -281,6 +254,51 @@ export default class SpawnIsland {
   }
 
   // Helpers
+
+  /**
+   * Sets a cluster of models in this container. Each model in models is placed
+   * in the scene a given numObjectsPerModel number of times at a setScale and
+   * x and z spread from x and z centers.
+   * @param models The models that are to be clustered.
+   * @param numObjectsPerModel The number of objects to be placed per model.
+   * @param setScale Set the scale of all models.
+   * @param xCenter The center x coordinate of the cluster.
+   * @param zCenter The center z coordinate of the cluster.
+   * @param xSpread The distance the cluster spreads out from the origin in x.
+   * @param zSpread The distance the cluster spreads out from the origin in z.
+   */
+  setModelCluster(
+    models: THREE.Object3D[],
+    numObjectsPerModel: number,
+    setScale = 1,
+    xCenter = 0,
+    zCenter = 0,
+    xSpread = 1,
+    zSpread = 1
+  ) {
+    this.setScales(models, setScale);
+
+    models.forEach(model => {
+      const positions: THREE.Vector3[] = [];
+
+      for (let i = 0; i < numObjectsPerModel; i++) {
+        const x =
+          xCenter + Math.random() * xSpread * (Math.random() > 0.5 ? -1 : 1);
+        const z =
+          zCenter + Math.random() * zSpread * (Math.random() > 0.5 ? -1 : 1);
+
+        const y = setOnPlane(this.ground, null, x, z);
+
+        positions.push(new THREE.Vector3(x, y, z));
+      }
+
+      const mergedGeometries = generateObjectCluster(model, positions);
+
+      mergedGeometries.forEach(geometry => {
+        this.container.add(geometry);
+      });
+    });
+  }
 
   /**
    * Sets common scale to object
