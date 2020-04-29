@@ -1,29 +1,33 @@
 import * as THREE from 'three';
 
 /**
- * Sets object on plane at the given x and z coordinates. If objectRotationAxis
- * and rotateRelativeTo are specified, then the object is rotated to be
- * orthogonal to the normal of the face of the plane where the object rests.
+ * Finds the corresponding y on a flat or undulating plane given x and z
+ * coordinates. If object is supplied, the object's position is updated to
+ * reflect these x, y, and z coordinates. If objectRotationAxis and
+ * rotateRelativeTo are specified, then the object is rotated on
+ * objectRotationAxis by an angle relative to the plane axis of
+ * rotateRelativeTo.
  *
  * @param plane Any mesh with a THREE.Geometry that does not overlap itself
  * (i.e. is plane-like). Thus, plane can be a mesh of THREE.PlaneGeometry with
  * custom vertices.
  * @param object Object to be placed on the plane.
- * @param x X coordinate of object on the plane.
- * @param z Z coordinate of object on the plane.
+ * @param x X coordinate on the plane.
+ * @param z Z coordinate on the plane.
  * @param objectRotationAxis If specified, the axis of the object which the
  * object will rotate about.
  * @param rotateRelativeTo If specified, the plane axis which the object will be
  * rotated by.
+ * @returns y coordinate on the plane that corresponds to x and z.
  */
 export default function setOnPlane(
   plane: THREE.Mesh,
-  object: THREE.Object3D,
+  object: THREE.Object3D | null = null,
   x: number,
   z: number,
   objectRotationAxis: 'x' | 'y' | 'z' | '' = '',
   rotateRelativeTo: 'x' | 'y' | 'z' | '' = ''
-): void {
+): number {
   if (plane.geometry instanceof THREE.BufferGeometry) {
     throw console.error('Buffer planes are not currently supported.');
   }
@@ -121,7 +125,9 @@ export default function setOnPlane(
 
   const y = (a * (x - x1) + c * (z - z1)) / b - y1; // [1]
 
-  object.position.set(x, y, z);
+  if (object !== null) object.position.set(x, y, z);
+
+  return y;
 }
 
 // Since we know that the vertices lie in a plane, we can simplify the problem
