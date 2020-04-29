@@ -56,11 +56,18 @@ export default class SpawnIsland {
 
     const geometry = new THREE.PlaneGeometry(320, 220, 5, 5);
     this.ground = new THREE.Mesh(geometry, backgroundMaterial);
-    this.ground.rotateX(-Math.PI / 2);
-    this.ground.position.y = 0;
+
+    // Rotate plane to be orthogonal to y axis. This is baked into the ground's
+    // vertices so that calls to setOnPlane(...) do not require further
+    // manipulation to make this plane's vertices axis aligned with some object.
+    const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+    geometry.applyMatrix4(rotation);
+
+    // Create a hilly ground.
     geometry.vertices.forEach(v => {
-      v.z = Math.random() * 30;
+      v.y = Math.random() * 30;
     });
+
     this.container.add(this.ground);
   }
 

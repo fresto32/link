@@ -32,32 +32,13 @@ export default function setOnPlane(
     throw console.error('Buffer planes are not currently supported.');
   }
 
-  const worldAlignedGeometry = plane.geometry.clone();
-
-  /**
-   * TODO:
-   *
-   * Individualized piece of code: Since the plane that we will be selecting is
-   * always the SpawnIsland's ground, we align the vertices of the plane as we
-   * align the SpawnIsland's ground.
-   *
-   * In the future, this specificity ought to be removed to allow for greater
-   * extensibility.
-   */
-  const rotationAxis = new THREE.Vector3(1, 0, 0);
-  worldAlignedGeometry.vertices.map(vertex => {
-    // Rotation of vertex...
-    vertex.applyAxisAngle(rotationAxis, Math.PI / 2);
-    // Mirroring of vertex (due to mesh rotation)...
-    vertex.z = -vertex.z;
-  });
-
   // Find the face that contains the x and z of position...
   let containingFace: THREE.Face3 | null = null;
-  const isInPlane = worldAlignedGeometry.faces.some(face => {
-    const vertexA = worldAlignedGeometry.vertices[face.a];
-    const vertexB = worldAlignedGeometry.vertices[face.b];
-    const vertexC = worldAlignedGeometry.vertices[face.c];
+  const isInPlane = plane.geometry.faces.some(face => {
+    if (plane.geometry instanceof THREE.BufferGeometry) return;
+    const vertexA = plane.geometry.vertices[face.a];
+    const vertexB = plane.geometry.vertices[face.b];
+    const vertexC = plane.geometry.vertices[face.c];
 
     if (positionContainedInVertices(x, z, vertexA, vertexB, vertexC)) {
       containingFace = face.clone();
@@ -70,9 +51,9 @@ export default function setOnPlane(
     throw console.error('Position (x,z) is not found in plane.');
   }
 
-  const faceVertex1 = worldAlignedGeometry.vertices[containingFace!.a];
-  const faceVertex2 = worldAlignedGeometry.vertices[containingFace!.b];
-  const faceVertex3 = worldAlignedGeometry.vertices[containingFace!.c];
+  const faceVertex1 = plane.geometry.vertices[containingFace!.a];
+  const faceVertex2 = plane.geometry.vertices[containingFace!.b];
+  const faceVertex3 = plane.geometry.vertices[containingFace!.c];
 
   const planeOfContainingFace = new THREE.Plane();
   planeOfContainingFace.setFromCoplanarPoints(
@@ -101,7 +82,7 @@ export default function setOnPlane(
       normal.y = planeOfContainingFace.normal.y;
     }
 
-    object.rotateOnAxis(rotationAxis, Math.PI / 2 - normal.angle());
+    object.rotateOnAxis(rotationAxis, normal.angle() - Math.PI / 2);
   }
 
   // Equation of a plane through a point (x1, y1, z1) whose normal is (a, b, c)
@@ -110,7 +91,7 @@ export default function setOnPlane(
   //
   // Solving for y....
   //
-  //    y = (a * (x - x1) + c * (z - z1)) / b - y1 [1]
+  //    y = (a * (x - x1) + c * (z - z1)) / -b + y1   [1]
   //
   // Reference: https://web.ma.utexas.edu/users/m408m/Display12-5-3.shtml
 
@@ -123,7 +104,7 @@ export default function setOnPlane(
   const y1 = faceVertex1.y;
   const z1 = faceVertex1.z;
 
-  const y = (a * (x - x1) + c * (z - z1)) / b - y1; // [1]
+  const y = (a * (x - x1) + c * (z - z1)) / -b + y1; // [1]
 
   if (object !== null) object.position.set(x, y, z);
 
