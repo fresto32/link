@@ -32,7 +32,9 @@ export default class Resources extends EventEmitter {
     this.textures = {};
 
     this.loader.load([
-      /** Models */
+      /**
+       * Models
+       * */
       // Pirate Kit
       {name: 'shipDark', source: 'src/models/pirateKit/ship_dark.gltf'},
       {name: 'palmLong', source: 'src/models/pirateKit/palm_long.gltf'},
@@ -59,10 +61,13 @@ export default class Resources extends EventEmitter {
         name: 'pirateCaptain',
         source: 'src/models/pirateKit/pirate_captain.gltf',
       },
+
       // Nature Kit
       {name: 'fence', source: 'src/models/natureKit/fence_double.gltf'},
 
-      /** Textures */
+      /**
+       * Textures
+       * */
       // Grass
       {
         name: 'grass',
@@ -107,7 +112,9 @@ export default class Resources extends EventEmitter {
         type: 'texture',
       },
 
-      // Options
+      /**
+       * Options Pictures
+       * */
       {
         name: 'mergeSort',
         source: 'src/models/options/merge_sort.png',
