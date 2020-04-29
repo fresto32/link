@@ -40,7 +40,7 @@ export default function grassTufts(
   for (let i = 0; i < numberOfGrassTufts; i++) {
     const x = Math.random() * xSpread * (Math.random() > 0.5 ? -1 : 1);
     const z = Math.random() * zSpread * (Math.random() > 0.5 ? -1 : 1);
-    const y = 0;
+    const y = setOnPlane(ground, null, x, z);
     positions.push(new THREE.Vector3(x, y, z));
   }
 
@@ -65,7 +65,7 @@ export default function grassTufts(
       // First plane
       const grassPlane = new THREE.Mesh(geometry);
       grassPlane.rotateY(angle);
-      setOnPlane(ground, grassPlane, position.x, position.z);
+      grassPlane.position.copy(position);
       grassPlane.updateMatrix();
       mergedGeometry.merge(
         grassPlane.geometry as THREE.Geometry,
@@ -77,7 +77,7 @@ export default function grassTufts(
       //   it would mess up the normals
       const grassOtherPlane = new THREE.Mesh(geometry);
       grassOtherPlane.rotateY(angle + Math.PI);
-      setOnPlane(ground, grassOtherPlane, position.x, position.z);
+      grassOtherPlane.position.copy(position);
       mergedGeometry.merge(
         grassOtherPlane.geometry as THREE.Geometry,
         grassOtherPlane.matrix
