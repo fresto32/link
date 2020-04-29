@@ -3,6 +3,7 @@ import Resources from '../Resources';
 import ObjectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
+import grassTufts from './GrassTufts';
 
 export default class SpawnIsland {
   /** Container */
@@ -179,78 +180,17 @@ export default class SpawnIsland {
    * Adapted from threex.grass. Creates tufts of grass randomly on the map.
    */
   setGrassTufts() {
-    // create the initial geometry
-    const height = 1;
-    const width = 2;
-    const geometry = new THREE.PlaneGeometry(width, height);
-    geometry.applyMatrix4(
-      new THREE.Matrix4().makeTranslation(0, height / 2, 0)
+    this.container.add(
+      grassTufts(
+        this.resources.textures.grassTuft,
+        this.ground,
+        1,
+        2,
+        10000,
+        150,
+        100
+      )
     );
-
-    // Tweak the normal for better lighting
-    // - normals from http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html
-    // - normals inspired from http://simonschreibt.de/gat/airborn-trees/
-    geometry.faces.forEach(face => {
-      face.vertexNormals.forEach(normal => {
-        normal.set(0, 1, 0).normalize();
-      });
-    });
-
-    // Randomly position tufts over the map
-    const positions: THREE.Vector3[] = [];
-    for (let i = 0; i < 10000; i++) {
-      const x = Math.random() * 150 * (Math.random() > 0.5 ? -1 : 1);
-      const z = Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1);
-      const y = 0;
-      positions.push(new THREE.Vector3(x, y, z));
-    }
-
-    const texture = this.resources.textures.grassTuft;
-
-    const material = new THREE.MeshPhongMaterial({
-      map: texture,
-      color: 'grey',
-      emissive: 'darkgreen',
-      alphaTest: 0.7,
-    });
-
-    // create each tuft and merge their geometry for performance
-    const mergedGeometry = new THREE.Geometry();
-    for (let i = 0; i < positions.length; i++) {
-      const position = positions[i];
-      const baseAngle = Math.PI * 2 * Math.random();
-
-      const nPlanes = 2;
-
-      for (let j = 0; j < nPlanes; j++) {
-        const angle = baseAngle + (j * Math.PI) / nPlanes;
-
-        // First plane
-        const grassPlane = new THREE.Mesh(geometry);
-        grassPlane.rotateY(angle);
-        setOnPlane(this.ground, grassPlane, position.x, position.z);
-        grassPlane.updateMatrix();
-        mergedGeometry.merge(
-          grassPlane.geometry as THREE.Geometry,
-          grassPlane.matrix
-        );
-
-        // The other side of the plane
-        // - impossible to use side : THREE.BothSide as
-        //   it would mess up the normals
-        const grassOtherPlane = new THREE.Mesh(geometry);
-        grassOtherPlane.rotateY(angle + Math.PI);
-        setOnPlane(this.ground, grassOtherPlane, position.x, position.z);
-        mergedGeometry.merge(
-          grassOtherPlane.geometry as THREE.Geometry,
-          grassOtherPlane.matrix
-        );
-      }
-    }
-
-    // create the mesh
-    const mesh = new THREE.Mesh(mergedGeometry, material);
-    this.container.add(mesh);
   }
 
   // Helpers
