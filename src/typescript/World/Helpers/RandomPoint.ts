@@ -32,9 +32,17 @@ export default function (
 }
 
 function isInExclusionArea(
-  point: THREE.Vector3,
+  pt: THREE.Vector3,
   exclusionAreas: THREE.Box3[] | undefined
 ) {
   if (exclusionAreas === undefined) return false;
-  return exclusionAreas.some(area => area.containsPoint(point));
+
+  //* The precision of setOnPlane(...) may lead a pt to have a y that is just
+  //* outside some exclusion box (yet the x and z lie in the box). So adjust
+  //* this y value to push those points just outside the exclusion box's y value
+  //* into it.
+  const adjustedPt = pt.clone();
+  adjustedPt.y += 0.5;
+
+  return exclusionAreas.some(area => area.containsPoint(adjustedPt));
 }

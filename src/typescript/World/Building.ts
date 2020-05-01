@@ -393,7 +393,12 @@ export default class Building {
     time.on('tick', () => {
       if (this.boundingBox === undefined) return;
 
-      const avatarPosition = avatar.pirateCaptain.position;
+      const avatarPosition = avatar.pirateCaptain.position.clone();
+      //* The precision of setOnPlane(...) may lead the avatar's position to
+      //* have a y that is just outside some bounding box (yet the x and z lie
+      //* in the box). So adjust this y value to push thoose points just outside
+      //* the exclusion box's y value into it.
+      avatarPosition.y += 0.5;
 
       const showUpperFloor = !this.boundingBox.containsPoint(avatarPosition);
       this.upperFloorObjects.forEach(object => {
