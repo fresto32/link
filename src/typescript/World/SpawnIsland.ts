@@ -15,15 +15,22 @@ export default class SpawnIsland {
   /** Resources */
   readonly resources: Resources;
   /** Debug */
+  readonly config: {debug: boolean};
+  /** Debug */
   readonly debug: dat.GUI;
 
-  constructor(_params: {resources: Resources; debug: dat.GUI}) {
+  constructor(_params: {
+    resources: Resources;
+    config: {debug: boolean};
+    debug: dat.GUI;
+  }) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;
 
     // Params
     this.resources = _params.resources;
+    this.config = _params.config;
     this.debug = _params.debug;
 
     // Setting up scenegraph
