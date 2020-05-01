@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import CameraControls from 'camera-controls';
 
 export default class Camera {
   // Utilities
@@ -31,7 +31,7 @@ export default class Camera {
   positionOffset: THREE.Vector3;
 
   /** Orbit Controls */
-  orbitControls!: OrbitControls;
+  cameraControls!: CameraControls;
 
   constructor(_params: {
     time: Time;
@@ -79,7 +79,9 @@ export default class Camera {
     this.instance.position.y = 15;
     this.instance.position.z = 30;
 
-    this.orbitControls = new OrbitControls(
+    CameraControls.install({THREE: THREE});
+
+    this.cameraControls = new CameraControls(
       this.instance,
       this.renderer.domElement
     );
@@ -92,9 +94,11 @@ export default class Camera {
     });
 
     this.time.on('tick', () => {
-      const diff = this.target.clone();
-      this.instance.position.add(diff.sub(this.oldTarget));
-      this.orbitControls.target.copy(this.target);
+      const diff = this.target.clone().sub(this.oldTarget);
+      this.instance.position.add(diff);
+
+      this.cameraControls.moveTo(this.target.x, this.target.y, this.target.z);
+      this.cameraControls.update(this.time.delta);
     });
 
     if (this.debug) {
