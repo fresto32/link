@@ -73,9 +73,9 @@ export default class Application {
     window.addEventListener(
       'touchstart',
       () => {
-        this.config.touch = true;
         this.world.controls.setTouchControls();
         this.world.controls.touch.reveal();
+        this.config.touch = true;
       },
       {once: true}
     );
