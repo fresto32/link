@@ -52,6 +52,18 @@ export default class Resources extends EventEmitter {
       // Nature Kit
       {name: 'fence', source: 'src/models/natureKit/fence_double.gltf'},
 
+      // Holiday Kit
+      {name: 'cabinWall', source: 'src/models/holidayKit/cabinWall.glb'},
+      {name: 'cabinFloor', source: 'src/models/holidayKit/cabinFloor.glb'},
+      {name: 'cabinRoof', source: 'src/models/holidayKit/cabinRoof.glb'},
+      {name: 'cabinRoofCenter', source: 'src/models/holidayKit/cabinRoofCenter.glb'},
+      {name: 'cabinRoofFlat', source: 'src/models/holidayKit/cabinRoofFlat.glb'},
+      {name: 'cabinDoor', source: 'src/models/holidayKit/cabinDoor.glb'},
+      {name: 'cabinSide', source: 'src/models/holidayKit/cabinSide.glb'},
+      {name: 'cabinSideCenter', source: 'src/models/holidayKit/cabinSideCenter.glb'},
+      {name: 'cabinWindow', source: 'src/models/holidayKit/cabinWindow.glb'},
+      {name: 'cabinWindowLarge', source: 'src/models/holidayKit/cabinWindowLarge.glb'},
+
       /**
        * Textures
        * */
