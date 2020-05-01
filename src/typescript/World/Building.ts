@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import Resources from '../Resources';
+import Time from '../Utils/Time';
+import Avatar from './Avatar';
 import ObjectDimensions from './Helpers/ObjectDimensions';
+import ObjectBoundingBox from './Helpers/ObjectBoundingBox';
 
 /**
  * Creates a building.
@@ -33,8 +36,11 @@ export default class Building {
   /** Wall Dimensions */
   readonly wallDimensions: THREE.Vector3;
 
+  // Hiding upper floor objects on avatar entry functionality
   /** Non ground floor objects */
   upperFloorObjects: THREE.Object3D[];
+  /** Container Bounding Box */
+  boundingBox: THREE.Box3 | undefined;
 
   constructor(_params: {
     ground: THREE.Mesh;
@@ -374,7 +380,21 @@ export default class Building {
       this.addToContainer(galbeMinusZ, height > 0);
       this.addToContainer(gablePlusZ, height > 0);
     }
-    }
+  }
+
+  setAvatarEntryInteraction(avatar: Avatar, time: Time) {
+    this.boundingBox = ObjectBoundingBox(this.container);
+
+    time.on('tick', () => {
+      if (this.boundingBox === undefined) return;
+
+      const avatarPosition = avatar.pirateCaptain.position;
+
+      const showUpperFloor = !this.boundingBox.containsPoint(avatarPosition);
+      this.upperFloorObjects.forEach(object => {
+        object.visible = showUpperFloor;
+      });
+    });
   }
 
   /**
