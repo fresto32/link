@@ -5,6 +5,7 @@ import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
 import grassTufts from './GrassTufts';
 import Building from './Building';
+import RandomPoint from './Helpers/RandomPoint';
 
 export default class SpawnIsland {
   /** Container */
@@ -191,8 +192,8 @@ export default class SpawnIsland {
       items.formationLargeStone.scene.children[0],
       items.formationStone.scene.children[0],
     ];
-    this.setModelCluster(rocks, 30, 2, 0, 0, 150, 100);
-    this.setModelCluster(stones, 30, 1.5, 0, 0, 150, 100);
+    this.setModelCluster(rocks, 30, 2, 0, 0, 150, 100, this.exclusionAreas);
+    this.setModelCluster(stones, 30, 1.5, 0, 0, 150, 100, this.exclusionAreas);
   }
 
   /**
@@ -209,7 +210,8 @@ export default class SpawnIsland {
         2,
         10000,
         150,
-        100
+        100,
+        this.exclusionAreas
       )
     );
   }
@@ -304,7 +306,8 @@ export default class SpawnIsland {
     xCenter = 0,
     zCenter = 0,
     xSpread = 1,
-    zSpread = 1
+    zSpread = 1,
+    exclusionAreas: THREE.Box3[] | undefined = undefined
   ) {
     this.setScales(models, setScale);
 
@@ -312,14 +315,15 @@ export default class SpawnIsland {
       const positions: THREE.Vector3[] = [];
 
       for (let i = 0; i < numObjectsPerModel; i++) {
-        const x =
-          xCenter + Math.random() * xSpread * (Math.random() > 0.5 ? -1 : 1);
-        const z =
-          zCenter + Math.random() * zSpread * (Math.random() > 0.5 ? -1 : 1);
-
-        const y = setOnPlane(this.ground, null, x, z);
-
-        positions.push(new THREE.Vector3(x, y, z));
+        const randomPoint = RandomPoint(
+          this.ground,
+          xCenter,
+          zCenter,
+          xSpread,
+          zSpread,
+          exclusionAreas
+        );
+        positions.push(randomPoint);
       }
 
       const mergedGeometries = generateObjectCluster(model, positions);

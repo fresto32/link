@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import setOnPlane from './Helpers/SetOnPlane';
+import RandomPoint from './Helpers/RandomPoint';
 
 /**
  * Generates a mesh of grass tufts positioned randomly over ground. Assumes that
@@ -20,7 +21,8 @@ export default function grassTufts(
   width: number,
   numberOfGrassTufts: number,
   xSpread: number,
-  zSpread: number
+  zSpread: number,
+  exclusionAreas: THREE.Box3[] | undefined = undefined
 ): THREE.Mesh {
   // create the initial geometry
   const geometry = new THREE.PlaneGeometry(width, height);
@@ -38,10 +40,15 @@ export default function grassTufts(
   // Randomly position tufts over the map
   const positions: THREE.Vector3[] = [];
   for (let i = 0; i < numberOfGrassTufts; i++) {
-    const x = Math.random() * xSpread * (Math.random() > 0.5 ? -1 : 1);
-    const z = Math.random() * zSpread * (Math.random() > 0.5 ? -1 : 1);
-    const y = setOnPlane(ground, null, x, z);
-    positions.push(new THREE.Vector3(x, y, z));
+    const randomPoint = RandomPoint(
+      ground,
+      0,
+      0,
+      xSpread,
+      zSpread,
+      exclusionAreas
+    );
+    positions.push(randomPoint);
   }
 
   const material = new THREE.MeshPhongMaterial({
