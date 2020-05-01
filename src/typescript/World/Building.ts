@@ -33,6 +33,9 @@ export default class Building {
   /** Wall Dimensions */
   readonly wallDimensions: THREE.Vector3;
 
+  /** Non ground floor objects */
+  upperFloorObjects: THREE.Object3D[];
+
   constructor(_params: {
     ground: THREE.Mesh;
     resources: Resources;
@@ -58,6 +61,7 @@ export default class Building {
     this.numWidthSections = _params.buildingProperties.numWidthSections;
     this.numDepthSections = _params.buildingProperties.numDepthSections;
     this.numHeightSections = _params.buildingProperties.numHeightSections;
+    this.upperFloorObjects = [];
 
     // Setup model dimensions...
     this.floorDimensions = ObjectDimensions(
@@ -367,8 +371,9 @@ export default class Building {
         )
       );
 
-      this.addToContainer(galbeMinusZ);
-      this.addToContainer(gablePlusZ);
+      this.addToContainer(galbeMinusZ, height > 0);
+      this.addToContainer(gablePlusZ, height > 0);
+    }
     }
   }
 
@@ -389,7 +394,7 @@ export default class Building {
 
           const floor = floorModel.clone();
           floor.position.copy(new THREE.Vector3(width, height, depth));
-          this.addToContainer(floor);
+          this.addToContainer(floor, height > 0);
         }
       }
     }
@@ -416,7 +421,7 @@ export default class Building {
     for (let i = initiation; condition(i); i++) {
       const element = model(i).clone();
       element.position.add(new THREE.Vector3(width(i), height, depth(i)));
-      this.addToContainer(element);
+      this.addToContainer(element, height > 0);
     }
   }
 
@@ -426,8 +431,10 @@ export default class Building {
    *
    * @param object Object to add to this container.
    */
-  addToContainer(object: THREE.Object3D) {
+  addToContainer(object: THREE.Object3D, isUpperFloor: boolean) {
     this.container.add(object);
+
+    if (isUpperFloor) this.upperFloorObjects.push(object);
 
     if (!this.config.debug) {
       object.updateMatrix();
