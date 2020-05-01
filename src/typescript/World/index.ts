@@ -242,6 +242,7 @@ export default class {
       resources: this.resources,
       physics: this.physics,
       ground: this.spawnIsland.ground,
+      spawnIsland: this.spawnIsland,
     });
     this.container.add(this.avatar.container);
   }

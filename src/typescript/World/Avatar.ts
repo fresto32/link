@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Time from '../Utils/Time';
 import Resources from '../Resources';
 import Physics from './Physics';
+import SpawnIsland from './SpawnIsland';
 import setOnPlane from './Helpers/SetOnPlane';
 
 export default class Avatar {
@@ -17,12 +18,15 @@ export default class Avatar {
   readonly physics: Physics;
   /** Ground */
   readonly ground: THREE.Mesh;
+  /** SpawnIsland */
+  readonly spawnIsland: SpawnIsland;
 
   constructor(_params: {
     time: Time;
     resources: Resources;
     physics: Physics;
     ground: THREE.Mesh;
+    spawnIsland: SpawnIsland;
   }) {
     // Container
     this.container = new THREE.Object3D();
@@ -33,9 +37,11 @@ export default class Avatar {
     this.resources = _params.resources;
     this.physics = _params.physics;
     this.ground = _params.ground;
+    this.spawnIsland = _params.spawnIsland;
 
     // Setting up scenegraph
     this.setPirateCaptain();
+    this.setSpawnIslandInteractions();
   }
 
   /**
@@ -54,5 +60,16 @@ export default class Avatar {
       const z = this.physics.avatar.position.z;
       setOnPlane(this.ground, this.pirateCaptain, x, z);
     });
+  }
+
+  /**
+   * Set Spawn Island Interactions
+   *
+   * The interactions between avatar and spawn island objects.
+   */
+  setSpawnIslandInteractions() {
+    this.spawnIsland.buildings.forEach(building =>
+      building.setAvatarEntryInteraction(this, this.time)
+    );
   }
 }

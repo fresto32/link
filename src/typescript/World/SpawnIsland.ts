@@ -11,8 +11,8 @@ export default class SpawnIsland {
   container: THREE.Object3D;
   /** Background Mesh */
   ground!: THREE.Mesh;
-  /** Border Mesh */
-  border!: THREE.Mesh;
+  /** Buildings */
+  buildings!: Building[];
   /** Resources */
   readonly resources: Resources;
   /** Debug */
@@ -213,6 +213,8 @@ export default class SpawnIsland {
    * Set Buildings
    */
   setBuildings() {
+    this.buildings = [];
+
     const buildingDimensions = [
       {
         numWidthSections: 1,
@@ -269,6 +271,7 @@ export default class SpawnIsland {
       house.container.scale.copy(new THREE.Vector3(6, 6, 6));
       house.container.updateMatrix();
 
+      this.buildings.push(house);
       this.container.add(house.container);
     });
   }
