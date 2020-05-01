@@ -19,6 +19,8 @@ export default class SpawnIsland {
   readonly config: {debug: boolean};
   /** Debug */
   readonly debug: dat.GUI;
+  /** Areas that ought to be flat and contain no shrubbery */
+  exclusionAreas!: THREE.Box3[];
 
   constructor(_params: {
     resources: Resources;
@@ -34,16 +36,19 @@ export default class SpawnIsland {
     this.config = _params.config;
     this.debug = _params.debug;
 
+    // Setting up member variables
+    this.exclusionAreas = [];
+
     // Setting up scenegraph
     this.setGround();
     this.setBorder();
+    this.setBuildings();
     this.setPirateBoat();
     this.setPalmTrees();
     this.setShipWreck();
     this.setTower();
     this.setRockFormations();
     this.setGrassTufts();
-    this.setBuildings();
   }
 
   /**
@@ -270,8 +275,10 @@ export default class SpawnIsland {
       house.container.position.x = dimension.xPosition;
       house.container.scale.copy(new THREE.Vector3(6, 6, 6));
       house.container.updateMatrix();
+      house.computeBoundingBox();
 
       this.buildings.push(house);
+      this.exclusionAreas.push(house.boundingBox!);
       this.container.add(house.container);
     });
   }
