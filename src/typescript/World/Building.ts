@@ -382,8 +382,13 @@ export default class Building {
     }
   }
 
-  setAvatarEntryInteraction(avatar: Avatar, time: Time) {
+  computeBoundingBox() {
     this.boundingBox = ObjectBoundingBox(this.container);
+  }
+
+  setAvatarEntryInteraction(avatar: Avatar, time: Time) {
+    if (this.boundingBox === undefined)
+      this.boundingBox = ObjectBoundingBox(this.container);
 
     time.on('tick', () => {
       if (this.boundingBox === undefined) return;
