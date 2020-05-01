@@ -4,6 +4,7 @@ import ObjectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
 import grassTufts from './GrassTufts';
+import Building from './Building';
 
 export default class SpawnIsland {
   /** Container */
@@ -42,6 +43,7 @@ export default class SpawnIsland {
     this.setTower();
     this.setRockFormations();
     this.setGrassTufts();
+    this.setBuildings();
   }
 
   /**
@@ -70,9 +72,9 @@ export default class SpawnIsland {
     const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
     geometry.applyMatrix4(rotation);
 
-    // Create a hilly ground.
+    // Create a hilly ground but keep a flat region for buildings.
     geometry.vertices.forEach(v => {
-      v.y = Math.random() * 30;
+      if (!(v.z > 0 && Math.abs(v.x) < 60)) v.y = Math.random() * 30;
     });
 
     this.container.add(this.ground);
@@ -205,6 +207,70 @@ export default class SpawnIsland {
         100
       )
     );
+  }
+
+  /**
+   * Set Buildings
+   */
+  setBuildings() {
+    const buildingDimensions = [
+      {
+        numWidthSections: 1,
+        numDepthSections: 1,
+        numHeightSections: 1,
+        xPosition: 20,
+        zPosition: 30,
+      },
+      {
+        numWidthSections: 1,
+        numDepthSections: 1,
+        numHeightSections: 1,
+        xPosition: 10,
+        zPosition: 30,
+      },
+      {
+        numWidthSections: 3,
+        numDepthSections: 2,
+        numHeightSections: 1,
+        xPosition: -20,
+        zPosition: 30,
+      },
+      {
+        numWidthSections: 2,
+        numDepthSections: 2,
+        numHeightSections: 1,
+        xPosition: 20,
+        zPosition: 50,
+      },
+      {
+        numWidthSections: 5,
+        numDepthSections: 5,
+        numHeightSections: 2,
+        xPosition: -20,
+        zPosition: 50,
+      },
+    ];
+
+    buildingDimensions.forEach(dimension => {
+      const house = new Building({
+        ground: this.ground,
+        resources: this.resources,
+        config: this.config,
+        debug: this.debug,
+        buildingProperties: {
+          numWidthSections: dimension.numWidthSections,
+          numDepthSections: dimension.numDepthSections,
+          numHeightSections: dimension.numHeightSections,
+        },
+      });
+
+      house.container.position.z = dimension.zPosition;
+      house.container.position.x = dimension.xPosition;
+      house.container.scale.copy(new THREE.Vector3(6, 6, 6));
+      house.container.updateMatrix();
+
+      this.container.add(house.container);
+    });
   }
 
   // Helpers
