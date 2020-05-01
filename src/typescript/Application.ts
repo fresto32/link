@@ -164,7 +164,6 @@ export default class Application {
       config: this.config,
       debug: this.debug,
       renderer: this.renderer,
-      camera: this.camera,
     });
     this.scene.add(this.world.container);
   }
