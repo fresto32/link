@@ -57,6 +57,7 @@ export default class {
     config: {debug: boolean; touch: boolean};
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
+    controls: Controls;
   }) {
     // Options
     this.time = _params.time;
@@ -65,6 +66,7 @@ export default class {
     this.config = _params.config;
     this.debug = _params.debug;
     this.renderer = _params.renderer;
+    this.controls = _params.controls;
 
     // Container
     this.container = new THREE.Object3D();
@@ -78,7 +80,6 @@ export default class {
   setup() {
     // Setup
     this.setSounds();
-    this.setControls();
 
     this.resources.on('ready', () => {
       this.setPhysics();
@@ -100,18 +101,6 @@ export default class {
    */
   setSounds() {
     this.sounds = new Sounds({time: this.time, debug: this.debug});
-  }
-
-  /**
-   * Set Controls
-   */
-  setControls() {
-    this.controls = new Controls({
-      time: this.time,
-      sizes: this.sizes,
-      config: this.config,
-      debug: this.debug,
-    });
   }
 
   /**

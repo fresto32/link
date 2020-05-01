@@ -3,6 +3,7 @@ import * as dat from 'dat.gui';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import Resources from './Resources';
+import Controls from './Controls';
 import Camera from './Camera';
 import World from './World';
 
@@ -30,6 +31,8 @@ export default class Application {
   renderer!: THREE.WebGLRenderer;
   /** Scene */
   scene!: THREE.Scene;
+  /** Controls */
+  controls!: Controls;
   /** Camera */
   camera!: Camera;
   /** World */
@@ -52,6 +55,7 @@ export default class Application {
     this.setConfig();
     this.setDebug();
     this.setRenderer();
+    this.setControls();
     this.setCamera();
     this.setPasses();
     this.setWorld();
@@ -116,6 +120,18 @@ export default class Application {
   }
 
   /**
+   * Set Controls
+   */
+  setControls() {
+    this.controls = new Controls({
+      time: this.time,
+      sizes: this.sizes,
+      config: this.config,
+      debug: this.debug,
+    });
+  }
+
+  /**
    * Set camera
    */
   setCamera() {
@@ -125,6 +141,7 @@ export default class Application {
       debug: this.debug,
       config: this.config,
       renderer: this.renderer,
+      controls: this.controls,
     });
 
     this.scene.add(this.camera.container);
@@ -164,6 +181,7 @@ export default class Application {
       config: this.config,
       debug: this.debug,
       renderer: this.renderer,
+      controls: this.controls,
     });
     this.scene.add(this.world.container);
   }
