@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import CameraControls from 'camera-controls';
+import Controls from './Controls';
 
 export default class Camera {
   // Utilities
@@ -12,13 +13,15 @@ export default class Camera {
 
   // Functionality
   /** Config */
-  readonly config: {debug: boolean};
+  readonly config: {debug: boolean; touch: boolean};
   /** Debug */
   readonly debug: dat.GUI;
   /** Debug Folder */
   readonly debugFolder!: dat.GUI;
   /** Renderer */
   readonly renderer: THREE.WebGLRenderer;
+  /** Controls */
+  readonly controls: Controls;
 
   // Container
   container: THREE.Object3D;
@@ -36,9 +39,10 @@ export default class Camera {
   constructor(_params: {
     time: Time;
     sizes: Sizes;
-    config: {debug: boolean};
+    config: {debug: boolean; touch: boolean};
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
+    controls: Controls;
   }) {
     // Options
     this.time = _params.time;
@@ -46,6 +50,7 @@ export default class Camera {
     this.config = _params.config;
     this.debug = _params.debug;
     this.renderer = _params.renderer;
+    this.controls = _params.controls;
 
     // Set up
     this.container = new THREE.Object3D();
@@ -99,6 +104,23 @@ export default class Camera {
 
       this.cameraControls.moveTo(this.target.x, this.target.y, this.target.z);
       this.cameraControls.update(this.time.delta);
+
+      if (this.config.touch) {
+        const speed = Math.PI / 90;
+        const angle = this.controls.touch.joysticks.right.angle!.value;
+
+        if (angle === 0) {
+          return;
+        } else if (angle > 1.4 && angle < 2.8) {
+          this.cameraControls.rotate(0, -speed);
+        } else if (angle > -1.6 && angle < -0.2) {
+          this.cameraControls.rotate(0, speed);
+        } else if (angle > -0.2 && angle < 1.4) {
+          this.cameraControls.rotate(speed, 0);
+        } else {
+          this.cameraControls.rotate(-speed, 0);
+        }
+      }
     });
 
     if (this.debug) {
