@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import setOnPlane from './Helpers/SetOnPlane';
 import RandomPoint from './Helpers/RandomPoint';
 
 /**
