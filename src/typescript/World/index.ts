@@ -4,7 +4,7 @@ import Sizes from '../Utils/Sizes';
 import Resources from '../Resources';
 import Camera from '../Camera';
 
-import Controls from './Controls';
+import Controls from '../Controls';
 import Physics from './Physics';
 import Signpost from './Signpost';
 import OptionSignpost from './OptionSignpost';

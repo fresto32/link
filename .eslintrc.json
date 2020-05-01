@@ -2,6 +2,7 @@
   "extends": "./node_modules/gts/",
   "env": {
     "browser": true,
-    "mocha": true
+    "mocha": true,
+    "jquery": true
   }
 }

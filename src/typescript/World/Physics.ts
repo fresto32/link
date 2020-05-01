@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 import Time from '../Utils/Time';
 import Sizes from '../Utils/Sizes';
-import Controls from './Controls';
+import Controls from '../Controls';
 
 export default class Physics {
   // Utilities
@@ -184,7 +184,7 @@ export default class Physics {
         if (this.controls.actions.left) this.avatar.position.x -= speed;
         if (this.controls.actions.right) this.avatar.position.x += speed;
       } else {
-        const angle = this.controls.touch.joystick.angle!.value;
+        const angle = this.controls.touch.joysticks.left.angle!.value;
         if (angle === 0) return;
         else if (angle > 1.4 && angle < 2.8) this.avatar.position.z -= speed;
         else if (angle > -1.6 && angle < -0.2) this.avatar.position.z += speed;
