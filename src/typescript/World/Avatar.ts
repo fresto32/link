@@ -44,7 +44,7 @@ export default class Avatar {
    * A pirate captain is used as the main model of the avatar.
    */
   setPirateCaptain() {
-    this.pirateCaptain = this.resources.items.pirateCaptain.scene.children[0];
+    this.pirateCaptain = this.resources.models.pirateCaptain.scene.children[0];
     this.pirateCaptain.scale.set(4, 4, 4);
     this.pirateCaptain.position.copy(this.physics.avatar.position);
     this.container.add(this.pirateCaptain);

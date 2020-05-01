@@ -78,7 +78,7 @@ export default class SpawnIsland {
    * background plane.
    */
   setBorder() {
-    const fenceVertical = this.resources.items.fence.scene.children[0].clone();
+    const fenceVertical = this.resources.models.fence.scene.children[0].clone();
     this.setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
@@ -117,7 +117,7 @@ export default class SpawnIsland {
    * Sets a pirate boat in the upper right quadrant.
    */
   setPirateBoat() {
-    const shipDark = this.resources.items.shipDark.scene.children[0];
+    const shipDark = this.resources.models.shipDark.scene.children[0];
     this.setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
     this.container.add(shipDark);
@@ -129,7 +129,7 @@ export default class SpawnIsland {
    * Sets some palm trees in the bottom right quadrant
    */
   setPalmTrees() {
-    const items = this.resources.items;
+    const items = this.resources.models;
     const palmModels: THREE.Object3D[] = [
       items.palmShort.scene.children[0],
       items.palmLong.scene.children[0],
@@ -143,7 +143,7 @@ export default class SpawnIsland {
    * Sets a ship wreck in the bottom left hand quadrant.
    */
   setShipWreck() {
-    const shipWreck = this.resources.items.shipWreck.scene.children[0];
+    const shipWreck = this.resources.models.shipWreck.scene.children[0];
     this.setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
     setOnPlane(this.ground, shipWreck, -75, -50);
@@ -156,7 +156,7 @@ export default class SpawnIsland {
    * Sets a tower in the upper left quadrant.
    */
   setTower() {
-    const tower = this.resources.items.tower.scene.children[0];
+    const tower = this.resources.models.tower.scene.children[0];
     this.setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
     this.container.add(tower);
@@ -168,7 +168,7 @@ export default class SpawnIsland {
    * Sets rock formations around the map to add more scenery
    */
   setRockFormations() {
-    const items = this.resources.items;
+    const items = this.resources.models;
     const rocks: THREE.Object3D[] = [
       items.formationLargeRock.scene.children[0],
       items.formationRock.scene.children[0],

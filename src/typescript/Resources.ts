@@ -8,7 +8,7 @@ export default class Resources extends EventEmitter {
   /** Loader to load all item and texture resources */
   loader: Loader;
   /** Items that are currently loaded */
-  items: {
+  models: {
     [key: string]: {
       scene: THREE.Group;
       scenes: THREE.Group[];
@@ -28,7 +28,7 @@ export default class Resources extends EventEmitter {
     super();
 
     this.loader = new Loader();
-    this.items = {};
+    this.models = {};
     this.textures = {};
 
     this.loader.load([
@@ -141,7 +141,7 @@ export default class Resources extends EventEmitter {
       if (_resource.type === 'texture') {
         this.textures[`${_resource.name}`] = _data;
       } else {
-        this.items[_resource.name] = _data;
+        this.models[_resource.name] = _data;
       }
 
       // Trigger progress
