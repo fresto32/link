@@ -6,6 +6,7 @@ import generateObjectCluster from './Helpers/GenerateObjectCluster';
 import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
+import {FlattenPlaneToBoxes} from './Helpers/FlattenPlane';
 
 export default class SpawnIsland {
   /** Container */
@@ -41,9 +42,9 @@ export default class SpawnIsland {
     this.exclusionAreas = [];
 
     // Setting up scenegraph
+    this.setBuildings();
     this.setGround();
     this.setBorder();
-    this.setBuildings();
     this.setPirateBoat();
     this.setPalmTrees();
     this.setShipWreck();
@@ -78,14 +79,12 @@ export default class SpawnIsland {
     const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
     geometry.applyMatrix4(rotation);
 
-    // TODO: Obey exclusion zones by creating helper that takes a point, plane,
-    // and height, which modifies the face in plane that contains point to have
-    // a y value of height.
-
     // Create a hilly ground but keep a flat region for buildings.
     geometry.vertices.forEach(v => {
-      if (!(v.z > 0 && Math.abs(v.x) < 60)) v.y = Math.random() * 30;
+      v.y = Math.random() * 30;
     });
+
+    FlattenPlaneToBoxes(this.ground, this.exclusionAreas);
 
     this.container.add(this.ground);
   }
