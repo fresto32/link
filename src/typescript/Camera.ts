@@ -30,7 +30,6 @@ export default class Camera {
   instance!: THREE.PerspectiveCamera;
   target: THREE.Vector3;
   oldTarget: THREE.Vector3;
-  targetOffset: THREE.Vector3;
   positionOffset: THREE.Vector3;
 
   /** Orbit Controls */
@@ -63,7 +62,6 @@ export default class Camera {
 
     this.target = new THREE.Vector3(0, 0, 0);
     this.oldTarget = new THREE.Vector3(0, 0, 0);
-    this.targetOffset = new THREE.Vector3(0, 0, 0);
     this.positionOffset = new THREE.Vector3(0, 10, 25);
 
     this.instance = new THREE.PerspectiveCamera(
@@ -90,8 +88,6 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
-
-    this.instance.lookAt(this.target.add(this.targetOffset));
 
     this.sizes.on('resize', () => {
       this.instance.aspect = this.sizes.viewport.aspect;
@@ -141,28 +137,6 @@ export default class Camera {
       this.debugFolder
         .add(this.instance.position, 'z')
         .name('position z')
-        .step(0.001)
-        .min(-20)
-        .max(20)
-        .listen();
-
-      this.debugFolder
-        .add(this.targetOffset, 'x')
-        .name('offset x')
-        .step(0.001)
-        .min(-20)
-        .max(20)
-        .listen();
-      this.debugFolder
-        .add(this.targetOffset, 'y')
-        .name('offset y')
-        .step(0.001)
-        .min(-20)
-        .max(20)
-        .listen();
-      this.debugFolder
-        .add(this.targetOffset, 'z')
-        .name('offset z')
         .step(0.001)
         .min(-20)
         .max(20)
