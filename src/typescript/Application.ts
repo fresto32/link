@@ -24,7 +24,7 @@ export default class Application {
 
   // Functionality
   /** Config */
-  config!: {debug: boolean; touch: boolean};
+  config!: Config;
   /** Debug */
   debug!: dat.GUI;
   /** Renderer */

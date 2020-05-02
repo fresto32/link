@@ -14,7 +14,7 @@ export default class Building {
   /** Resources */
   readonly resources: Resources;
   /** Debug */
-  readonly config: {debug: boolean};
+  readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
   /** Ground */
@@ -45,7 +45,7 @@ export default class Building {
   constructor(_params: {
     ground: THREE.Mesh;
     resources: Resources;
-    config: {debug: boolean};
+    config: Config;
     debug: dat.GUI;
     buildingProperties: {
       numWidthSections: number;

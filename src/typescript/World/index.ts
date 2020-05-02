@@ -23,7 +23,7 @@ export default class {
 
   // Functionality
   /** Config */
-  readonly config: {debug: boolean; touch: boolean};
+  readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
   /** Renderer */
@@ -54,7 +54,7 @@ export default class {
     time: Time;
     sizes: Sizes;
     resources: Resources;
-    config: {debug: boolean; touch: boolean};
+    config: Config;
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
     controls: Controls;

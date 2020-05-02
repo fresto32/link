@@ -11,7 +11,7 @@ export default class Controls extends EventEmitter {
 
   // Functionality
   /** Config */
-  readonly config: {debug: boolean};
+  readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
 
@@ -37,7 +37,7 @@ export default class Controls extends EventEmitter {
   constructor(_params: {
     time: Time;
     sizes: Sizes;
-    config: {debug: boolean};
+    config: Config;
     debug: dat.GUI;
   }) {
     super();

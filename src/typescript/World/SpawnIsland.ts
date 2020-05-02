@@ -18,17 +18,13 @@ export default class SpawnIsland {
   /** Resources */
   readonly resources: Resources;
   /** Debug */
-  readonly config: {debug: boolean};
+  readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
   /** Areas that ought to be flat and contain no shrubbery */
   exclusionAreas!: THREE.Box3[];
 
-  constructor(_params: {
-    resources: Resources;
-    config: {debug: boolean};
-    debug: dat.GUI;
-  }) {
+  constructor(_params: {resources: Resources; config: Config; debug: dat.GUI}) {
     // Container
     this.container = new THREE.Object3D();
     this.container.matrixAutoUpdate = true;

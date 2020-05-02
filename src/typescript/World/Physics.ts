@@ -14,7 +14,7 @@ export default class Physics {
 
   // Functionality
   /** Config */
-  readonly config: {debug: boolean; touch: boolean};
+  readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
   /** Debug Foler */
@@ -59,7 +59,7 @@ export default class Physics {
   constructor(_params: {
     time: Time;
     sizes: Sizes;
-    config: {debug: boolean; touch: boolean};
+    config: Config;
     debug: dat.GUI;
     controls: Controls;
   }) {
