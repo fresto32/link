@@ -90,9 +90,6 @@ export default class {
       this.setPrompt();
       this.setOptions();
       this.setSkybox();
-
-      // Positions
-      this.setPositions();
     });
   }
 
@@ -250,12 +247,5 @@ export default class {
     const geometry = new THREE.BoxGeometry(600, 600, 600);
     const mesh = new THREE.Mesh(geometry, materials);
     this.container.add(mesh);
-  }
-
-  /**
-   * Sets the positions of each object in the world
-   */
-  setPositions() {
-    //
   }
 }
