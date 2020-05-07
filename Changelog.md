@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Object collision has been added.
   - When the avatar collides with a collidable object, the avatar's movement is ceased.
+  - Object clusters now generate bounding boxes for each object in the cluster for collision detection.
 - ```Objects``` class now universally handles adding objects to containers.
 
 ## [0.1.0]
