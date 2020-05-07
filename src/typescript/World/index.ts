@@ -124,8 +124,8 @@ export default class {
       picture: null,
       textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
     });
-    setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
-    this.objects.add(this.prompt.container);
+    setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, -10);
+    this.objects.add(this.prompt.container, {isCollidable: true});
   }
 
   /**
@@ -178,7 +178,7 @@ export default class {
 
     this.options.forEach(o => {
       o.container.rotateY(Math.PI * 2 * Math.random());
-      this.objects.add(o.container);
+      this.objects.add(o.container, {isCollidable: true});
 
       // Update the position and rotation of the viewing bounding box.
       o.container.updateMatrix();

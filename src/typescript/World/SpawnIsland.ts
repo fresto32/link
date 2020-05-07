@@ -99,31 +99,44 @@ export default class SpawnIsland {
 
     const dimensions = objectDimensions(fenceHorizontal);
 
+    const fenceSections = [
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+    ];
+
     // Build fences for each side of the map...
     // +z side
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, 100, 'z', 'x');
-      this.objects.add(fence);
+      fenceSections[0].add(fence);
     }
     // -z side
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, -100, 'z', 'x');
-      this.objects.add(fence);
+      fenceSections[1].add(fence);
     }
     // +x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, 150, i, 'z', 'z');
-      this.objects.add(fence);
+      fenceSections[2].add(fence);
     }
     // -x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, -150, i, 'z', 'z');
-      this.objects.add(fence);
+      fenceSections[3].add(fence);
     }
+
+    // fence sections added individually so their bounding boxes span narrow
+    // segments rather than the whole map.
+    fenceSections.forEach(section => {
+      this.objects.add(section, {isCollidable: true});
+    });
   }
 
   /**
@@ -135,7 +148,7 @@ export default class SpawnIsland {
     const shipDark = this.resources.models.shipDark.scene.children[0];
     this.setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
-    this.objects.add(shipDark);
+    this.objects.add(shipDark, {isCollidable: true});
   }
 
   /**
@@ -162,7 +175,7 @@ export default class SpawnIsland {
     this.setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
     setOnPlane(this.ground, shipWreck, -75, -50);
-    this.objects.add(shipWreck);
+    this.objects.add(shipWreck, {isCollidable: true});
   }
 
   /**
@@ -174,7 +187,7 @@ export default class SpawnIsland {
     const tower = this.resources.models.tower.scene.children[0];
     this.setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
-    this.objects.add(tower);
+    this.objects.add(tower, {isCollidable: true});
   }
 
   /**
