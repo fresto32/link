@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Resources from '../Resources';
+import Objects from './Objects';
 import ObjectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
@@ -9,8 +10,6 @@ import RandomPoint from './Helpers/RandomPoint';
 import {FlattenPlaneToBoxes} from './Helpers/FlattenPlane';
 
 export default class SpawnIsland {
-  /** Container */
-  container: THREE.Object3D;
   /** Background Mesh */
   ground!: THREE.Mesh;
   /** Buildings */
@@ -21,18 +20,22 @@ export default class SpawnIsland {
   readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
+  /** Objects */
+  readonly objects: Objects;
   /** Areas that ought to be flat and contain no shrubbery */
   exclusionAreas!: THREE.Box3[];
 
-  constructor(_params: {resources: Resources; config: Config; debug: dat.GUI}) {
-    // Container
-    this.container = new THREE.Object3D();
-    this.container.matrixAutoUpdate = true;
-
+  constructor(_params: {
+    resources: Resources;
+    config: Config;
+    debug: dat.GUI;
+    objects: Objects;
+  }) {
     // Params
     this.resources = _params.resources;
     this.config = _params.config;
     this.debug = _params.debug;
+    this.objects = _params.objects;
 
     // Setting up member variables
     this.exclusionAreas = [];
@@ -81,8 +84,6 @@ export default class SpawnIsland {
     });
 
     FlattenPlaneToBoxes(this.ground, this.exclusionAreas);
-
-    this.container.add(this.ground);
   }
 
   /**
@@ -103,25 +104,25 @@ export default class SpawnIsland {
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, 100, 'z', 'x');
-      this.container.add(fence);
+      this.objects.add(fence);
     }
     // -z side
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, -100, 'z', 'x');
-      this.container.add(fence);
+      this.objects.add(fence);
     }
     // +x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, 150, i, 'z', 'z');
-      this.container.add(fence);
+      this.objects.add(fence);
     }
     // -x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, -150, i, 'z', 'z');
-      this.container.add(fence);
+      this.objects.add(fence);
     }
   }
 
@@ -134,7 +135,7 @@ export default class SpawnIsland {
     const shipDark = this.resources.models.shipDark.scene.children[0];
     this.setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
-    this.container.add(shipDark);
+    this.objects.add(shipDark);
   }
 
   /**
@@ -161,7 +162,7 @@ export default class SpawnIsland {
     this.setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
     setOnPlane(this.ground, shipWreck, -75, -50);
-    this.container.add(shipWreck);
+    this.objects.add(shipWreck);
   }
 
   /**
@@ -173,7 +174,7 @@ export default class SpawnIsland {
     const tower = this.resources.models.tower.scene.children[0];
     this.setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
-    this.container.add(tower);
+    this.objects.add(tower);
   }
 
   /**
@@ -201,7 +202,7 @@ export default class SpawnIsland {
    * Adapted from threex.grass. Creates tufts of grass randomly on the map.
    */
   setGrassTufts() {
-    this.container.add(
+    this.objects.add(
       grassTufts(
         this.resources.textures.grassTuft,
         this.ground,
@@ -280,7 +281,7 @@ export default class SpawnIsland {
 
       this.buildings.push(house);
       this.exclusionAreas.push(house.boundingBox!);
-      this.container.add(house.container);
+      this.objects.add(house.container);
     });
   }
 
@@ -328,7 +329,7 @@ export default class SpawnIsland {
       const mergedGeometries = generateObjectCluster(model, positions);
 
       mergedGeometries.forEach(geometry => {
-        this.container.add(geometry);
+        this.objects.add(geometry);
       });
     });
   }
