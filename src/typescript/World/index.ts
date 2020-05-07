@@ -110,9 +110,7 @@ export default class {
   setPhysics() {
     this.physics = new Physics({
       time: this.time,
-      sizes: this.sizes,
       config: this.config,
-      debug: this.debug,
       controls: this.controls,
     });
   }
@@ -210,7 +208,7 @@ export default class {
    * Sets Objects
    */
   setObjects() {
-    this.objects = new Objects({config: this.config});
+    this.objects = new Objects({config: this.config, physics: this.physics});
     this.container.add(this.objects.container);
   }
 

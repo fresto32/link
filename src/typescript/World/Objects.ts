@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import Physics from './Physics';
+import boundingBox from './Helpers/BoundingBox';
 
 export default class Objects {
   // Utilities
@@ -10,10 +12,13 @@ export default class Objects {
   readonly container: THREE.Object3D;
   /** Items */
   readonly items: THREE.Object3D[];
+  /** Physics */
+  readonly physics: Physics;
 
-  constructor(_params: {config: Config}) {
+  constructor(_params: {config: Config; physics: Physics}) {
     // Options
     this.config = _params.config;
+    this.physics = _params.physics;
 
     // Set up
     this.container = new THREE.Object3D();
@@ -26,6 +31,7 @@ export default class Objects {
     _object: THREE.Object3D,
     _params?: {
       isDynamic?: boolean;
+      isCollidable?: boolean;
       position?: THREE.Vector3;
       rotation?: THREE.Euler;
     }
@@ -44,6 +50,10 @@ export default class Objects {
     }
 
     if (!_params?.isDynamic) stopMatrixAutoUpdates(_object, true);
+
+    if (_params?.isCollidable) {
+      this.physics.addCollisionBoundingBox([boundingBox(_object)]);
+    }
 
     this.items.push(_object);
 
