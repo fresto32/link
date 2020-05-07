@@ -94,7 +94,7 @@ export default class SpawnIsland {
    */
   setBorder() {
     const fenceVertical = this.resources.models.fence.scene.children[0].clone();
-    this.setScale(fenceVertical);
+    setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
     const dimensions = objectDimensions(fenceHorizontal);
@@ -146,7 +146,7 @@ export default class SpawnIsland {
    */
   setPirateBoat() {
     const shipDark = this.resources.models.shipDark.scene.children[0];
-    this.setScale(shipDark);
+    setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
     this.objects.add(shipDark, {isCollidable: true});
   }
@@ -172,7 +172,7 @@ export default class SpawnIsland {
    */
   setShipWreck() {
     const shipWreck = this.resources.models.shipWreck.scene.children[0];
-    this.setScale(shipWreck);
+    setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
     setOnPlane(this.ground, shipWreck, -75, -50);
     this.objects.add(shipWreck, {isCollidable: true});
@@ -185,7 +185,7 @@ export default class SpawnIsland {
    */
   setTower() {
     const tower = this.resources.models.tower.scene.children[0];
-    this.setScale(tower);
+    setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
     this.objects.add(tower, {isCollidable: true});
   }
@@ -298,8 +298,6 @@ export default class SpawnIsland {
     });
   }
 
-  // Helpers
-
   /**
    * Sets a cluster of models in this container. Each model in models is placed
    * in the scene a given numObjectsPerModel number of times at a setScale and
@@ -322,7 +320,7 @@ export default class SpawnIsland {
     zSpread = 1,
     exclusionAreas: THREE.Box3[] | undefined = undefined
   ) {
-    this.setScales(models, setScale);
+    setScales(models, setScale);
 
     models.forEach(model => {
       const positions: THREE.Vector3[] = [];
@@ -346,21 +344,23 @@ export default class SpawnIsland {
       });
     });
   }
+}
 
-  /**
-   * Sets common scale to object
-   *
-   * @param object object to be scaled
-   */
-  setScale(object: THREE.Object3D, scale = 4) {
-    object.scale.set(scale, scale, scale);
-  }
-  /**
+// Helpers
+
+/**
+ * Sets common scale to object
+ *
+ * @param object object to be scaled
+ */
+function setScale(object: THREE.Object3D, scale = 4) {
+  object.scale.set(scale, scale, scale);
+}
+/**
    * Sets common scale to objects
-   *
-   * @param objects objects to be scaled
-   */
-  setScales(objects: THREE.Object3D[], scale = 4) {
-    objects.forEach(o => this.setScale(o, scale));
-  }
+ *
+ * @param objects objects to be scaled
+ */
+function setScales(objects: THREE.Object3D[], scale = 4) {
+  objects.forEach(o => setScale(o, scale));
 }
