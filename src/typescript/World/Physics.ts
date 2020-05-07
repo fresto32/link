@@ -92,11 +92,7 @@ export default class Physics {
     avatarMidPoint.add(avatarBoundingBox.max.clone().multiplyScalar(0.5));
 
     return this.collisionBoundingBoxes.some(box => {
-      return (
-        box.containsPoint(this.avatar.boundingBox!.min) ||
-        box.containsPoint(this.avatar.boundingBox!.max) ||
-        box.containsPoint(avatarMidPoint)
-      );
+      return box.intersectsBox(this.avatar.boundingBox!);
     });
   }
 }
