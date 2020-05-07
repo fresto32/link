@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Object collision has been added.
+  - When the avatar collides with a collidable object, the avatar's movement is ceased.
 - ```Objects``` class now universally handles adding objects to containers.
 
 ## [0.1.0]
