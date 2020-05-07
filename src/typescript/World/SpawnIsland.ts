@@ -310,7 +310,6 @@ export default class SpawnIsland {
    * @param zCenter The center z coordinate of the cluster.
    * @param xSpread The distance the cluster spreads out from the origin in x.
    * @param zSpread The distance the cluster spreads out from the origin in z.
-   * @param collisionBoxModels The boxes that are used for collision detection.
    */
   setModelCluster(
     models: THREE.Object3D[],
@@ -321,19 +320,12 @@ export default class SpawnIsland {
     xSpread = 1,
     zSpread = 1,
     exclusionAreas: THREE.Box3[] | undefined = undefined,
-    isCollidable = true,
-    collisionBoxModels: [THREE.Box3[]] | undefined = undefined
+    isCollidable = true
   ) {
     setScales(models, setScale);
 
     models.forEach((model, ndx) => {
       const positions: THREE.Vector3[] = [];
-      const collisionBoxes: THREE.Box3[] = [];
-
-      // Reason: Confusing line break point.
-      // prettier-ignore
-      const collisionBoxModel =
-        collisionBoxModels?.[ndx] || [boundingBox(model)];
 
       for (let i = 0; i < numObjectsPerModel; i++) {
         const randomPoint = RandomPoint(
@@ -345,53 +337,14 @@ export default class SpawnIsland {
           exclusionAreas
         );
         positions.push(randomPoint);
-
-        if (isCollidable) {
-          const collisionBox = collisionBoxModel.map(c => c.clone());
-          collisionBox.forEach(box => {
-            /**
-             * min and max of box need to be adjusted in order to create an
-             * accurate bounding box.
-             *
-             * The bounding box and random point coordinates are as follows:
-             *
-             *   |-----------------------------------> +x
-             *   |
-             *   |  min                   randomPoint
-             *   |   x_________________________x
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |                         |
-             *   |   |_________________________|
-             *   |                             x
-             *   |                             max
-             *   v
-             *   +z
-             */
-
-            const max = randomPoint.clone();
-            max.y += box.max.y - box.min.y; // Distance origin to top of box.
-            max.z += box.max.z - box.min.z; // Distance randomPoint to max.
-            const min = randomPoint.clone();
-            min.x -= box.max.x - box.min.x; // Distance min to randomPoint.
-
-            box = box.set(min, max);
-          });
-
-          collisionBoxes.push(...collisionBox);
-        }
       }
 
       const mergedGeometries = generateObjectCluster(model, positions);
 
       mergedGeometries.forEach(geometry => {
-        this.objects.add(geometry, {
+        this.objects.add(geometry.mesh, {
           isCollidable: isCollidable,
-          collisionBoundingBoxes: collisionBoxes,
+          collisionBoundingBoxes: geometry.boundingBoxes,
         });
       });
     });
