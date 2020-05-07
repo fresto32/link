@@ -32,6 +32,7 @@ export default class Objects {
     _params?: {
       isDynamic?: boolean;
       isCollidable?: boolean;
+      collisionBoundingBoxes?: THREE.Box3[];
       position?: THREE.Vector3;
       rotation?: THREE.Euler;
     }
@@ -52,7 +53,11 @@ export default class Objects {
     if (!_params?.isDynamic) stopMatrixAutoUpdates(_object, true);
 
     if (_params?.isCollidable) {
-      this.physics.addCollisionBoundingBox([boundingBox(_object)]);
+      if (_params?.collisionBoundingBoxes === undefined) {
+        this.physics.addCollisionBoundingBox([boundingBox(_object)]);
+      } else {
+        this.physics.addCollisionBoundingBox(_params.collisionBoundingBoxes);
+      }
     }
 
     this.items.push(_object);
