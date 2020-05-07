@@ -68,7 +68,7 @@ export default class Application {
   setConfig() {
     //if (!this.config) this.config = { debug: window.location.hash === '#debug' }
     //else this.config.debug = window.location.hash === '#debug'
-    this.config = {debug: true, touch: false};
+    this.config = {debug: true, showBoundingBoxes: false, touch: false};
 
     window.addEventListener(
       'touchstart',
