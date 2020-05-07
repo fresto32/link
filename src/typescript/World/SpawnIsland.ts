@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import Resources from '../Resources';
 import Objects from './Objects';
-import ObjectDimensions from './Helpers/ObjectDimensions';
+import objectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
 import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
-import {FlattenPlaneToBoxes} from './Helpers/FlattenPlane';
+import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
 
 export default class SpawnIsland {
   /** Background Mesh */
@@ -83,7 +83,7 @@ export default class SpawnIsland {
       v.y = Math.random() * 30;
     });
 
-    FlattenPlaneToBoxes(this.ground, this.exclusionAreas);
+    flattenPlaneToBoxes(this.ground, this.exclusionAreas);
   }
 
   /**
@@ -97,7 +97,7 @@ export default class SpawnIsland {
     this.setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
-    const dimensions = ObjectDimensions(fenceHorizontal);
+    const dimensions = objectDimensions(fenceHorizontal);
 
     // Build fences for each side of the map...
     // +z side

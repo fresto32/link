@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import Resources from '../Resources';
 import Time from '../Utils/Time';
 import Avatar from './Avatar';
-import ObjectDimensions from './Helpers/ObjectDimensions';
-import ObjectBoundingBox from './Helpers/ObjectBoundingBox';
+import objectDimensions from './Helpers/ObjectDimensions';
+import boundingBox from './Helpers/BoundingBox';
 
 /**
  * Creates a building.
@@ -70,13 +70,13 @@ export default class Building {
     this.upperFloorObjects = [];
 
     // Setup model dimensions...
-    this.floorDimensions = ObjectDimensions(
+    this.floorDimensions = objectDimensions(
       this.resources.models.cabinFloor.scene
     );
-    this.roofDimensions = ObjectDimensions(
+    this.roofDimensions = objectDimensions(
       this.resources.models.cabinRoof.scene
     );
-    this.wallDimensions = ObjectDimensions(
+    this.wallDimensions = objectDimensions(
       this.resources.models.cabinWall.scene
     );
 
@@ -383,12 +383,12 @@ export default class Building {
   }
 
   computeBoundingBox() {
-    this.boundingBox = ObjectBoundingBox(this.container);
+    this.boundingBox = boundingBox(this.container);
   }
 
   setAvatarEntryInteraction(avatar: Avatar, time: Time) {
     if (this.boundingBox === undefined)
-      this.boundingBox = ObjectBoundingBox(this.container);
+      this.boundingBox = boundingBox(this.container);
 
     time.on('tick', () => {
       if (this.boundingBox === undefined) return;

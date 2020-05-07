@@ -11,7 +11,7 @@ import setOnPlane from './SetOnPlane';
  * @param zSpread The distance the cluster spreads out from the origin in z.
  * @param exclusionAreas The areas where the returned point cannot be in.
  */
-export default function (
+export default function randomPoint(
   ground: THREE.Mesh,
   xCenter: number,
   zCenter: number,
