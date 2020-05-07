@@ -4,14 +4,15 @@ const expect = chai.expect;
 
 import setOnPlane from '../src/typescript/World/Helpers/SetOnPlane';
 
-describe('OnPlane Helper', () => {
+describe('setOnPlane Helper', () => {
   describe('Testing planes with normal: y + c = 0', () => {
     it('should return origin when a plane lying on the y axis is passed', () => {
       const plane = setUpPlane();
       const object = new THREE.Object3D();
 
-      setOnPlane(plane, object, 0, 0);
+      const y = setOnPlane(plane, object, 0, 0);
 
+      expect(y).to.equal(0);
       expect(object.position.x).to.equal(0);
       expect(object.position.y).to.equal(0);
       expect(object.position.z).to.equal(0);
@@ -23,7 +24,7 @@ describe('OnPlane Helper', () => {
 
       if (plane.geometry instanceof THREE.BufferGeometry) return;
       plane.geometry.vertices.forEach(v => {
-        v.z = 5;
+        v.y = 5;
       });
 
       setOnPlane(plane, object, 0, 0);
@@ -41,7 +42,7 @@ describe('OnPlane Helper', () => {
 
       if (plane.geometry instanceof THREE.BufferGeometry) return;
       plane.geometry.vertices.forEach(v => {
-        v.z = Math.random() * 30;
+        v.y = Math.random() * 30;
       });
 
       setOnPlane(plane, object, 0, 0);
@@ -61,8 +62,8 @@ describe('OnPlane Helper', () => {
 
         if (plane.geometry instanceof THREE.BufferGeometry) return;
         plane.geometry.vertices.forEach(v => {
-          if (v.x < 0) v.z = 0;
-          else v.z = 10;
+          if (v.x < 0) v.y = 0;
+          else v.y = 10;
         });
 
         setOnPlane(plane, object, 0, 0);
@@ -84,8 +85,8 @@ describe('OnPlane Helper', () => {
 
         if (plane.geometry instanceof THREE.BufferGeometry) return;
         plane.geometry.vertices.forEach(v => {
-          if (v.x < 0) v.z = 0;
-          else v.z = maxY;
+          if (v.x < 0) v.y = 0;
+          else v.y = maxY;
         });
 
         setOnPlane(plane, object, 0, 0);
@@ -107,8 +108,8 @@ describe('OnPlane Helper', () => {
 
         if (plane.geometry instanceof THREE.BufferGeometry) return;
         plane.geometry.vertices.forEach(v => {
-          if (v.x < 0) v.z = 0;
-          else v.z = 10;
+          if (v.x < 0) v.y = 0;
+          else v.y = 10;
         });
 
         setOnPlane(plane, object, 2.5, 2.5);
@@ -123,8 +124,8 @@ describe('OnPlane Helper', () => {
 
 function setUpPlane() {
   const geometry = new THREE.PlaneGeometry(10, 10, 1, 2);
-  const plane = new THREE.Mesh(geometry);
-  plane.rotateX(-Math.PI / 2);
+  const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+  geometry.applyMatrix4(rotation);
 
-  return plane;
+  return new THREE.Mesh(geometry);
 }
