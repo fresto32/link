@@ -1,6 +1,7 @@
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import EventEmitter from './Utils/EventEmitter';
+import CameraControls from 'camera-controls';
 
 export default class Controls extends EventEmitter {
   // Utilities
@@ -14,6 +15,8 @@ export default class Controls extends EventEmitter {
   readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
+  /** Camera */
+  readonly camera: CameraControls;
 
   // Controls Functionality
   /** Actions */
@@ -41,6 +44,7 @@ export default class Controls extends EventEmitter {
     sizes: Sizes;
     config: Config;
     debug: dat.GUI;
+    cameraControls: CameraControls;
   }) {
     super();
 
@@ -48,6 +52,7 @@ export default class Controls extends EventEmitter {
     this.sizes = _params.sizes;
     this.config = _params.config;
     this.debug = _params.debug;
+    this.camera = _params.cameraControls;
 
     this.setActions();
     this.setKeyboardControls();

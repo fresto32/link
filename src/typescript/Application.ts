@@ -55,8 +55,8 @@ export default class Application {
     this.setConfig();
     this.setDebug();
     this.setRenderer();
-    this.setControls();
     this.setCamera();
+    this.setControls();
     this.setPasses();
     this.setWorld();
     this.setLight();
@@ -120,18 +120,6 @@ export default class Application {
   }
 
   /**
-   * Set Controls
-   */
-  setControls() {
-    this.controls = new Controls({
-      time: this.time,
-      sizes: this.sizes,
-      config: this.config,
-      debug: this.debug,
-    });
-  }
-
-  /**
    * Set camera
    */
   setCamera() {
@@ -151,6 +139,19 @@ export default class Application {
         this.camera.oldTarget.copy(this.camera.target);
         this.camera.target.copy(this.world.avatar.pirateCaptain.position);
       }
+    });
+  }
+
+  /**
+   * Set Controls
+   */
+  setControls() {
+    this.controls = new Controls({
+      time: this.time,
+      sizes: this.sizes,
+      config: this.config,
+      debug: this.debug,
+      cameraControls: this.camera.cameraControls,
     });
   }
 
