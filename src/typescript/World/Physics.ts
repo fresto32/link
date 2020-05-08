@@ -35,6 +35,7 @@ export default class Physics {
 
     this.collisionBoundingBoxes = [];
     this.setAvatar();
+    this.setCameraControls();
   }
 
   /**
@@ -140,6 +141,17 @@ export default class Physics {
         else if (angle > -0.2 && angle < 1.4) this.avatar.position.x += speed;
         else this.avatar.position.x -= speed;
       }
+    });
+  }
+
+  /**
+   * Set Camera Controls
+   *
+   * Keep camera's azimuth angle to be oriented towards avatar's direction.
+   */
+  setCameraControls() {
+    this.time.on('tick', () => {
+      this.controls.camera.azimuthAngle = this.avatar.direction.y;
     });
   }
 
