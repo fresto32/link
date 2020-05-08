@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Gables on the -z side of buildings are now correctly mirrored. Previously, these gables were mirrored inwards instead of outwards.
+
 ## [0.2.0]
 
 ### Added
 
-- Avatar movement has been overhauled. 
+- Avatar movement has been overhauled.
   - The avatar now moves relative to its current orientation.
   - Avatar can also strafe.
 - The camera's [azimuth angle](https://en.wikipedia.org/wiki/Azimuth) is now locked onto the avatar's orientation.
