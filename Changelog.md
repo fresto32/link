@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- The avatar's movement has been overhauled. The avatar now moves relative to its current orientation.
+## [0.2.0]
+
+### Added
+
+- Avatar movement has been overhauled. 
+  - The avatar now moves relative to its current orientation.
   - Avatar can also strafe.
 - The camera's [azimuth angle](https://en.wikipedia.org/wiki/Azimuth) is now locked onto the avatar's orientation.
 - Object collision has been added.
