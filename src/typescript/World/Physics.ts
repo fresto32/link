@@ -113,7 +113,7 @@ export default class Physics {
     this.time.on('tick', () => {
       const speed = 0.5;
       if (!this.avatar.boundingBox) return;
-      if (this.avatarIsColliding()) console.log('colliding');
+      if (this.avatarIsColliding()) move(direction.back, undefined, speed);
 
       // Controls
       if (!this.config.touch) {
