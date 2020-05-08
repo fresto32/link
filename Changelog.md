@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- The avatar's movement has been overhauled. The avatar now moves relative to its current orientation.
+  - Avatar can also strafe.
+- The camera's [azimuth angle](https://en.wikipedia.org/wiki/Azimuth) is now locked onto the avatar's orientation.
 - Object collision has been added.
-  - When the avatar collides with a collidable object, the avatar's movement is ceased.
+  - When the avatar collides with a collidable object, the avatar's moves back.
   - Object clusters now generate bounding boxes for each object in the cluster for collision detection.
 - ```Objects``` class now universally handles adding objects to containers.
 
