@@ -102,15 +102,7 @@ export default class Physics {
         // NO OP - just forward direction.
       }
 
-      // Convert Euler to directional vector...
-      // Same as finding the side lengths of a triangle with angle
-      // eulerDirection.y with adjacent side as z and opposite side as x since
-      // we are, effectively, in a 2D plane.
-      const impulse = new THREE.Vector3(
-        -Math.sin(eulerDirection.y),
-        0,
-        -Math.cos(eulerDirection.y)
-      );
+      const impulse = to2dDirection(eulerDirection);
 
       impulse.multiplyScalar(speed);
 
@@ -181,4 +173,13 @@ export default class Physics {
       return box.intersectsBox(this.avatar.boundingBox!);
     });
   }
+}
+
+/**
+ * Converts a Euler to a directional vector.
+ */
+function to2dDirection(euler: THREE.Euler) {
+  // Same as finding the side lengths of a triangle with angle euler.y with
+  // adjacent side as z and opposite side as x since we are in a 2D plane.
+  return new THREE.Vector3(-Math.sin(euler.y), 0, -Math.cos(euler.y));
 }
