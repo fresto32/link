@@ -4,6 +4,7 @@ import Resources from '../Resources';
 import Physics from './Physics';
 import SpawnIsland from './SpawnIsland';
 import setOnPlane from './Helpers/SetOnPlane';
+import boundingBox from './Helpers/BoundingBox';
 
 export default class Avatar {
   /** Container */
@@ -56,9 +57,13 @@ export default class Avatar {
     this.container.add(this.pirateCaptain);
 
     this.time.on('tick', () => {
+      this.physics.setAvatarBoundingBox(boundingBox(this.pirateCaptain));
+
       const x = this.physics.avatar.position.x;
       const z = this.physics.avatar.position.z;
       setOnPlane(this.ground, this.pirateCaptain, x, z);
+
+      this.pirateCaptain.rotation.copy(this.physics.avatar.direction);
     });
   }
 

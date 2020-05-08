@@ -2,21 +2,16 @@ import CANNON from 'cannon';
 import * as THREE from 'three';
 
 import Time from '../Utils/Time';
-import Sizes from '../Utils/Sizes';
 import Controls from '../Controls';
 
 export default class Physics {
   // Utilities
   /** Time */
   readonly time: Time;
-  /** Sizes */
-  readonly sizes: Sizes;
 
   // Functionality
   /** Config */
   readonly config: Config;
-  /** Debug */
-  readonly debug: dat.GUI;
   /** Debug Foler */
   debugFolder!: dat.GUI;
   /** World */
@@ -25,164 +20,119 @@ export default class Physics {
   controls: Controls;
 
   // Physics Functionality
-  /** Models */
-  models!: {
-    container: THREE.Object3D;
-    materials: {
-      static: THREE.Material;
-      dynamic: THREE.Material;
-      dynamicSleeping: THREE.Material;
-    };
-  };
-  /** Materials */
-  materials!: {
-    items: {
-      floor: CANNON.Material;
-      dummy: CANNON.Material;
-      wheel: CANNON.Material;
-    };
-    contacts: {
-      floorDummy: CANNON.ContactMaterial;
-      dummyDummy: CANNON.ContactMaterial;
-      floorWheel: CANNON.ContactMaterial;
-    };
-  };
-  /** Floor */
-  floor!: {
-    body: CANNON.Body;
-  };
   /** Avatar */
   avatar!: {
     position: THREE.Vector3;
+    direction: THREE.Euler;
+    boundingBox?: THREE.Box3;
   };
+  collisionBoundingBoxes: THREE.Box3[];
 
-  constructor(_params: {
-    time: Time;
-    sizes: Sizes;
-    config: Config;
-    debug: dat.GUI;
-    controls: Controls;
-  }) {
+  constructor(_params: {time: Time; config: Config; controls: Controls}) {
     this.time = _params.time;
-    this.sizes = _params.sizes;
     this.config = _params.config;
-    this.debug = _params.debug;
     this.controls = _params.controls;
 
-    // Set up
-    if (this.debug) {
-      this.debugFolder = this.debug.addFolder('physics');
-      this.debugFolder.open();
-    }
-
-    // TODO:
-    //this.setWorld()
-    //this.setModels()
-    //this.setMaterials()
-    //this.setFloor()
-
+    this.collisionBoundingBoxes = [];
     this.setAvatar();
-
-    this.time.on('tick', () => {
-      //this.world.step(1 / 60, this.time.delta, 3)
-    });
+    this.setCameraControls();
   }
 
-  setWorld() {
-    this.world = new CANNON.World();
-    this.world.gravity.set(0, 0, -3.25);
-    this.world.allowSleep = true;
-    // this.world.gravity.set(0, 0, 0)
-    // this.world.broadphase = new CANNON.SAPBroadphase(this.world)
-    this.world.defaultContactMaterial.friction = 0;
-    this.world.defaultContactMaterial.restitution = 0.2;
-
-    // Debug
-    if (this.debug) {
-      this.debugFolder
-        .add(this.world.gravity, 'z')
-        .step(0.001)
-        .min(-20)
-        .max(20)
-        .name('gravity');
-    }
-  }
-
-  setModels() {
-    this.models.container = new THREE.Object3D();
-    this.models.container.visible = false;
-    this.models.materials.static = new THREE.MeshBasicMaterial({
-      color: 0x0000ff,
-      wireframe: true,
-    });
-    this.models.materials.dynamic = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
-      wireframe: true,
-    });
-    this.models.materials.dynamicSleeping = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
-      wireframe: true,
-    });
-
-    // Debug
-    if (this.debug) {
-      this.debugFolder
-        .add(this.models.container, 'visible')
-        .name('modelsVisible');
-    }
-  }
-
-  setMaterials() {
-    // All materials
-    this.materials.items.floor = new CANNON.Material('floorMaterial');
-    this.materials.items.dummy = new CANNON.Material('dummyMaterial');
-    this.materials.items.wheel = new CANNON.Material('wheelMaterial');
-
-    // Contact between materials
-    this.materials.contacts.floorDummy = new CANNON.ContactMaterial(
-      this.materials.items.floor,
-      this.materials.items.dummy,
-      {friction: 0.05, restitution: 0.3, contactEquationStiffness: 1000}
-    );
-    this.world.addContactMaterial(this.materials.contacts.floorDummy);
-
-    this.materials.contacts.dummyDummy = new CANNON.ContactMaterial(
-      this.materials.items.dummy,
-      this.materials.items.dummy,
-      {friction: 0.5, restitution: 0.3, contactEquationStiffness: 1000}
-    );
-    this.world.addContactMaterial(this.materials.contacts.dummyDummy);
-
-    this.materials.contacts.floorWheel = new CANNON.ContactMaterial(
-      this.materials.items.floor,
-      this.materials.items.wheel,
-      {friction: 0.3, restitution: 0, contactEquationStiffness: 1000}
-    );
-    this.world.addContactMaterial(this.materials.contacts.floorWheel);
-  }
-
-  setFloor() {
-    this.floor.body = new CANNON.Body({
-      mass: 0,
-      shape: new CANNON.Plane(),
-      material: this.materials.items.floor,
-    });
-
-    this.world.addBody(this.floor.body);
-  }
-
+  /**
+   * Set Avatar
+   */
   setAvatar() {
-    this.avatar = {position: new THREE.Vector3()};
-    this.avatar.position.set(0, 0, 0);
+    this.avatar = {
+      position: new THREE.Vector3(),
+      direction: new THREE.Euler(),
+    };
 
-    const speed = 1;
+    enum direction {
+      front,
+      back,
+      left,
+      right,
+    }
+
+    const rotate = (rotate: direction, speed: number) => {
+      if (rotate === direction.front || rotate === direction.back) {
+        throw console.error('Cannot rotate forwards or backwards.');
+      }
+
+      if (rotate === direction.left) {
+        this.avatar.direction.y += speed;
+      } else if (rotate === direction.right) {
+        this.avatar.direction.y -= speed;
+      } else {
+        throw console.error('Unreachable code.');
+      }
+    };
+
+    const move = (
+      move: direction | undefined,
+      strafe: direction | undefined,
+      speed: number
+    ) => {
+      if (move === direction.left || move === direction.right) {
+        throw console.error('Cannot move left or right.');
+      }
+      if (strafe === direction.front || strafe === direction.back) {
+        throw console.error('Cannot strafe forwards or backwards.');
+      }
+
+      const eulerDirection = this.avatar.direction.clone();
+
+      // 8 Movement directions...
+      if (move === direction.front && strafe === direction.left) {
+        eulerDirection.y += Math.PI / 4;
+      } else if (move === direction.front && strafe === direction.right) {
+        eulerDirection.y -= Math.PI / 4;
+      } else if (move === direction.back && strafe === direction.left) {
+        eulerDirection.y += Math.PI;
+        eulerDirection.y -= Math.PI / 4;
+      } else if (move === direction.back && strafe === direction.right) {
+        eulerDirection.y += Math.PI;
+        eulerDirection.y += Math.PI / 4;
+      } else if (strafe === direction.left) {
+        eulerDirection.y += Math.PI / 2;
+      } else if (strafe === direction.right) {
+        eulerDirection.y -= Math.PI / 2;
+      } else if (move === direction.back) {
+        eulerDirection.y += Math.PI;
+      } else {
+        // NO OP - just forward direction.
+      }
+
+      const impulse = to2dDirection(eulerDirection);
+
+      impulse.multiplyScalar(speed);
+
+      this.avatar.position.add(impulse);
+    };
 
     this.time.on('tick', () => {
+      const speed = 0.5;
+      if (!this.avatar.boundingBox) return;
+      if (this.avatarIsColliding()) move(direction.back, undefined, speed);
+
+      // Controls
       if (!this.config.touch) {
-        if (this.controls.actions.up) this.avatar.position.z -= speed;
-        if (this.controls.actions.down) this.avatar.position.z += speed;
-        if (this.controls.actions.left) this.avatar.position.x -= speed;
-        if (this.controls.actions.right) this.avatar.position.x += speed;
+        const actions = this.controls.actions;
+
+        let movement: direction | undefined = undefined;
+        if (actions.up) movement = direction.front;
+        else if (actions.down) movement = direction.back;
+
+        let strafe: direction | undefined = undefined;
+        if (actions.strafeLeft) strafe = direction.left;
+        else if (actions.strafeRight) strafe = direction.right;
+
+        if (movement !== undefined || strafe !== undefined) {
+          move(movement, strafe, speed);
+        }
+
+        if (actions.left) rotate(direction.left, speed / 5);
+        if (actions.right) rotate(direction.right, speed / 5);
       } else {
         const angle = this.controls.touch.joysticks.left.angle!.value;
         if (angle === 0) return;
@@ -193,4 +143,55 @@ export default class Physics {
       }
     });
   }
+
+  /**
+   * Set Camera Controls
+   *
+   * Keep camera's azimuth angle to be oriented towards avatar's direction.
+   */
+  setCameraControls() {
+    this.time.on('tick', () => {
+      this.controls.camera.azimuthAngle = this.avatar.direction.y;
+    });
+  }
+
+  setAvatarBoundingBox(_boundingBox: THREE.Box3) {
+    this.avatar.boundingBox = _boundingBox.clone();
+  }
+
+  /**
+   * Add Collision Bounding Boxes
+   *
+   * @param _boundingBoxes Bounding boxes to which the avatar cannot enter.
+   */
+  addCollisionBoundingBox(_boundingBoxes: THREE.Box3[]) {
+    this.collisionBoundingBoxes.push(..._boundingBoxes);
+  }
+
+  /**
+   * Determines if _box is colliding with any collisionBoundingBoxes.
+   */
+  avatarIsColliding() {
+    if (!this.avatar.boundingBox) {
+      throw console.error('No avatar bounding box.');
+    }
+
+    const avatarBoundingBox = this.avatar.boundingBox!;
+
+    const avatarMidPoint = new THREE.Vector3().copy(avatarBoundingBox.min);
+    avatarMidPoint.add(avatarBoundingBox.max.clone().multiplyScalar(0.5));
+
+    return this.collisionBoundingBoxes.some(box => {
+      return box.intersectsBox(this.avatar.boundingBox!);
+    });
+  }
+}
+
+/**
+ * Converts a Euler to a directional vector.
+ */
+function to2dDirection(euler: THREE.Euler) {
+  // Same as finding the side lengths of a triangle with angle euler.y with
+  // adjacent side as z and opposite side as x since we are in a 2D plane.
+  return new THREE.Vector3(-Math.sin(euler.y), 0, -Math.cos(euler.y));
 }

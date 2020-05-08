@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export default function ObjectDimensions(
+export default function objectDimensions(
   object: THREE.Object3D
 ): THREE.Vector3 {
   const dimensions = new THREE.Vector3();

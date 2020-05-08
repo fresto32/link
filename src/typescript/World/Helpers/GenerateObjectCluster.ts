@@ -2,6 +2,16 @@ import * as THREE from 'three';
 import {BufferGeometryUtils} from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 /**
+ * Encapsulates the mesh of one item of an object cluster with unified geometry.
+ * Also, exposes the individual bounding boxes of each object in the mesh - to
+ * be used for collision calculations, for example.
+ */
+interface Cluster {
+  mesh: THREE.Mesh;
+  boundingBoxes: THREE.Box3[];
+}
+
+/**
  * Generates an array of meshes that contain a collection of object rendered at
  * each position of objectPositions. Returned meshes are optimised for
  * performance - geometries are merged and minimal materials used.
@@ -11,12 +21,13 @@ import {BufferGeometryUtils} from 'three/examples/jsm/utils/BufferGeometryUtils'
  * generated meshes.
  * @param globalTransform The transform to be applied to each object before
  * their placement in a mesh. To apply the current matrix of object, pass null.
+ * @returns A Cluster for each child object of object.
  */
 export default function generateObjectCluster(
   object: THREE.Object3D,
   objectPositions: THREE.Vector3[],
   globalTransform: THREE.Matrix4 | null = null
-): THREE.Mesh[] {
+): Cluster[] {
   // Since we are supplying positions via objectPositions, we don't want any
   // residual positions in object to affect later transformations.
   if (globalTransform === null) {
@@ -28,7 +39,7 @@ export default function generateObjectCluster(
 
   // unifiedMeshes refers to those new meshes which contain a single geometry
   // that encapsulates an object at each position of objectPositions.
-  const unifiedMeshes: THREE.Mesh[] = [];
+  const unifiedMeshes: Cluster[] = [];
 
   object.children.forEach(child => {
     if (child.type !== 'Mesh') {
@@ -81,8 +92,8 @@ function setObjectsInMeshes(
   objectMeshes: THREE.Mesh[],
   objectMeshPositions: THREE.Vector3[],
   globalTransform: THREE.Matrix4
-): THREE.Mesh[] {
-  const unifiedMeshes: THREE.Mesh[] = [];
+): Cluster[] {
+  const unifiedMeshes: Cluster[] = [];
 
   objectMeshes.forEach(mesh => {
     unifiedMeshes.push(
@@ -109,8 +120,9 @@ function setObjectsInMesh(
   objectMesh: THREE.Mesh,
   positions: THREE.Vector3[],
   globalTransform: THREE.Matrix4
-) {
+): Cluster {
   const geometries: THREE.BufferGeometry[] = [];
+  const collisionBoxes: THREE.Box3[] = [];
 
   // Apply each transformation to a model at every position...
   positions.forEach(position => {
@@ -126,6 +138,9 @@ function setObjectsInMesh(
     geometry.applyMatrix4(positionTransform);
 
     geometries.push(geometry);
+
+    geometry.computeBoundingBox();
+    collisionBoxes.push(geometry.boundingBox!);
   });
 
   const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(
@@ -133,5 +148,8 @@ function setObjectsInMesh(
     false
   );
 
-  return new THREE.Mesh(mergedGeometry, objectMesh.material);
+  return {
+    mesh: new THREE.Mesh(mergedGeometry, objectMesh.material),
+    boundingBoxes: collisionBoxes,
+  };
 }

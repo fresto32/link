@@ -30,7 +30,6 @@ export default class Camera {
   instance!: THREE.PerspectiveCamera;
   target: THREE.Vector3;
   oldTarget: THREE.Vector3;
-  positionOffset: THREE.Vector3;
 
   /** Orbit Controls */
   cameraControls!: CameraControls;
@@ -62,7 +61,6 @@ export default class Camera {
 
     this.target = new THREE.Vector3(0, 0, 0);
     this.oldTarget = new THREE.Vector3(0, 0, 0);
-    this.positionOffset = new THREE.Vector3(0, 10, 25);
 
     this.instance = new THREE.PerspectiveCamera(
       60, // fov
@@ -79,8 +77,8 @@ export default class Camera {
    */
   setupCamera() {
     this.instance.position.x = 0;
-    this.instance.position.y = 15;
-    this.instance.position.z = 30;
+    this.instance.position.y = 8;
+    this.instance.position.z = 5;
 
     CameraControls.install({THREE: THREE});
 
@@ -88,17 +86,21 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
+    this.cameraControls.setTarget(0, 7.5, 0);
 
     this.sizes.on('resize', () => {
       this.instance.aspect = this.sizes.viewport.aspect;
       this.instance.updateProjectionMatrix();
     });
 
-    this.time.on('tick', () => {
-      const diff = this.target.clone().sub(this.oldTarget);
-      this.instance.position.add(diff);
+    const yOffset = 5;
 
-      this.cameraControls.moveTo(this.target.x, this.target.y, this.target.z);
+    this.time.on('tick', () => {
+      this.cameraControls.moveTo(
+        this.target.x,
+        this.target.y + yOffset,
+        this.target.z
+      );
       this.cameraControls.update(this.time.delta);
 
       if (this.config.touch) {

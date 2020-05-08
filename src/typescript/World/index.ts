@@ -5,6 +5,7 @@ import Resources from '../Resources';
 
 import Controls from '../Controls';
 import Physics from './Physics';
+import Objects from './Objects';
 import Signpost from './Signpost';
 import OptionSignpost from './OptionSignpost';
 import SpawnIsland from './SpawnIsland';
@@ -36,6 +37,8 @@ export default class {
   controls!: Controls;
   /** Physics */
   physics!: Physics;
+  /** Objects */
+  objects!: Objects;
   /** Spawn Island */
   spawnIsland!: SpawnIsland;
   /** Avatar */
@@ -85,6 +88,7 @@ export default class {
       this.setPhysics();
 
       // Objects
+      this.setObjects();
       this.setSpawnIsland();
       this.setAvatar();
       this.setPrompt();
@@ -106,9 +110,7 @@ export default class {
   setPhysics() {
     this.physics = new Physics({
       time: this.time,
-      sizes: this.sizes,
       config: this.config,
-      debug: this.debug,
       controls: this.controls,
     });
   }
@@ -122,8 +124,8 @@ export default class {
       picture: null,
       textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
     });
-    setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, 0);
-    this.container.add(this.prompt.container);
+    setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, -10);
+    this.objects.add(this.prompt.container, {isCollidable: true});
   }
 
   /**
@@ -176,7 +178,7 @@ export default class {
 
     this.options.forEach(o => {
       o.container.rotateY(Math.PI * 2 * Math.random());
-      this.container.add(o.container);
+      this.objects.add(o.container, {isCollidable: true});
 
       // Update the position and rotation of the viewing bounding box.
       o.container.updateMatrix();
@@ -203,6 +205,14 @@ export default class {
   }
 
   /**
+   * Sets Objects
+   */
+  setObjects() {
+    this.objects = new Objects({config: this.config, physics: this.physics});
+    this.container.add(this.objects.container);
+  }
+
+  /**
    * Set Spawn Island
    */
   setSpawnIsland() {
@@ -210,8 +220,9 @@ export default class {
       resources: this.resources,
       config: this.config,
       debug: this.debug,
+      objects: this.objects,
     });
-    this.container.add(this.spawnIsland.container);
+    this.container.add(this.spawnIsland.ground);
   }
 
   /**

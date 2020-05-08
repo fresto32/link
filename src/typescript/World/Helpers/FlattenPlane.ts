@@ -8,7 +8,7 @@ import FaceContainingPoint from './FaceContainingPoint';
  * @param plane The plane to be flattened.
  * @param boxes The boxes of whose floor the plane will be flattened to.
  */
-export function FlattenPlaneToBoxes(plane: THREE.Mesh, boxes: THREE.Box3[]) {
+export function flattenPlaneToBoxes(plane: THREE.Mesh, boxes: THREE.Box3[]) {
   boxes.forEach(box => {
     const min = box.min;
     const max = box.max;
@@ -32,7 +32,7 @@ export function FlattenPlaneToBoxes(plane: THREE.Mesh, boxes: THREE.Box3[]) {
       new THREE.Vector3(max.x, min.y, max.z), // pt D
     ];
 
-    FlattenPlaneToPoints(plane, pts, min.y);
+    flattenPlaneToPoints(plane, pts, min.y);
   });
 }
 
@@ -43,7 +43,7 @@ export function FlattenPlaneToBoxes(plane: THREE.Mesh, boxes: THREE.Box3[]) {
  * @param pts The points on the plane that should be of height height.
  * @param height The height of the flattened region.
  */
-export function FlattenPlaneToPoints(
+export function flattenPlaneToPoints(
   plane: THREE.Mesh,
   pts: THREE.Vector3[],
   height: number

@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 import Resources from '../Resources';
-import ObjectDimensions from './Helpers/ObjectDimensions';
+import Objects from './Objects';
+import objectDimensions from './Helpers/ObjectDimensions';
 import setOnPlane from './Helpers/SetOnPlane';
 import generateObjectCluster from './Helpers/GenerateObjectCluster';
 import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
-import {FlattenPlaneToBoxes} from './Helpers/FlattenPlane';
+import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
+import boundingBox from './Helpers/BoundingBox';
 
 export default class SpawnIsland {
-  /** Container */
-  container: THREE.Object3D;
   /** Background Mesh */
   ground!: THREE.Mesh;
   /** Buildings */
@@ -21,18 +21,22 @@ export default class SpawnIsland {
   readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
+  /** Objects */
+  readonly objects: Objects;
   /** Areas that ought to be flat and contain no shrubbery */
   exclusionAreas!: THREE.Box3[];
 
-  constructor(_params: {resources: Resources; config: Config; debug: dat.GUI}) {
-    // Container
-    this.container = new THREE.Object3D();
-    this.container.matrixAutoUpdate = true;
-
+  constructor(_params: {
+    resources: Resources;
+    config: Config;
+    debug: dat.GUI;
+    objects: Objects;
+  }) {
     // Params
     this.resources = _params.resources;
     this.config = _params.config;
     this.debug = _params.debug;
+    this.objects = _params.objects;
 
     // Setting up member variables
     this.exclusionAreas = [];
@@ -80,9 +84,7 @@ export default class SpawnIsland {
       v.y = Math.random() * 30;
     });
 
-    FlattenPlaneToBoxes(this.ground, this.exclusionAreas);
-
-    this.container.add(this.ground);
+    flattenPlaneToBoxes(this.ground, this.exclusionAreas);
   }
 
   /**
@@ -93,36 +95,49 @@ export default class SpawnIsland {
    */
   setBorder() {
     const fenceVertical = this.resources.models.fence.scene.children[0].clone();
-    this.setScale(fenceVertical);
+    setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
-    const dimensions = ObjectDimensions(fenceHorizontal);
+    const dimensions = objectDimensions(fenceHorizontal);
+
+    const fenceSections = [
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+      new THREE.Object3D(),
+    ];
 
     // Build fences for each side of the map...
     // +z side
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, 100, 'z', 'x');
-      this.container.add(fence);
+      fenceSections[0].add(fence);
     }
     // -z side
     for (let i = -145; i < 150; i += dimensions.z) {
       const fence = fenceVertical.clone();
       setOnPlane(this.ground, fence, i, -100, 'z', 'x');
-      this.container.add(fence);
+      fenceSections[1].add(fence);
     }
     // +x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, 150, i, 'z', 'z');
-      this.container.add(fence);
+      fenceSections[2].add(fence);
     }
     // -x side
     for (let i = -100; i < 100; i += dimensions.z) {
       const fence = fenceHorizontal.clone();
       setOnPlane(this.ground, fence, -150, i, 'z', 'z');
-      this.container.add(fence);
+      fenceSections[3].add(fence);
     }
+
+    // fence sections added individually so their bounding boxes span narrow
+    // segments rather than the whole map.
+    fenceSections.forEach(section => {
+      this.objects.add(section, {isCollidable: true});
+    });
   }
 
   /**
@@ -132,9 +147,9 @@ export default class SpawnIsland {
    */
   setPirateBoat() {
     const shipDark = this.resources.models.shipDark.scene.children[0];
-    this.setScale(shipDark);
+    setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
-    this.container.add(shipDark);
+    this.objects.add(shipDark, {isCollidable: true});
   }
 
   /**
@@ -158,10 +173,10 @@ export default class SpawnIsland {
    */
   setShipWreck() {
     const shipWreck = this.resources.models.shipWreck.scene.children[0];
-    this.setScale(shipWreck);
+    setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
     setOnPlane(this.ground, shipWreck, -75, -50);
-    this.container.add(shipWreck);
+    this.objects.add(shipWreck, {isCollidable: true});
   }
 
   /**
@@ -171,9 +186,9 @@ export default class SpawnIsland {
    */
   setTower() {
     const tower = this.resources.models.tower.scene.children[0];
-    this.setScale(tower);
+    setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
-    this.container.add(tower);
+    this.objects.add(tower, {isCollidable: true});
   }
 
   /**
@@ -201,7 +216,7 @@ export default class SpawnIsland {
    * Adapted from threex.grass. Creates tufts of grass randomly on the map.
    */
   setGrassTufts() {
-    this.container.add(
+    this.objects.add(
       grassTufts(
         this.resources.textures.grassTuft,
         this.ground,
@@ -280,11 +295,9 @@ export default class SpawnIsland {
 
       this.buildings.push(house);
       this.exclusionAreas.push(house.boundingBox!);
-      this.container.add(house.container);
+      this.objects.add(house.container);
     });
   }
-
-  // Helpers
 
   /**
    * Sets a cluster of models in this container. Each model in models is placed
@@ -306,11 +319,12 @@ export default class SpawnIsland {
     zCenter = 0,
     xSpread = 1,
     zSpread = 1,
-    exclusionAreas: THREE.Box3[] | undefined = undefined
+    exclusionAreas: THREE.Box3[] | undefined = undefined,
+    isCollidable = true
   ) {
-    this.setScales(models, setScale);
+    setScales(models, setScale);
 
-    models.forEach(model => {
+    models.forEach((model, ndx) => {
       const positions: THREE.Vector3[] = [];
 
       for (let i = 0; i < numObjectsPerModel; i++) {
@@ -328,25 +342,30 @@ export default class SpawnIsland {
       const mergedGeometries = generateObjectCluster(model, positions);
 
       mergedGeometries.forEach(geometry => {
-        this.container.add(geometry);
+        this.objects.add(geometry.mesh, {
+          isCollidable: isCollidable,
+          collisionBoundingBoxes: geometry.boundingBoxes,
+        });
       });
     });
   }
+}
 
-  /**
-   * Sets common scale to object
-   *
-   * @param object object to be scaled
-   */
-  setScale(object: THREE.Object3D, scale = 4) {
-    object.scale.set(scale, scale, scale);
-  }
-  /**
-   * Sets common scale to objects
-   *
-   * @param objects objects to be scaled
-   */
-  setScales(objects: THREE.Object3D[], scale = 4) {
-    objects.forEach(o => this.setScale(o, scale));
-  }
+// Helpers
+
+/**
+ * Sets common scale to object
+ *
+ * @param object object to be scaled
+ */
+function setScale(object: THREE.Object3D, scale = 4) {
+  object.scale.set(scale, scale, scale);
+}
+/**
+ * Sets common scale to objects
+ *
+ * @param objects objects to be scaled
+ */
+function setScales(objects: THREE.Object3D[], scale = 4) {
+  objects.forEach(o => setScale(o, scale));
 }

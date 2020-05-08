@@ -1,6 +1,7 @@
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import EventEmitter from './Utils/EventEmitter';
+import CameraControls from 'camera-controls';
 
 export default class Controls extends EventEmitter {
   // Utilities
@@ -14,6 +15,8 @@ export default class Controls extends EventEmitter {
   readonly config: Config;
   /** Debug */
   readonly debug: dat.GUI;
+  /** Camera */
+  readonly camera: CameraControls;
 
   // Controls Functionality
   /** Actions */
@@ -22,6 +25,8 @@ export default class Controls extends EventEmitter {
     down: boolean;
     left: boolean;
     right: boolean;
+    strafeLeft: boolean;
+    strafeRight: boolean;
     interact: boolean;
   };
   /** Keyboard Settings*/
@@ -39,6 +44,7 @@ export default class Controls extends EventEmitter {
     sizes: Sizes;
     config: Config;
     debug: dat.GUI;
+    cameraControls: CameraControls;
   }) {
     super();
 
@@ -46,6 +52,7 @@ export default class Controls extends EventEmitter {
     this.sizes = _params.sizes;
     this.config = _params.config;
     this.debug = _params.debug;
+    this.camera = _params.cameraControls;
 
     this.setActions();
     this.setKeyboardControls();
@@ -57,6 +64,8 @@ export default class Controls extends EventEmitter {
       right: false,
       down: false,
       left: false,
+      strafeLeft: false,
+      strafeRight: false,
       interact: false,
     };
 
@@ -66,6 +75,8 @@ export default class Controls extends EventEmitter {
         this.actions.right = false;
         this.actions.down = false;
         this.actions.left = false;
+        this.actions.strafeLeft = false;
+        this.actions.strafeRight = false;
         this.actions.interact = false;
       }
     });
@@ -101,9 +112,17 @@ export default class Controls extends EventEmitter {
           this.actions.left = true;
           break;
 
-        case 'Control':
-        case 'Enter':
+        case 'q':
+          this.actions.strafeLeft = true;
+          break;
+
         case 'e':
+          this.actions.strafeRight = true;
+          break;
+
+        case 'Control':
+        case 'Shift':
+        case 'Enter':
         case ' ':
           this.actions.interact = true;
           break;
@@ -129,14 +148,21 @@ export default class Controls extends EventEmitter {
           break;
 
         case 'ArrowLeft':
-        case 'q':
         case 'a':
           this.actions.left = false;
           break;
 
-        case 'Control':
-        case 'Enter':
+        case 'q':
+          this.actions.strafeLeft = false;
+          break;
+
         case 'e':
+          this.actions.strafeRight = false;
+          break;
+
+        case 'Control':
+        case 'Shift':
+        case 'Enter':
         case ' ':
           this.actions.interact = false;
           break;
