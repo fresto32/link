@@ -58,9 +58,12 @@ export default class Avatar {
 
     this.time.on('tick', () => {
       this.physics.setAvatarBoundingBox(boundingBox(this.pirateCaptain));
+
       const x = this.physics.avatar.position.x;
       const z = this.physics.avatar.position.z;
       setOnPlane(this.ground, this.pirateCaptain, x, z);
+
+      this.pirateCaptain.rotation.copy(this.physics.avatar.direction);
     });
   }
 
