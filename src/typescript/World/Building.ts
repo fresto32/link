@@ -283,7 +283,7 @@ export default class Building {
       const elements =
         level === 0 ? this.numWidthSections : this.numWidthSections - 2 * level;
 
-      const modelFunction = (zPlusSide: boolean) => {
+      const modelFunction = (zMinusSide: boolean) => {
         return (ndx: number) => {
           if (ndx === 0 || ndx + 1 === elements) {
             // We are at one of the horizontal ends of the gable, add in corners...
@@ -299,7 +299,7 @@ export default class Building {
               // this translation...
               side.translateX(this.wallDimensions.x);
             }
-            if (zPlusSide) {
+            if (zMinusSide) {
               // Mirror the object since we the model was created with
               // orientation facing in the opposite direction.
               side.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, -1));
@@ -308,7 +308,7 @@ export default class Building {
           } else {
             const i = Math.floor(Math.random() * windows.length);
             const window = windows[i].clone(true);
-            if (zPlusSide) {
+            if (zMinusSide) {
               window.rotateY(Math.PI);
               window.translateX(-this.wallDimensions.x);
             }
