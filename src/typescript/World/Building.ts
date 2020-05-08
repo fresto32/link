@@ -283,11 +283,8 @@ export default class Building {
       const elements =
         level === 0 ? this.numWidthSections : this.numWidthSections - 2 * level;
 
-      {
-        // +z side
-        const depth = () => (this.numDepthSections - 1) * this.wallDimensions.x;
-        const width = (ndx: number) => (ndx + level) * this.wallDimensions.x;
-        const model = (ndx: number) => {
+      const modelFunction = (zPlusSide: boolean) => {
+        return (ndx: number) => {
           if (ndx === 0 || ndx + 1 === elements) {
             // We are at one of the horizontal ends of the gable, add in corners...
             const side = models.cabinSide.scene.children[0].clone(true);
@@ -302,12 +299,29 @@ export default class Building {
               // this translation...
               side.translateX(this.wallDimensions.x);
             }
+            if (zPlusSide) {
+              // Mirror the object since we the model was created with
+              // orientation facing in the opposite direction.
+              side.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, -1));
+            }
             return side;
           } else {
             const i = Math.floor(Math.random() * windows.length);
-            return windows[i].clone(true);
+            const window = windows[i].clone(true);
+            if (zPlusSide) {
+              window.rotateY(Math.PI);
+              window.translateX(-this.wallDimensions.x);
+            }
+            return window;
           }
         };
+      };
+
+      {
+        // +z side
+        const depth = () => (this.numDepthSections - 1) * this.wallDimensions.x;
+        const width = (ndx: number) => (ndx + level) * this.wallDimensions.x;
+        const model = modelFunction(false);
         const condition = (ndx: number) => ndx < elements;
         this.addRowOfObjects(model, height, depth, width, condition);
       }
@@ -315,33 +329,7 @@ export default class Building {
         // -z side
         const depth = () => -this.wallDimensions.x;
         const width = (ndx: number) => (ndx + level) * this.wallDimensions.x;
-        const model = (ndx: number) => {
-          if (ndx === 0 || ndx + 1 === elements) {
-            // We are at one of the horizontal ends of the gable, add in corners...
-            const side = models.cabinSide.scene.children[0].clone(true);
-            if (ndx === 0) {
-              // Mirror on z axis so the front is facing forward...
-              side.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, -1));
-              // side.position.copy(new THREE.Vector3(width, height, depth));
-              // Rotate so that we fill the triangular hole correctly...
-              side.rotateY(Math.PI);
-              // In rotating the object, we have effectively translated it because
-              // the center of rotation is along its side, so to compensate for
-              // this translation...
-              side.translateX(this.wallDimensions.x);
-            } else {
-              // Flip them...
-              side.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, -1));
-            }
-            return side;
-          } else {
-            const i = Math.floor(Math.random() * windows.length);
-            const window = windows[i].clone(true);
-            window.rotateY(Math.PI);
-            window.translateX(-this.wallDimensions.x);
-            return window;
-          }
-        };
+        const model = modelFunction(true);
         const condition = (ndx: number) => ndx < elements;
         this.addRowOfObjects(model, height, depth, width, condition);
       }
