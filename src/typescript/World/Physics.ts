@@ -47,14 +47,14 @@ export default class Physics {
     };
 
     enum direction {
-      forward,
-      backward,
+      front,
+      back,
       left,
       right,
     }
 
     const rotate = (rotate: direction, speed: number) => {
-      if (rotate === direction.forward || rotate === direction.backward) {
+      if (rotate === direction.front || rotate === direction.back) {
         throw console.error('Cannot rotate forwards or backwards.');
       }
 
@@ -67,40 +67,79 @@ export default class Physics {
       }
     };
 
-    const move = (move: direction, speed: number) => {
+    const move = (
+      move: direction | undefined,
+      strafe: direction | undefined,
+      speed: number
+    ) => {
       if (move === direction.left || move === direction.right) {
         throw console.error('Cannot move left or right.');
+      }
+      if (strafe === direction.front || strafe === direction.back) {
+        throw console.error('Cannot strafe forwards or backwards.');
+      }
+
+      const eulerDirection = this.avatar.direction.clone();
+
+      // 8 Movement directions...
+      if (move === direction.front && strafe === direction.left) {
+        eulerDirection.y += Math.PI / 4;
+      } else if (move === direction.front && strafe === direction.right) {
+        eulerDirection.y -= Math.PI / 4;
+      } else if (move === direction.back && strafe === direction.left) {
+        eulerDirection.y += Math.PI;
+        eulerDirection.y -= Math.PI / 4;
+      } else if (move === direction.back && strafe === direction.right) {
+        eulerDirection.y += Math.PI;
+        eulerDirection.y += Math.PI / 4;
+      } else if (strafe === direction.left) {
+        eulerDirection.y += Math.PI / 2;
+      } else if (strafe === direction.right) {
+        eulerDirection.y -= Math.PI / 2;
+      } else if (move === direction.back) {
+        eulerDirection.y += Math.PI;
+      } else {
+        // NO OP - just forward direction.
       }
 
       // Convert Euler to directional vector...
       // Same as finding the side lengths of a triangle with angle
-      // this.avatar.direction.y with adjacent side as z and opposite side as x
-      // since we are, effectively, in a 2D plane.
+      // eulerDirection.y with adjacent side as z and opposite side as x since
+      // we are, effectively, in a 2D plane.
       const impulse = new THREE.Vector3(
-        -Math.sin(this.avatar.direction.y),
+        -Math.sin(eulerDirection.y),
         0,
-        -Math.cos(this.avatar.direction.y)
+        -Math.cos(eulerDirection.y)
       );
-
-      if (move === direction.backward) impulse.multiplyScalar(-1);
 
       impulse.multiplyScalar(speed);
 
       this.avatar.position.add(impulse);
     };
 
-    const speed = 0.5;
-
     this.time.on('tick', () => {
+      const speed = 0.5;
       if (!this.avatar.boundingBox) return;
       if (this.avatarIsColliding()) console.log('colliding');
 
       // Controls
       if (!this.config.touch) {
-        if (this.controls.actions.up) move(direction.forward, speed);
-        if (this.controls.actions.down) move(direction.backward, speed);
-        if (this.controls.actions.left) rotate(direction.left, speed / 5);
-        if (this.controls.actions.right) rotate(direction.right, speed / 5);
+        const actions = this.controls.actions;
+
+        let movement: direction | undefined = undefined;
+        if (actions.up) movement = direction.front;
+        else if (actions.down) movement = direction.back;
+
+        let strafe: direction | undefined = undefined;
+        if (actions.strafeLeft) strafe = direction.left;
+        else if (actions.strafeRight) strafe = direction.right;
+
+        if (movement !== undefined || strafe !== undefined) {
+          move(movement, strafe, speed);
+        }
+
+        if (actions.left) rotate(direction.left, speed / 5);
+        if (actions.right) rotate(direction.right, speed / 5);
       } else {
         const angle = this.controls.touch.joysticks.left.angle!.value;
         if (angle === 0) return;
