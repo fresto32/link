@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Object clustering helpers can now merge the geometries of objects that require rotation before being placed on some plane.
+
 ### Fixed
 
 - Gables on the -z side of buildings are now correctly mirrored. Previously, these gables were mirrored inwards instead of outwards.
+- Avatar can no longer walk through fences.
+- Collisions now force the avatar to move on a path that is normal to the colliding object's bounding box and the avatar. This prevents the avatar from merely backpeddling through objects.
 
 ## [0.2.0]
 
