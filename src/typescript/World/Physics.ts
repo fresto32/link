@@ -1,6 +1,5 @@
 import CANNON from 'cannon';
 import * as THREE from 'three';
-
 import Time from '../Utils/Time';
 import Controls from '../Controls';
 
@@ -103,17 +102,33 @@ export default class Physics {
         // NO OP - just forward direction.
       }
 
-      const impulse = to2dDirection(eulerDirection);
+      const impulse = to2dDirectionVector(eulerDirection).normalize();
 
       impulse.multiplyScalar(speed);
 
       this.avatar.position.add(impulse);
     };
 
+    const movementSpeed = 0.5;
+    const rotationSpeed = 0.1;
+    const boxCenter = new THREE.Vector3();
+    const boxToAvatarNormal = new THREE.Vector3();
     this.time.on('tick', () => {
-      const speed = 0.5;
       if (!this.avatar.boundingBox) return;
-      if (this.avatarIsColliding()) move(direction.back, undefined, speed);
+
+      // handle collisions...
+      const offendingBox = this.avatarCollidingWithBox();
+      if (offendingBox !== undefined) {
+        offendingBox.getCenter(boxCenter);
+
+        boxToAvatarNormal.subVectors(this.avatar.position, boxCenter);
+        boxToAvatarNormal.y = 0;
+        boxToAvatarNormal.normalize();
+        boxToAvatarNormal.multiplyScalar(movementSpeed * 0.2);
+
+        this.avatar.position.add(boxToAvatarNormal);
+        return;
+      }
 
       // Controls
       if (!this.config.touch) {
@@ -128,18 +143,23 @@ export default class Physics {
         else if (actions.strafeRight) strafe = direction.right;
 
         if (movement !== undefined || strafe !== undefined) {
-          move(movement, strafe, speed);
+          move(movement, strafe, movementSpeed);
         }
 
-        if (actions.left) rotate(direction.left, speed / 5);
-        if (actions.right) rotate(direction.right, speed / 5);
+        if (actions.left) rotate(direction.left, rotationSpeed);
+        if (actions.right) rotate(direction.right, rotationSpeed);
       } else {
         const angle = this.controls.touch.joysticks.left.angle!.value;
+
+        const backwards = angle > 1.4 && angle < 2.8;
+        const forwards = angle > -1.6 && angle < -0.2;
+        const rightwards = angle > -0.2 && angle < 1.4;
+
         if (angle === 0) return;
-        else if (angle > 1.4 && angle < 2.8) this.avatar.position.z -= speed;
-        else if (angle > -1.6 && angle < -0.2) this.avatar.position.z += speed;
-        else if (angle > -0.2 && angle < 1.4) this.avatar.position.x += speed;
-        else this.avatar.position.x -= speed;
+        else if (backwards) this.avatar.position.z -= movementSpeed;
+        else if (forwards) this.avatar.position.z += movementSpeed;
+        else if (rightwards) this.avatar.position.x += movementSpeed;
+        else this.avatar.position.x -= movementSpeed;
       }
     });
   }
@@ -171,7 +191,7 @@ export default class Physics {
   /**
    * Determines if _box is colliding with any collisionBoundingBoxes.
    */
-  avatarIsColliding() {
+  avatarCollidingWithBox(): undefined | THREE.Box3 {
     if (!this.avatar.boundingBox) {
       throw console.error('No avatar bounding box.');
     }
@@ -181,16 +201,24 @@ export default class Physics {
     const avatarMidPoint = new THREE.Vector3().copy(avatarBoundingBox.min);
     avatarMidPoint.add(avatarBoundingBox.max.clone().multiplyScalar(0.5));
 
-    return this.collisionBoundingBoxes.some(box => {
-      return box.intersectsBox(this.avatar.boundingBox!);
+    let offendingBox: THREE.Box3 | undefined = undefined;
+
+    this.collisionBoundingBoxes.some(box => {
+      if (box.intersectsBox(this.avatar.boundingBox!)) {
+        offendingBox = box.clone();
+        return true;
+      }
+      return false;
     });
+
+    return offendingBox;
   }
 }
 
 /**
  * Converts a Euler to a directional vector.
  */
-function to2dDirection(euler: THREE.Euler) {
+function to2dDirectionVector(euler: THREE.Euler) {
   // Same as finding the side lengths of a triangle with angle euler.y with
   // adjacent side as z and opposite side as x since we are in a 2D plane.
   return new THREE.Vector3(-Math.sin(euler.y), 0, -Math.cos(euler.y));
