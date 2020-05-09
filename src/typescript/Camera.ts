@@ -102,23 +102,6 @@ export default class Camera {
         this.target.z
       );
       this.cameraControls.update(this.time.delta);
-
-      if (this.config.touch) {
-        const speed = Math.PI / 90;
-        const angle = this.controls.touch.joysticks.right.angle!.value;
-
-        if (angle === 0) {
-          return;
-        } else if (angle > 1.4 && angle < 2.8) {
-          this.cameraControls.rotate(0, -speed);
-        } else if (angle > -1.6 && angle < -0.2) {
-          this.cameraControls.rotate(0, speed);
-        } else if (angle > -0.2 && angle < 1.4) {
-          this.cameraControls.rotate(speed, 0);
-        } else {
-          this.cameraControls.rotate(-speed, 0);
-        }
-      }
     });
 
     if (this.debug) {
