@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import CameraControls from 'camera-controls';
-import Controls from './Controls';
 
 export default class Camera {
   // Utilities
@@ -20,8 +19,6 @@ export default class Camera {
   readonly debugFolder!: dat.GUI;
   /** Renderer */
   readonly renderer: THREE.WebGLRenderer;
-  /** Controls */
-  readonly controls: Controls;
 
   // Container
   container: THREE.Object3D;
@@ -40,7 +37,6 @@ export default class Camera {
     config: Config;
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
-    controls: Controls;
   }) {
     // Options
     this.time = _params.time;
@@ -48,7 +44,6 @@ export default class Camera {
     this.config = _params.config;
     this.debug = _params.debug;
     this.renderer = _params.renderer;
-    this.controls = _params.controls;
 
     // Set up
     this.container = new THREE.Object3D();

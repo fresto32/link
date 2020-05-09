@@ -129,7 +129,6 @@ export default class Application {
       debug: this.debug,
       config: this.config,
       renderer: this.renderer,
-      controls: this.controls,
     });
 
     this.scene.add(this.camera.container);
