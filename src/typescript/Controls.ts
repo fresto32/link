@@ -231,7 +231,7 @@ export default class Controls extends EventEmitter {
       joystick.$element.appendChild(joystick.$limit);
 
       // Angle
-      joystick.angle!.offset = Math.PI * 0.18;
+      joystick.angle!.offset = 0;
 
       joystick.angle!.center.x = 0;
       joystick.angle!.center.y = 0;
