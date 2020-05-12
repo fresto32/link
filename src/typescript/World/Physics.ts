@@ -175,7 +175,70 @@ export default class Physics {
    */
   setCameraControls() {
     this.time.on('tick', () => {
-      this.controls.camera.azimuthAngle = this.avatar.direction.y;
+      if (!this.config.touch) {
+        this.controls.camera.azimuthAngle = this.avatar.direction.y;
+      } else {
+        const angle =
+          this.controls.touch.joysticks.right.angle!.value - Math.PI / 2;
+
+        // For the purposes of this block of code, the right touch joystick is
+        // divided into its 4 ordinal semicircles:
+        //
+        //                    Semi Top
+        //          S        _________       S
+        //          e       /    |    \      e
+        //          m      /     |     \     m
+        //          i     /      |      \    i
+        //          L    |_______|_______|   R
+        //          e     \      |      /    i
+        //          f      \     |     /     g
+        //          t       \____|____/      h
+        //                  Semi Bottom      t
+
+        // The distance of a semicircle is the distance the joystock cursor is
+        // away from the semicircle midpoint.
+        let distSemiT = 0;
+        let distSemiL = 0;
+        let distSemiR = 0;
+        let distSemiB = 0;
+
+        // Top semicircle
+        if (Math.abs(angle) < Math.PI / 2) distSemiT = Math.abs(angle);
+        // Left semicircle
+        if (angle < Math.PI / 2 && angle > 0) {
+          distSemiL = Math.PI / 2 - angle;
+        }
+        if (angle < -Math.PI && angle > -1.5 * Math.PI) {
+          distSemiL = 1.5 * Math.PI + angle;
+        }
+        // Bottom semicircle
+        if (angle > -1.5 * Math.PI && angle < -Math.PI / 2) {
+          distSemiB = Math.abs(Math.PI + angle);
+        }
+        // Right semicircle
+        if (angle < 0 && angle > -Math.PI) {
+          distSemiR = Math.abs(Math.PI / 2 + angle);
+        }
+
+        let azimuthAngle = 0;
+        if (distSemiL > 0) azimuthAngle = Math.PI / 2 - distSemiL;
+        if (distSemiR > 0) azimuthAngle = -(Math.PI / 2 - distSemiR);
+        if (Math.abs(azimuthAngle) < Math.PI / 8) azimuthAngle = 0;
+
+        let polarAngle = 0;
+        if (distSemiT > 0) polarAngle = Math.PI / 2 - distSemiT;
+        if (distSemiB > 0) polarAngle = -(Math.PI / 2 - distSemiB);
+        if (Math.abs(polarAngle) < Math.PI / 8) polarAngle = 0;
+
+        const azimuthSpeed = 0.02;
+        const polarSpeed = 0.008;
+        this.controls.camera.rotate(
+          azimuthAngle * azimuthSpeed,
+          polarAngle * polarSpeed
+        );
+
+        this.avatar.direction.y = this.controls.camera.azimuthAngle;
+      }
     });
   }
 
