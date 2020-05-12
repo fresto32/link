@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import EventEmitter from './Utils/EventEmitter';
@@ -202,6 +203,13 @@ export default class Controls extends EventEmitter {
       joystick.$element = joystick.$background.cloneNode() as HTMLDivElement;
       joystick.$element.style.backgroundColor = '';
       joystick.$element.style.opacity = '0';
+      joystick.$element.className = 'joystick';
+      this.camera.setDraggingDeadzones([
+        {
+          min: new THREE.Vector2(0, this.sizes.height - 400),
+          max: new THREE.Vector2(400, this.sizes.height),
+        },
+      ]);
       document.body.appendChild(joystick.$element);
 
       joystick.$cursor = document.createElement('div');
