@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Object clustering helpers can now merge the geometries of objects that require rotation before being placed on some plane.
+- Touch controls have been overhauled:
+  - Camera is now controlled via fresto32's fork of camera-controls.
+    - This allows the user to rotate the camera via touch controls and to prevent its rotation when the user touches the touch joysticks.
+  - User's can now 'interact' via touch controls.
+  - Left joystick now allows 360 degree movement as opposed to the previous 4-directional mode.
+  - The right joystick can also be used to rotate the camera.
 
 ### Fixed
 
