@@ -83,6 +83,8 @@ export default class Camera {
     );
     this.cameraControls.setTarget(0, 7.5, 0);
 
+    this.cameraControls.touches.two = CameraControls.ACTION.TOUCH_ROTATE;
+
     this.sizes.on('resize', () => {
       this.instance.aspect = this.sizes.viewport.aspect;
       this.instance.updateProjectionMatrix();
