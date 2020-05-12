@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] Touch Controls & Merging Geometries Improvements
 
 ### Added
 
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Avatar can no longer walk through fences.
 - Collisions now force the avatar to move on a path that is normal to the colliding object's bounding box and the avatar. This prevents the avatar from merely backpeddling through objects.
 
-## [0.2.0]
+## [0.2.0] Object Collision & Avatar Movement
 
 ### Added
 
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Object clusters now generate bounding boxes for each object in the cluster for collision detection.
 - ```Objects``` class now universally handles adding objects to containers.
 
-## [0.1.0]
+## [0.1.0] Initial
 
 ### Added
 
