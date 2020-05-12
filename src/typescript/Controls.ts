@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import Time from './Utils/Time';
 import Sizes from './Utils/Sizes';
 import EventEmitter from './Utils/EventEmitter';
@@ -202,6 +203,13 @@ export default class Controls extends EventEmitter {
       joystick.$element = joystick.$background.cloneNode() as HTMLDivElement;
       joystick.$element.style.backgroundColor = '';
       joystick.$element.style.opacity = '0';
+      joystick.$element.className = 'joystick';
+      this.camera.setDraggingDeadzones([
+        {
+          min: new THREE.Vector2(0, this.sizes.height - 400),
+          max: new THREE.Vector2(400, this.sizes.height),
+        },
+      ]);
       document.body.appendChild(joystick.$element);
 
       joystick.$cursor = document.createElement('div');
@@ -231,7 +239,7 @@ export default class Controls extends EventEmitter {
       joystick.$element.appendChild(joystick.$limit);
 
       // Angle
-      joystick.angle!.offset = Math.PI * 0.18;
+      joystick.angle!.offset = 0;
 
       joystick.angle!.center.x = 0;
       joystick.angle!.center.y = 0;
@@ -375,6 +383,36 @@ export default class Controls extends EventEmitter {
       this.touch.joysticks.left.angle!.value = 0;
       this.touch.joysticks.right.angle!.value = 0;
     };
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    let isTouchMove = false;
+
+    window.addEventListener('touchmove', () => {
+      isTouchMove = true;
+    });
+
+    window.addEventListener('touchstart', async () => {
+      // Sleep for a time to ensure that this touchstart is not a touch move...
+      // i.e. We don't want to interact with an object if the user actually
+      // intends to rotate the camera.
+      await sleep(200);
+
+      if (
+        !this.touch.joysticks.left.active &&
+        !this.touch.joysticks.right.active &&
+        !isTouchMove
+      ) {
+        this.actions.interact = true;
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      this.actions.interact = false;
+      isTouchMove = false;
+    });
   }
 }
 

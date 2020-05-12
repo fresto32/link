@@ -5,13 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-## [0.2.0]
+## [0.3.0] Touch Controls & Merging Geometries Improvements
 
 ### Added
 
-- Avatar movement has been overhauled. 
+- Object clustering helpers can now merge the geometries of objects that require rotation before being placed on some plane.
+- Touch controls have been overhauled:
+  - Camera is now controlled via fresto32's fork of camera-controls.
+    - This allows the user to rotate the camera via touch controls and to prevent its rotation when the user touches the touch joysticks.
+  - User's can now 'interact' via touch controls.
+  - Left joystick now allows 360 degree movement as opposed to the previous 4-directional mode.
+  - The right joystick can also be used to rotate the camera.
+
+### Fixed
+
+- Gables on the -z side of buildings are now correctly mirrored. Previously, these gables were mirrored inwards instead of outwards.
+- Avatar can no longer walk through fences.
+- Collisions now force the avatar to move on a path that is normal to the colliding object's bounding box and the avatar. This prevents the avatar from merely backpeddling through objects.
+
+## [0.2.0] Object Collision & Avatar Movement
+
+### Added
+
+- Avatar movement has been overhauled.
   - The avatar now moves relative to its current orientation.
   - Avatar can also strafe.
 - The camera's [azimuth angle](https://en.wikipedia.org/wiki/Azimuth) is now locked onto the avatar's orientation.
@@ -20,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Object clusters now generate bounding boxes for each object in the cluster for collision detection.
 - ```Objects``` class now universally handles adding objects to containers.
 
-## [0.1.0]
+## [0.1.0] Initial
 
 ### Added
 

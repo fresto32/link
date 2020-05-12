@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {BufferGeometryUtils} from 'three/examples/jsm/utils/BufferGeometryUtils';
+import setOnPlane from './SetOnPlane';
 
 /**
  * Encapsulates the mesh of one item of an object cluster with unified geometry.
@@ -21,12 +22,21 @@ interface Cluster {
  * generated meshes.
  * @param globalTransform The transform to be applied to each object before
  * their placement in a mesh. To apply the current matrix of object, pass null.
+ * @param rotationTransform If specified, rotates each individual object to the
+ * same degree as rotateRelativeTo axis on the face of a plane at the
+ * objectPosition rotating the object. The axis which the object rotates about
+ * is objectRotationAxis.
  * @returns A Cluster for each child object of object.
  */
 export default function generateObjectCluster(
   object: THREE.Object3D,
   objectPositions: THREE.Vector3[],
-  globalTransform: THREE.Matrix4 | null = null
+  globalTransform: THREE.Matrix4 | null = null,
+  rotationTransform?: {
+    plane: THREE.Mesh;
+    objectRotationAxis: 'x' | 'y' | 'z';
+    rotateRelativeTo: 'x' | 'y' | 'z';
+  }
 ): Cluster[] {
   // Since we are supplying positions via objectPositions, we don't want any
   // residual positions in object to affect later transformations.
@@ -46,7 +56,12 @@ export default function generateObjectCluster(
       // Handle children of object that are more collections of meshs (i.e.
       // THREE.Group or THREE.Object3D)...
       unifiedMeshes.push(
-        ...generateObjectCluster(child, objectPositions, globalTransform)
+        ...generateObjectCluster(
+          child,
+          objectPositions,
+          globalTransform,
+          rotationTransform
+        )
       );
     } else if (child.type === 'Mesh') {
       // Handle children of object that are themselves meshes...
@@ -54,7 +69,8 @@ export default function generateObjectCluster(
         ...setObjectsInMeshes(
           [child as THREE.Mesh],
           objectPositions,
-          globalTransform!
+          globalTransform!,
+          rotationTransform
         )
       );
     } else {
@@ -68,7 +84,8 @@ export default function generateObjectCluster(
       ...setObjectsInMeshes(
         [object as THREE.Mesh],
         objectPositions,
-        globalTransform
+        globalTransform,
+        rotationTransform
       )
     );
   }
@@ -87,17 +104,31 @@ export default function generateObjectCluster(
  * generated meshes.
  * @param globalTransform The transform to be applied to each object before
  * their placement in a mesh. To apply the current matrix of object, pass null.
+ * @param rotationTransform If specified, rotates each individual object to the
+ * same degree as rotateRelativeTo axis on the face of a plane at the
+ * objectPosition rotating the object. The axis which the object rotates about
+ * is objectRotationAxis.
  */
 function setObjectsInMeshes(
   objectMeshes: THREE.Mesh[],
   objectMeshPositions: THREE.Vector3[],
-  globalTransform: THREE.Matrix4
+  globalTransform: THREE.Matrix4,
+  rotationTransform?: {
+    plane: THREE.Mesh;
+    objectRotationAxis: 'x' | 'y' | 'z';
+    rotateRelativeTo: 'x' | 'y' | 'z';
+  }
 ): Cluster[] {
   const unifiedMeshes: Cluster[] = [];
 
   objectMeshes.forEach(mesh => {
     unifiedMeshes.push(
-      setObjectsInMesh(mesh, objectMeshPositions, globalTransform)
+      setObjectsInMesh(
+        mesh,
+        objectMeshPositions,
+        globalTransform,
+        rotationTransform
+      )
     );
   });
 
@@ -115,24 +146,48 @@ function setObjectsInMeshes(
  * generated meshes.
  * @param globalTransform The transform to be applied to each object before
  * their placement in a mesh. To apply the current matrix of object, pass null.
+ * @param rotationTransform If specified, rotates each individual object to the
+ * same degree as rotateRelativeTo axis on the face of a plane at the
+ * objectPosition rotating the object. The axis which the object rotates about
+ * is objectRotationAxis.
  */
 function setObjectsInMesh(
   objectMesh: THREE.Mesh,
   positions: THREE.Vector3[],
-  globalTransform: THREE.Matrix4
+  globalTransform: THREE.Matrix4,
+  rotationTransform?: {
+    plane: THREE.Mesh;
+    objectRotationAxis: 'x' | 'y' | 'z';
+    rotateRelativeTo: 'x' | 'y' | 'z';
+  }
 ): Cluster {
   const geometries: THREE.BufferGeometry[] = [];
   const collisionBoxes: THREE.Box3[] = [];
 
   // Apply each transformation to a model at every position...
   positions.forEach(position => {
-    objectMesh.updateMatrix();
-    const objectTransform = objectMesh.matrix;
+    let mesh = objectMesh;
+
+    if (rotationTransform) {
+      mesh = objectMesh.clone();
+      setOnPlane(
+        rotationTransform.plane,
+        mesh,
+        position.x,
+        position.z,
+        rotationTransform.objectRotationAxis,
+        rotationTransform.rotateRelativeTo
+      );
+    }
+
+    mesh.updateMatrix();
+    const objectTransform = mesh.matrix;
+    if (rotationTransform) objectTransform.setPosition(0, 0, 0);
 
     const positionTransform = new THREE.Matrix4();
     positionTransform.setPosition(position);
 
-    const geometry = (objectMesh.geometry as THREE.BufferGeometry).clone();
+    const geometry = (mesh.geometry as THREE.BufferGeometry).clone();
     geometry.applyMatrix4(objectTransform);
     geometry.applyMatrix4(globalTransform);
     geometry.applyMatrix4(positionTransform);

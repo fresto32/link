@@ -8,7 +8,6 @@ import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
 import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
-import boundingBox from './Helpers/BoundingBox';
 
 export default class SpawnIsland {
   /** Background Mesh */
@@ -98,45 +97,88 @@ export default class SpawnIsland {
     setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
-    const dimensions = objectDimensions(fenceHorizontal);
+    const fenceDimensions = objectDimensions(fenceHorizontal);
 
-    const fenceSections = [
-      new THREE.Object3D(),
-      new THREE.Object3D(),
-      new THREE.Object3D(),
-      new THREE.Object3D(),
-    ];
+    const addFenceLine = (_params: {
+      model: THREE.Object3D;
+      initialisation: number;
+      condition: (ndx: number) => boolean;
+      x: (ndx: number) => number;
+      z: (ndx: number) => number;
+      objectRotationAxis: 'z' | 'x'; // fences shouldn't be rotated on 'y'.
+      rotateRelativeTo: 'z' | 'x'; // fences shouldn't be rotated relative to 'y'.
+    }) => {
+      const positions: THREE.Vector3[] = [];
+
+      for (
+        let i = _params.initialisation;
+        _params.condition(i);
+        i += fenceDimensions.z
+      ) {
+        const fence = _params.model.clone();
+        setOnPlane(
+          this.ground,
+          fence,
+          _params.x(i),
+          _params.z(i),
+          _params.objectRotationAxis,
+          _params.rotateRelativeTo
+        );
+        positions.push(fence.position);
+      }
+      const clusters = generateObjectCluster(_params.model, positions, null, {
+        plane: this.ground,
+        objectRotationAxis: _params.objectRotationAxis,
+        rotateRelativeTo: _params.rotateRelativeTo,
+      });
+      clusters.forEach(cluster => {
+        this.objects.add(cluster.mesh, {
+          isCollidable: true,
+          collisionBoundingBoxes: cluster.boundingBoxes,
+        });
+      });
+    };
 
     // Build fences for each side of the map...
     // +z side
-    for (let i = -145; i < 150; i += dimensions.z) {
-      const fence = fenceVertical.clone();
-      setOnPlane(this.ground, fence, i, 100, 'z', 'x');
-      fenceSections[0].add(fence);
-    }
+    addFenceLine({
+      model: fenceVertical,
+      initialisation: -145,
+      condition: (ndx: number) => ndx < 155,
+      x: (ndx: number) => ndx,
+      z: () => 100,
+      objectRotationAxis: 'z',
+      rotateRelativeTo: 'x',
+    });
     // -z side
-    for (let i = -145; i < 150; i += dimensions.z) {
-      const fence = fenceVertical.clone();
-      setOnPlane(this.ground, fence, i, -100, 'z', 'x');
-      fenceSections[1].add(fence);
-    }
+    addFenceLine({
+      model: fenceVertical,
+      initialisation: -145,
+      condition: (ndx: number) => ndx < 155,
+      x: (ndx: number) => ndx,
+      z: () => -100,
+      objectRotationAxis: 'z',
+      rotateRelativeTo: 'x',
+    });
     // +x side
-    for (let i = -100; i < 100; i += dimensions.z) {
-      const fence = fenceHorizontal.clone();
-      setOnPlane(this.ground, fence, 150, i, 'z', 'z');
-      fenceSections[2].add(fence);
-    }
+    addFenceLine({
+      model: fenceHorizontal,
+      initialisation: -100,
+      condition: (ndx: number) => ndx < 100,
+      x: () => 150,
+      z: (ndx: number) => ndx,
+      objectRotationAxis: 'z',
+      rotateRelativeTo: 'z',
+    });
     // -x side
-    for (let i = -100; i < 100; i += dimensions.z) {
-      const fence = fenceHorizontal.clone();
-      setOnPlane(this.ground, fence, -150, i, 'z', 'z');
-      fenceSections[3].add(fence);
-    }
-
-    // fence sections added individually so their bounding boxes span narrow
-    // segments rather than the whole map.
-    fenceSections.forEach(section => {
-      this.objects.add(section, {isCollidable: true});
+    addFenceLine({
+      model: fenceHorizontal,
+      initialisation: -100,
+      condition: (ndx: number) => ndx < 100,
+      x: () => -150,
+      z: (ndx: number) => ndx,
+      objectRotationAxis: 'z',
+      rotateRelativeTo: 'z',
     });
   }
 
@@ -324,7 +366,7 @@ export default class SpawnIsland {
   ) {
     setScales(models, setScale);
 
-    models.forEach((model, ndx) => {
+    models.forEach(model => {
       const positions: THREE.Vector3[] = [];
 
       for (let i = 0; i < numObjectsPerModel; i++) {
