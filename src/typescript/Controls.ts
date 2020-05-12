@@ -375,6 +375,36 @@ export default class Controls extends EventEmitter {
       this.touch.joysticks.left.angle!.value = 0;
       this.touch.joysticks.right.angle!.value = 0;
     };
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    let isTouchMove = false;
+
+    window.addEventListener('touchmove', () => {
+      isTouchMove = true;
+    });
+
+    window.addEventListener('touchstart', async () => {
+      // Sleep for a time to ensure that this touchstart is not a touch move...
+      // i.e. We don't want to interact with an object if the user actually
+      // intends to rotate the camera.
+      await sleep(200);
+
+      if (
+        !this.touch.joysticks.left.active &&
+        !this.touch.joysticks.right.active &&
+        !isTouchMove
+      ) {
+        this.actions.interact = true;
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      this.actions.interact = false;
+      isTouchMove = false;
+    });
   }
 }
 
