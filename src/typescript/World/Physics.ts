@@ -109,6 +109,19 @@ export default class Physics {
       this.avatar.position.add(impulse);
     };
 
+    const touchMove = (angle: number, speed: number) => {
+      if (angle === 0) return;
+
+      angle -= Math.PI / 2 - this.avatar.direction.y;
+
+      const impulse = to2dDirectionVector(new THREE.Euler(0, angle, 0));
+
+      impulse.normalize();
+      impulse.multiplyScalar(speed);
+
+      this.avatar.position.add(impulse);
+    };
+
     const movementSpeed = 0.5;
     const rotationSpeed = 0.1;
     const boxCenter = new THREE.Vector3();
@@ -150,16 +163,7 @@ export default class Physics {
         if (actions.right) rotate(direction.right, rotationSpeed);
       } else {
         const angle = this.controls.touch.joysticks.left.angle!.value;
-
-        const backwards = angle > 1.4 && angle < 2.8;
-        const forwards = angle > -1.6 && angle < -0.2;
-        const rightwards = angle > -0.2 && angle < 1.4;
-
-        if (angle === 0) return;
-        else if (backwards) this.avatar.position.z -= movementSpeed;
-        else if (forwards) this.avatar.position.z += movementSpeed;
-        else if (rightwards) this.avatar.position.x += movementSpeed;
-        else this.avatar.position.x -= movementSpeed;
+        touchMove(angle, movementSpeed);
       }
     });
   }
