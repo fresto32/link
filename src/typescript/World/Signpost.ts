@@ -89,6 +89,9 @@ export default class Signpost {
     this.$canvas = document.createElement('canvas');
     this.$canvas.className =
       'signpost-canvas-' + Math.floor(Math.random() * 100000);
+    this.$canvas.style.position = 'fixed';
+    this.$canvas.style.left = '0';
+    this.$canvas.style.top = '0';
     const context = this.$canvas.getContext('2d');
     if (context === null) throw console.error('Could not find context.');
 
@@ -121,6 +124,10 @@ export default class Signpost {
     this.$canvas.height =
       100 + this.textHeight * lines.length + imageDimensions.height;
 
+    // Set background to white...
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
+
     context.font = 'normal ' + this.textHeight + 'px Arial';
     context.textAlign = 'left';
     context.textBaseline = 'middle';
@@ -139,7 +146,8 @@ export default class Signpost {
         imageDimensions.height
       );
       this.numberOfEquivalentTextLines +=
-        this.$canvas.height / this.textHeight - this.numberOfEquivalentTextLines;
+        this.$canvas.height / this.textHeight -
+        this.numberOfEquivalentTextLines;
     }
 
     const texture = new THREE.CanvasTexture(this.$canvas);
