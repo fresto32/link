@@ -56,7 +56,6 @@ export default class Option extends Signpost {
     const geometry = new THREE.BoxGeometry(width, height, depth);
 
     const mesh = new THREE.Mesh(geometry);
-    mesh.position.z = depth / 2;
     mesh.geometry.computeBoundingBox();
 
     this.viewingBoundingBox = new THREE.Box3().setFromObject(mesh);
