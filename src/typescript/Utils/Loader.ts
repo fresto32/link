@@ -7,13 +7,13 @@ import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 export default class Loader extends EventEmitter {
   /** Number of items and textures to load */
-  toLoad: number;
+  public toLoad: number;
   /** Number of items and textures loaded */
-  loaded: number;
+  public loaded: number;
   /** Items and textures loaded */
-  items: any;
+  public items: any;
   /** THREE Loaders that are instantiated */
-  loaders!: {extensions: string[]; action: (arg0: any) => void}[];
+  private loaders!: {extensions: string[]; action: (arg0: any) => void}[];
 
   /**
    * Constructor
@@ -31,7 +31,7 @@ export default class Loader extends EventEmitter {
   /**
    * Set loaders
    */
-  setLoaders() {
+  private setLoaders() {
     this.loaders = [];
 
     // Images
@@ -90,7 +90,7 @@ export default class Loader extends EventEmitter {
   /**
    * Load
    */
-  load(_resources: any) {
+  public load(_resources: any) {
     for (const _resource of _resources) {
       this.toLoad++;
       const extensionMatch = _resource.source.match(/\.([a-z]+)$/);
@@ -115,7 +115,7 @@ export default class Loader extends EventEmitter {
   /**
    * File load end
    */
-  fileLoadEnd(_resource: any, _data: any) {
+  private fileLoadEnd(_resource: any, _data: any) {
     this.loaded++;
     this.items[_resource.name] = _data;
 

@@ -6,31 +6,33 @@ import Controls from '../Controls';
 export default class Physics {
   // Utilities
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
 
   // Functionality
   /** Config */
-  readonly config: Config;
-  /** Debug Foler */
-  debugFolder!: dat.GUI;
-  /** World */
-  world!: CANNON.World;
+  private readonly config: Config;
   /** Controls */
-  controls: Controls;
+  private readonly controls: Controls;
 
   // Physics Functionality
   /** Avatar */
-  avatar!: {
+  public readonly avatar: {
     position: THREE.Vector3;
     direction: THREE.Euler;
     boundingBox?: THREE.Box3;
   };
-  collisionBoundingBoxes: THREE.Box3[];
+  /** If the avatar enters one of these boxes, a collision is triggered */
+  public readonly collisionBoundingBoxes: THREE.Box3[];
 
   constructor(_params: {time: Time; config: Config; controls: Controls}) {
     this.time = _params.time;
     this.config = _params.config;
     this.controls = _params.controls;
+
+    this.avatar = {
+      position: new THREE.Vector3(),
+      direction: new THREE.Euler(),
+    };
 
     this.collisionBoundingBoxes = [];
     this.setAvatar();
@@ -40,12 +42,7 @@ export default class Physics {
   /**
    * Set Avatar
    */
-  setAvatar() {
-    this.avatar = {
-      position: new THREE.Vector3(),
-      direction: new THREE.Euler(),
-    };
-
+  private setAvatar() {
     enum direction {
       front,
       back,
@@ -173,7 +170,7 @@ export default class Physics {
    *
    * Keep camera's azimuth angle to be oriented towards avatar's direction.
    */
-  setCameraControls() {
+  private setCameraControls() {
     this.time.on('tick', () => {
       if (!this.config.touch) {
         this.controls.camera.azimuthAngle = this.avatar.direction.y;
@@ -242,7 +239,7 @@ export default class Physics {
     });
   }
 
-  setAvatarBoundingBox(_boundingBox: THREE.Box3) {
+  public setAvatarBoundingBox(_boundingBox: THREE.Box3) {
     this.avatar.boundingBox = _boundingBox.clone();
   }
 
@@ -251,14 +248,14 @@ export default class Physics {
    *
    * @param _boundingBoxes Bounding boxes to which the avatar cannot enter.
    */
-  addCollisionBoundingBox(_boundingBoxes: THREE.Box3[]) {
+  public addCollisionBoundingBox(_boundingBoxes: THREE.Box3[]) {
     this.collisionBoundingBoxes.push(..._boundingBoxes);
   }
 
   /**
    * Determines if _box is colliding with any collisionBoundingBoxes.
    */
-  avatarCollidingWithBox(): undefined | THREE.Box3 {
+  private avatarCollidingWithBox(): undefined | THREE.Box3 {
     if (!this.avatar.boundingBox) {
       throw console.error('No avatar bounding box.');
     }

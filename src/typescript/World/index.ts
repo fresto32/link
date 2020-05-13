@@ -16,39 +16,39 @@ import Sounds from './Sounds';
 export default class {
   // Utilities
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
   /** Sizes */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
   /** Resources */
-  readonly resources: Resources;
+  private readonly resources: Resources;
 
   // Functionality
   /** Config */
-  readonly config: Config;
+  private readonly config: Config;
   /** Debug */
-  readonly debug: dat.GUI;
+  private readonly debug: dat.GUI;
   /** Renderer */
-  readonly renderer: THREE.WebGLRenderer;
+  private readonly renderer: THREE.WebGLRenderer;
 
   // World Functionality
   /** Container */
-  container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
   /** Controls */
-  controls!: Controls;
-  /** Physics */
-  physics!: Physics;
-  /** Objects */
-  objects!: Objects;
-  /** Spawn Island */
-  spawnIsland!: SpawnIsland;
+  public readonly controls!: Controls;
   /** Avatar */
-  avatar!: Avatar;
+  public avatar!: Avatar;
+  /** Physics */
+  private physics!: Physics;
+  /** Objects */
+  private objects!: Objects;
+  /** Spawn Island */
+  private spawnIsland!: SpawnIsland;
   /** Question Prompt */
-  prompt!: Signpost;
+  private prompt!: Signpost;
   /** Options */
-  options!: OptionSignpost[];
+  private options!: OptionSignpost[];
   /** Sounds */
-  sounds!: Sounds;
+  private sounds!: Sounds;
 
   /**
    * Constructor
@@ -80,7 +80,7 @@ export default class {
   }
 
   /** Sets up world */
-  setup() {
+  private setup() {
     // Setup
     this.setSounds();
 
@@ -100,14 +100,14 @@ export default class {
   /**
    * Set Sounds
    */
-  setSounds() {
+  private setSounds() {
     this.sounds = new Sounds({time: this.time, debug: this.debug});
   }
 
   /**
    * Set Physics
    */
-  setPhysics() {
+  private setPhysics() {
     this.physics = new Physics({
       time: this.time,
       config: this.config,
@@ -118,7 +118,7 @@ export default class {
   /**
    * Set Prompt
    */
-  setPrompt() {
+  private setPrompt() {
     this.prompt = new Signpost({
       text: 'What is an example of an O(n) sorting algoritm?',
       picture: null,
@@ -131,7 +131,7 @@ export default class {
   /**
    * Set Options
    */
-  setOptions() {
+  private setOptions() {
     this.options = [
       new OptionSignpost({
         text: 'Merge sort',
@@ -207,7 +207,7 @@ export default class {
   /**
    * Sets Objects
    */
-  setObjects() {
+  private setObjects() {
     this.objects = new Objects({config: this.config, physics: this.physics});
     this.container.add(this.objects.container);
   }
@@ -215,7 +215,7 @@ export default class {
   /**
    * Set Spawn Island
    */
-  setSpawnIsland() {
+  private setSpawnIsland() {
     this.spawnIsland = new SpawnIsland({
       resources: this.resources,
       config: this.config,
@@ -228,7 +228,7 @@ export default class {
   /**
    * Set Avatar
    */
-  setAvatar() {
+  private setAvatar() {
     this.avatar = new Avatar({
       time: this.time,
       resources: this.resources,
@@ -242,7 +242,7 @@ export default class {
   /**
    * Set Skybox
    */
-  setSkybox() {
+  private setSkybox() {
     const materials: THREE.Material[] = [];
     const textures = this.resources.textures;
     materials.push(new THREE.MeshBasicMaterial({map: textures.skyboxFt}));

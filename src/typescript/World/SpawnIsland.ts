@@ -10,20 +10,22 @@ import RandomPoint from './Helpers/RandomPoint';
 import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
 
 export default class SpawnIsland {
+  // TODO: Make ground and buildings private/readonly. Create readonly setters
+  // for them.
   /** Background Mesh */
-  ground!: THREE.Mesh;
+  public ground!: THREE.Mesh;
   /** Buildings */
-  buildings!: Building[];
+  public buildings!: Building[];
   /** Resources */
-  readonly resources: Resources;
+  private readonly resources: Resources;
   /** Debug */
-  readonly config: Config;
+  private readonly config: Config;
   /** Debug */
-  readonly debug: dat.GUI;
+  private readonly debug: dat.GUI;
   /** Objects */
-  readonly objects: Objects;
+  private readonly objects: Objects;
   /** Areas that ought to be flat and contain no shrubbery */
-  exclusionAreas!: THREE.Box3[];
+  private readonly exclusionAreas: THREE.Box3[];
 
   constructor(_params: {
     resources: Resources;
@@ -57,7 +59,7 @@ export default class SpawnIsland {
    *
    * The ground for the spawn island is a single sided plane.
    */
-  setGround() {
+  private setGround() {
     const texture = this.resources.textures.grass;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -92,7 +94,7 @@ export default class SpawnIsland {
    * The border is a single sided plane that is slightly larger than the
    * background plane.
    */
-  setBorder() {
+  private setBorder() {
     const fenceVertical = this.resources.models.fence.scene.children[0].clone();
     setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
@@ -187,7 +189,7 @@ export default class SpawnIsland {
    *
    * Sets a pirate boat in the upper right quadrant.
    */
-  setPirateBoat() {
+  private setPirateBoat() {
     const shipDark = this.resources.models.shipDark.scene.children[0];
     setScale(shipDark);
     setOnPlane(this.ground, shipDark, 75, 50);
@@ -199,7 +201,7 @@ export default class SpawnIsland {
    *
    * Sets some palm trees in the bottom right quadrant
    */
-  setPalmTrees() {
+  private setPalmTrees() {
     const items = this.resources.models;
     const palmModels: THREE.Object3D[] = [
       items.palmShort.scene.children[0],
@@ -213,7 +215,7 @@ export default class SpawnIsland {
    *
    * Sets a ship wreck in the bottom left hand quadrant.
    */
-  setShipWreck() {
+  private setShipWreck() {
     const shipWreck = this.resources.models.shipWreck.scene.children[0];
     setScale(shipWreck);
     shipWreck.rotateY(Math.PI / 1.5);
@@ -226,7 +228,7 @@ export default class SpawnIsland {
    *
    * Sets a tower in the upper left quadrant.
    */
-  setTower() {
+  private setTower() {
     const tower = this.resources.models.tower.scene.children[0];
     setScale(tower);
     setOnPlane(this.ground, tower, -75, 50);
@@ -238,7 +240,7 @@ export default class SpawnIsland {
    *
    * Sets rock formations around the map to add more scenery
    */
-  setRockFormations() {
+  private setRockFormations() {
     const items = this.resources.models;
     const rocks: THREE.Object3D[] = [
       items.formationLargeRock.scene.children[0],
@@ -257,7 +259,7 @@ export default class SpawnIsland {
    *
    * Adapted from threex.grass. Creates tufts of grass randomly on the map.
    */
-  setGrassTufts() {
+  private setGrassTufts() {
     this.objects.add(
       grassTufts(
         this.resources.textures.grassTuft,
@@ -275,7 +277,7 @@ export default class SpawnIsland {
   /**
    * Set Buildings
    */
-  setBuildings() {
+  private setBuildings() {
     this.buildings = [];
 
     const buildingDimensions = [
@@ -353,7 +355,7 @@ export default class SpawnIsland {
    * @param xSpread The distance the cluster spreads out from the origin in x.
    * @param zSpread The distance the cluster spreads out from the origin in z.
    */
-  setModelCluster(
+  private setModelCluster(
     models: THREE.Object3D[],
     numObjectsPerModel: number,
     setScale = 1,

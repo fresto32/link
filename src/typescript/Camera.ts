@@ -4,32 +4,34 @@ import Sizes from './Utils/Sizes';
 import CameraControls from 'camera-controls';
 
 export default class Camera {
+  // Container
+  public readonly container: THREE.Object3D;
+
   // Utilities
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
   /** Sizes */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
 
   // Functionality
   /** Config */
-  readonly config: Config;
+  private readonly config: Config;
   /** Debug */
-  readonly debug: dat.GUI;
+  private readonly debug: dat.GUI;
   /** Debug Folder */
-  readonly debugFolder!: dat.GUI;
+  private readonly debugFolder!: dat.GUI;
   /** Renderer */
-  readonly renderer: THREE.WebGLRenderer;
-
-  // Container
-  container: THREE.Object3D;
+  private readonly renderer: THREE.WebGLRenderer;
 
   // Camera details
-  instance!: THREE.PerspectiveCamera;
-  target: THREE.Vector3;
-  oldTarget: THREE.Vector3;
+  // TODO: Make instance private, but set up a readonly getter.
+  public instance!: THREE.PerspectiveCamera;
+  public readonly target: THREE.Vector3;
+  public readonly oldTarget: THREE.Vector3;
 
   /** Orbit Controls */
-  cameraControls!: CameraControls;
+  // TODO: Make cameraControls private, but set up a readonly getter.
+  public cameraControls!: CameraControls;
 
   constructor(_params: {
     time: Time;
@@ -70,7 +72,7 @@ export default class Camera {
   /**
    * Creates and sets up the camera instance
    */
-  setupCamera() {
+  private setupCamera() {
     this.instance.position.x = 0;
     this.instance.position.y = 8;
     this.instance.position.z = 5;

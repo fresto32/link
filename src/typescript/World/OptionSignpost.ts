@@ -6,20 +6,21 @@ import Time from '../Utils/Time';
 import Sizes from '../Utils/Sizes';
 
 export default class Option extends Signpost {
+  // TODO Hide viewingBoundingBox from public accessibility
   /** Viewing Bounding Box */
-  viewingBoundingBox!: THREE.Box3;
+  public viewingBoundingBox!: THREE.Box3;
   /** Is this a correct option? */
-  isCorrectOption: boolean;
+  private isCorrectOption: boolean;
   /** Has this sign been interacted with already? */
-  hasHadInteraction: boolean;
+  private hasHadInteraction: boolean;
   /** Is this signpost's lights on? */
-  isLightOn: boolean;
+  private isLightOn: boolean;
   /** Sounds */
-  sounds: Sounds;
+  private readonly sounds: Sounds;
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
   /** Sizes */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
 
   constructor(_params: {
     text: string;
@@ -49,7 +50,7 @@ export default class Option extends Signpost {
    *
    * The bounding box for which the signpost lights up.
    */
-  setViewingBoundingBox() {
+  private setViewingBoundingBox() {
     const width = this.distanceBetweenPoles * 3;
     const depth = width * (2 / 3);
     const height = 50;
@@ -64,7 +65,7 @@ export default class Option extends Signpost {
   /**
    * Light Up Signpost
    */
-  switchSignpostLightOn() {
+  public switchSignpostLightOn() {
     if (!this.isLightOn) {
       addSignpostBanner(this.$canvas, this.sizes);
 
@@ -79,7 +80,7 @@ export default class Option extends Signpost {
   /**
    * Turn Off Signpost Light
    */
-  switchSignpostLightOff() {
+  public switchSignpostLightOff() {
     if (this.isLightOn) {
       removeSignpostBanner(this.$canvas);
 
@@ -94,7 +95,7 @@ export default class Option extends Signpost {
   /**
    * InteractionLogic
    */
-  interaction() {
+  public interaction() {
     if (this.hasHadInteraction) return;
 
     if (this.isCorrectOption) {

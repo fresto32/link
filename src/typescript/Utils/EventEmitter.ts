@@ -15,7 +15,7 @@ export default class EventEmitter {
   /**
    * On
    */
-  on(_names: string, callback: any) {
+  public on(_names: string, callback: any) {
     const that = this;
 
     // Errors
@@ -55,7 +55,7 @@ export default class EventEmitter {
   /**
    * Off
    */
-  off(_names: string) {
+  public off(_names: string) {
     const that = this;
 
     // Errors
@@ -116,7 +116,7 @@ export default class EventEmitter {
   /**
    * Trigger
    */
-  trigger(_name: string, _args: any[] | null) {
+  public trigger(_name: string, _args: any[] | null) {
     // Errors
     if (typeof _name === 'undefined' || _name === '') {
       console.warn('wrong name');
@@ -175,7 +175,7 @@ export default class EventEmitter {
   /**
    * Resolve names
    */
-  resolveNames(_names: any) {
+  private resolveNames(_names: any) {
     let names = _names;
     names = names.replace(/[^a-zA-Z0-9 ,/.]/g, '');
     names = names.replace(/[,/]+/g, ' ');
@@ -187,7 +187,7 @@ export default class EventEmitter {
   /**
    * Resolve name
    */
-  resolveName(name: any) {
+  private resolveName(name: any) {
     const newName: any = {};
     const parts = name.split('.');
 

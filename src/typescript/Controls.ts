@@ -7,21 +7,21 @@ import CameraControls from 'camera-controls';
 export default class Controls extends EventEmitter {
   // Utilities
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
   /** Sizes */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
 
   // Functionality
-  /** Config */
-  readonly config: Config;
-  /** Debug */
-  readonly debug: dat.GUI;
   /** Camera */
-  readonly camera: CameraControls;
+  public readonly camera: CameraControls;
+  /** Config */
+  private readonly config: Config;
+  /** Debug */
+  private readonly debug: dat.GUI;
 
   // Controls Functionality
   /** Actions */
-  actions!: {
+  public actions!: {
     up: boolean;
     down: boolean;
     left: boolean;
@@ -30,15 +30,15 @@ export default class Controls extends EventEmitter {
     strafeRight: boolean;
     interact: boolean;
   };
-  /** Keyboard Settings*/
-  keyboard!: {
+  /** Touch Settings */
+  public touch!: TouchControls;
+  /** Keyboard Events*/
+  private keyboard!: {
     events: {
       keyUp: ((event: KeyboardEvent) => void) | undefined;
       keyDown: ((event: KeyboardEvent) => void) | undefined;
     };
   };
-  /** Touch Settings */
-  touch!: TouchControls;
 
   constructor(_params: {
     time: Time;
@@ -59,7 +59,7 @@ export default class Controls extends EventEmitter {
     this.setKeyboardControls();
   }
 
-  setActions() {
+  private setActions() {
     this.actions = {
       up: false,
       right: false,
@@ -83,7 +83,7 @@ export default class Controls extends EventEmitter {
     });
   }
 
-  setKeyboardControls() {
+  private setKeyboardControls() {
     this.keyboard = {
       events: {
         keyUp: undefined,
@@ -177,7 +177,7 @@ export default class Controls extends EventEmitter {
   /**
    * Set Touch Controls
    */
-  setTouchControls() {
+  public setTouchControls() {
     const setupJoystick = (
       joystick: Partial<Joystick>,
       side: 'right' | 'left'

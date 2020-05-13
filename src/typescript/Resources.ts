@@ -6,9 +6,9 @@ import EventEmitter from './Utils/EventEmitter';
 
 export default class Resources extends EventEmitter {
   /** Loader to load all item and texture resources */
-  loader: Loader;
+  private loader: Loader;
   /** Items that are currently loaded */
-  models: {
+  public readonly models: {
     [key: string]: {
       scene: THREE.Group;
       scenes: THREE.Group[];
@@ -20,7 +20,7 @@ export default class Resources extends EventEmitter {
     };
   };
   /** Textures that are currently loaded */
-  textures: {
+  public readonly textures: {
     [key: string]: THREE.Texture;
   };
 
