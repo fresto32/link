@@ -22,7 +22,7 @@ export default class Signpost {
   /** Signpost Mesh */
   signpost!: THREE.Mesh;
   /** The canvas used as texture for the banner and signpost */
-  canvas!: HTMLCanvasElement;
+  $canvas!: HTMLCanvasElement;
 
   // Signpost properties
   /** Distance between each pole */
@@ -86,8 +86,10 @@ export default class Signpost {
    * the prompt text.
    */
   setPromptTexture() {
-    this.canvas = document.createElement('canvas');
-    const context = this.canvas.getContext('2d');
+    this.$canvas = document.createElement('canvas');
+    this.$canvas.className =
+      'signpost-canvas-' + Math.floor(Math.random() * 100000);
+    const context = this.$canvas.getContext('2d');
     if (context === null) throw console.error('Could not find context.');
 
     // Split lines at 46 characters...
@@ -103,12 +105,12 @@ export default class Signpost {
       horizontalPadding: horizontalPadding,
     };
 
-    this.canvas.width = 1200;
+    this.$canvas.width = 1200;
 
     if (this.picture !== null) {
       imageDimensions = ImageDimensionsInCanvas(
         context,
-        this.canvas,
+        this.$canvas,
         this.textHeight * 13,
         this.picture.image,
         this.textHeight * 2,
@@ -116,7 +118,7 @@ export default class Signpost {
       );
     }
 
-    this.canvas.height =
+    this.$canvas.height =
       100 + this.textHeight * lines.length + imageDimensions.height;
 
     context.font = 'normal ' + this.textHeight + 'px Arial';
@@ -137,16 +139,16 @@ export default class Signpost {
         imageDimensions.height
       );
       this.numberOfEquivalentTextLines +=
-        this.canvas.height / this.textHeight - this.numberOfEquivalentTextLines;
+        this.$canvas.height / this.textHeight - this.numberOfEquivalentTextLines;
     }
 
-    const texture = new THREE.CanvasTexture(this.canvas);
+    const texture = new THREE.CanvasTexture(this.$canvas);
     texture.anisotropy = this.textTextureAnisotropy;
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
 
-    this.textTextureAspectRatio = this.canvas.width / this.canvas.height;
+    this.textTextureAspectRatio = this.$canvas.width / this.$canvas.height;
 
     this.promptTexture = texture;
   }

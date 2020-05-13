@@ -63,6 +63,7 @@ export default class Option extends Signpost {
    * Light Up Signpost
    */
   switchSignpostLightOn() {
+    document.body.prepend(this.$canvas);
     if (this.hasHadInteraction) return;
     this.plankMaterial.emissive = new THREE.Color('gray');
     this.poleMaterial.emissive = new THREE.Color('brown');
@@ -72,6 +73,8 @@ export default class Option extends Signpost {
    * Turn Off Signpost Light
    */
   switchSignpostLightOff() {
+    $('.' + this.$canvas.className).each((e, i) => i.remove());
+
     if (this.hasHadInteraction) return;
     this.plankMaterial.emissive = new THREE.Color('black');
     this.poleMaterial.emissive = new THREE.Color('black');
