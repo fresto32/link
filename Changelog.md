@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added access modifiers to all class member variables and functions.
+- Added unit tests for all World Helpers.
 - No longer need to be in front of a signpost for it to light up and become interactable.
 - Upon entering a signpost's viewing bounding box, the prompt is displayed in a banner along the top of the client.
   - In mobile, this banner is expected to span the entire width of the phone.
