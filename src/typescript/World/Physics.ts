@@ -1,4 +1,3 @@
-import CANNON from 'cannon';
 import * as THREE from 'three';
 import Time from '../Utils/Time';
 import Controls from '../Controls';
