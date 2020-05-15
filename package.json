@@ -39,7 +39,6 @@
     "webpack-dev-server": "latest"
   },
   "dependencies": {
-    "@types/cannon": "^0.1.4",
     "@types/chai": "^4.2.11",
     "@types/dat.gui": "^0.7.5",
     "@types/howler": "^2.1.2",
@@ -48,7 +47,6 @@
     "@types/sinon": "^9.0.0",
     "@types/three": "latest",
     "camera-controls": "https://github.com/fresto32/camera-controls.git",
-    "cannon": "^0.6.2",
     "chai": "^4.2.0",
     "dat.gui": "^0.7.7",
     "howler": "^2.1.3",
