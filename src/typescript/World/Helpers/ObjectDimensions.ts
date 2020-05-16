@@ -1,12 +1,10 @@
 import * as THREE from 'three';
+import boundingBox from './BoundingBox';
 
 export default function objectDimensions(
   object: THREE.Object3D
 ): THREE.Vector3 {
-  const dimensions = new THREE.Vector3();
-  const boundingBox = new THREE.BoxHelper(object);
-  if (boundingBox.geometry.boundingBox === null)
-    boundingBox.geometry.computeBoundingBox();
-  boundingBox.geometry.boundingBox!.getSize(dimensions);
-  return dimensions;
+  const size = new THREE.Vector3();
+  boundingBox(object).getSize(size);
+  return size;
 }

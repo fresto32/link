@@ -2,56 +2,58 @@ import * as THREE from 'three';
 
 export default class Signpost {
   /** Container */
-  container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
+  /** The canvas used as texture for the banner and signpost */
+  public readonly $canvas!: HTMLCanvasElement;
   /** Text Texture */
-  promptTexture!: THREE.CanvasTexture;
+  protected promptTexture!: THREE.CanvasTexture;
   /** Text to write to the signage*/
-  text: string;
+  protected readonly text: string;
   /** Height of Text */
-  textHeight!: number;
+  protected textHeight!: number;
   /** Aspect Ratio of the text texture */
-  textTextureAspectRatio!: number;
+  protected textTextureAspectRatio!: number;
   /** Anisotropy used in rendering textTexture */
-  textTextureAnisotropy!: number;
+  protected textTextureAnisotropy!: number;
   /** Picture to write to the signage */
-  picture: THREE.Texture | null;
+  protected picture: THREE.Texture | null;
   /** Background Mesh */
-  background!: THREE.Mesh;
+  protected background!: THREE.Mesh;
   /** Border Mesh */
-  border!: THREE.Mesh;
+  protected border!: THREE.Mesh;
   /** Signpost Mesh */
-  signpost!: THREE.Mesh;
+  protected signpost!: THREE.Mesh;
 
   // Signpost properties
   /** Distance between each pole */
-  distanceBetweenPoles!: number;
+  protected distanceBetweenPoles!: number;
   /** Height of each pole */
-  poleHeight!: number;
+  protected poleHeight!: number;
   /** Radius of each pole */
-  poleRadius!: number;
+  protected poleRadius!: number;
   /** Height of each plank */
-  plankHeight!: number;
+  protected plankHeight!: number;
   /** Width of each plank */
-  plankWidth!: number;
+  protected plankWidth!: number;
   /** Plank depth */
-  plankDepth!: number;
+  protected plankDepth!: number;
   /** Offset of plank from pole outter edge */
-  plankEdgeOffset!: number;
+  protected plankEdgeOffset!: number;
   /** Maximum Y position of the planks */
-  plankMaxHeight!: number;
+  protected plankMaxHeight!: number;
   /** Minimum Y position of the planks */
-  plankMinHeight!: number;
+  protected plankMinHeight!: number;
   /** Spacing between each plank */
-  plankSpacing!: number;
+  protected plankSpacing!: number;
   /** Number of equivalent lines of prompt (this includes vertical space of text
    * and picture) */
-  numberOfEquivalentTextLines!: number;
+  protected numberOfEquivalentTextLines!: number;
 
   // Materials
   /** Material of the planks which the signage is posted to */
-  plankMaterial!: THREE.MeshPhongMaterial;
+  protected plankMaterial!: THREE.MeshPhongMaterial;
   /** Material of each of the two poles */
-  poleMaterial!: THREE.MeshPhongMaterial;
+  protected poleMaterial!: THREE.MeshPhongMaterial;
 
   constructor(_params: {
     text: string;
@@ -66,6 +68,8 @@ export default class Signpost {
     this.text = _params.text;
     this.picture = _params.picture;
     this.textTextureAnisotropy = _params.textTextureAnisotropy;
+
+    this.$canvas = document.createElement('canvas');
 
     // Setting up scenegraph
     this.setPromptTexture();
@@ -83,9 +87,13 @@ export default class Signpost {
    * This depends on if a picture is added as a resource and on the length of
    * the prompt text.
    */
-  setPromptTexture() {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+  private setPromptTexture() {
+    this.$canvas.className =
+      'signpost-canvas-' + Math.floor(Math.random() * 100000);
+    this.$canvas.style.position = 'fixed';
+    this.$canvas.style.left = '0';
+    this.$canvas.style.top = '0';
+    const context = this.$canvas.getContext('2d');
     if (context === null) throw console.error('Could not find context.');
 
     // Split lines at 46 characters...
@@ -101,12 +109,12 @@ export default class Signpost {
       horizontalPadding: horizontalPadding,
     };
 
-    canvas.width = 1200;
+    this.$canvas.width = 1200;
 
     if (this.picture !== null) {
       imageDimensions = ImageDimensionsInCanvas(
         context,
-        canvas,
+        this.$canvas,
         this.textHeight * 13,
         this.picture.image,
         this.textHeight * 2,
@@ -114,8 +122,12 @@ export default class Signpost {
       );
     }
 
-    canvas.height =
+    this.$canvas.height =
       100 + this.textHeight * lines.length + imageDimensions.height;
+
+    // Set background to white...
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, this.$canvas.width, this.$canvas.height);
 
     context.font = 'normal ' + this.textHeight + 'px Arial';
     context.textAlign = 'left';
@@ -135,16 +147,17 @@ export default class Signpost {
         imageDimensions.height
       );
       this.numberOfEquivalentTextLines +=
-        canvas.height / this.textHeight - this.numberOfEquivalentTextLines;
+        this.$canvas.height / this.textHeight -
+        this.numberOfEquivalentTextLines;
     }
 
-    const texture = new THREE.CanvasTexture(canvas);
+    const texture = new THREE.CanvasTexture(this.$canvas);
     texture.anisotropy = this.textTextureAnisotropy;
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
 
-    this.textTextureAspectRatio = canvas.width / canvas.height;
+    this.textTextureAspectRatio = this.$canvas.width / this.$canvas.height;
 
     this.promptTexture = texture;
   }
@@ -154,7 +167,7 @@ export default class Signpost {
    *
    * Sets all the signpost sizing members sizes and distances.
    */
-  setGeometricProperties() {
+  private setGeometricProperties() {
     // Pole properties...
     this.poleRadius = 0.5;
     this.poleHeight =
@@ -181,7 +194,7 @@ export default class Signpost {
    *
    * The two poles along either side of the signage.
    */
-  setPoles() {
+  private setPoles() {
     this.poleMaterial = new THREE.MeshPhongMaterial({color: 'brown'});
     const tipHeight = 1.0;
     const radialSegments = 15;
@@ -242,7 +255,7 @@ export default class Signpost {
    *
    * Sets the planks that are attached to the poles.
    */
-  setPlanks() {
+  private setPlanks() {
     this.plankMaterial = new THREE.MeshPhongMaterial({color: 'white'});
 
     const plankGeometry = new THREE.BoxBufferGeometry(
@@ -268,7 +281,7 @@ export default class Signpost {
    *
    * The text is placed on a white plane that is attached to the planks.
    */
-  setSignagePlane() {
+  private setSignagePlane() {
     const material = new THREE.MeshBasicMaterial({map: this.promptTexture});
 
     const width = this.plankWidth! * (5 / 6);

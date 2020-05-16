@@ -5,15 +5,15 @@ import boundingBox from './Helpers/BoundingBox';
 export default class Objects {
   // Utilities
   /** Config */
-  readonly config: Config;
+  private readonly config: Config;
 
   // Objects Functionality
   /** Container */
-  readonly container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
   /** Items */
-  readonly items: THREE.Object3D[];
+  private readonly items: THREE.Object3D[];
   /** Physics */
-  readonly physics: Physics;
+  private readonly physics: Physics;
 
   constructor(_params: {config: Config; physics: Physics}) {
     // Options
@@ -27,7 +27,7 @@ export default class Objects {
     this.items = [];
   }
 
-  add(
+  public add(
     _object: THREE.Object3D,
     _params?: {
       isDynamic?: boolean;

@@ -8,19 +8,19 @@ import boundingBox from './Helpers/BoundingBox';
 
 export default class Avatar {
   /** Container */
-  container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
   /** Resources */
-  readonly resources: Resources;
+  private readonly resources: Resources;
   /** Time */
-  readonly time: Time;
-  /** Pirate Captain */
-  pirateCaptain!: THREE.Object3D;
+  private readonly time: Time;
   /** Physics */
-  readonly physics: Physics;
+  private readonly physics: Physics;
   /** Ground */
-  readonly ground: THREE.Mesh;
+  private readonly ground: THREE.Mesh;
   /** SpawnIsland */
-  readonly spawnIsland: SpawnIsland;
+  private readonly spawnIsland: SpawnIsland;
+  /** Pirate Captain */
+  public readonly pirateCaptain!: THREE.Object3D;
 
   constructor(_params: {
     time: Time;
@@ -41,6 +41,7 @@ export default class Avatar {
     this.spawnIsland = _params.spawnIsland;
 
     // Setting up scenegraph
+    this.pirateCaptain = this.resources.models.pirateCaptain.scene.children[0];
     this.setPirateCaptain();
     this.setSpawnIslandInteractions();
   }
@@ -50,8 +51,7 @@ export default class Avatar {
    *
    * A pirate captain is used as the main model of the avatar.
    */
-  setPirateCaptain() {
-    this.pirateCaptain = this.resources.models.pirateCaptain.scene.children[0];
+  private setPirateCaptain() {
     this.pirateCaptain.scale.set(4, 4, 4);
     this.pirateCaptain.position.copy(this.physics.avatar.position);
     this.container.add(this.pirateCaptain);
@@ -72,7 +72,7 @@ export default class Avatar {
    *
    * The interactions between avatar and spawn island objects.
    */
-  setSpawnIslandInteractions() {
+  private setSpawnIslandInteractions() {
     this.spawnIsland.buildings.forEach(building =>
       building.setAvatarEntryInteraction(this, this.time)
     );

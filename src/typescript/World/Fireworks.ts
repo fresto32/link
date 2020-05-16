@@ -4,33 +4,35 @@ import Time from '../Utils/Time';
 
 export default class Firework {
   /** Container */
-  container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
   /** Sizes  */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
+
+  // Fireworks Settings
+  /** Firework Starting Position */
+  private readonly startingPosition: THREE.Vector3;
+  /** Trajectory Height */
+  private readonly trajectoryHeight: number;
+  /** Particle Spread */
+  private readonly particleSpread: number;
+  /** Number of Particles */
+  private readonly numberOfParticles: number;
 
   // Fireworks Functionality
   /** Are we currently animating? */
-  isAnimating: boolean;
+  private isAnimating: boolean;
   /** Destinations of the particles of the firework */
-  destinations: THREE.Vector3[];
+  private destinations: THREE.Vector3[];
   /** Colors of each particle in the firework */
-  colors: THREE.Color[];
+  private colors: THREE.Color[];
   /** Firework geometry */
-  geometry: THREE.Geometry | null;
+  private geometry: THREE.Geometry | null;
   /** Firework Material */
-  material: THREE.PointsMaterial;
+  private material: THREE.PointsMaterial;
   /** Points of the particles */
-  particlePoints: THREE.Points | null;
-  /** Firework Starting Position */
-  startingPosition: THREE.Vector3;
-  /** Trajectory Height */
-  trajectoryHeight: number;
-  /** Particle Spread */
-  particleSpread: number;
-  /** Number of Particles */
-  numberOfParticles: number;
+  private particlePoints: THREE.Points | null;
 
   constructor(_params: {
     sizes: Sizes;
@@ -68,7 +70,7 @@ export default class Firework {
   /**
    * Reset
    */
-  reset() {
+  private reset() {
     if (this.particlePoints !== null)
       this.container.remove(this.particlePoints);
     this.destinations = [];
@@ -80,7 +82,7 @@ export default class Firework {
   /**
    * Launch Firework
    */
-  launch() {
+  public launch() {
     const x = this.startingPosition.x;
     const y = this.startingPosition.y;
     const z = this.startingPosition.z;
@@ -117,7 +119,7 @@ export default class Firework {
    * @param startingPosition THe starting position from which the firework is
    * exploded.
    */
-  explode(startingPosition: THREE.Vector3) {
+  private explode(startingPosition: THREE.Vector3) {
     if (this.particlePoints !== null)
       this.container.remove(this.particlePoints);
     this.destinations = [];
@@ -165,7 +167,7 @@ export default class Firework {
    *
    * Rendering function.
    */
-  update() {
+  private update() {
     // Only if objects exist...
     if (this.particlePoints && this.geometry) {
       const total = this.geometry.vertices.length;

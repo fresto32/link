@@ -2,15 +2,15 @@ import EventEmitter from './EventEmitter';
 
 export default class Time extends EventEmitter {
   /** start time */
-  start: number;
+  private start: number;
   /** current time */
-  current: number;
+  private current: number;
   /** elapsed time since start */
-  elapsed: number;
-  /** time since last tick */
-  delta: number;
+  private elapsed: number;
   /** animation frame */
-  ticker!: number;
+  private ticker!: number;
+  /** time since last tick */
+  public delta: number;
 
   /**
    * Constructor
@@ -31,7 +31,7 @@ export default class Time extends EventEmitter {
   /**
    * Tick
    */
-  tick() {
+  private tick() {
     this.ticker = window.requestAnimationFrame(this.tick);
 
     const current = Date.now();
@@ -48,7 +48,7 @@ export default class Time extends EventEmitter {
   /**
    * Stop
    */
-  stop() {
+  public stop() {
     window.cancelAnimationFrame(this.ticker);
   }
 }

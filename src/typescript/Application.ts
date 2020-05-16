@@ -12,33 +12,33 @@ import World from './World';
  */
 export default class Application {
   /** Canvas */
-  $canvas: HTMLCanvasElement;
+  private readonly $canvas: HTMLCanvasElement;
 
   // Utilities
   /** Time */
-  time: Time;
+  private readonly time: Time;
   /** Sizes */
-  sizes: Sizes;
+  private readonly sizes: Sizes;
   /** Resources */
-  resources: Resources;
+  private readonly resources: Resources;
 
   // Functionality
   /** Config */
-  config!: Config;
+  private config!: Config;
   /** Debug */
-  debug!: dat.GUI;
+  private debug!: dat.GUI;
   /** Renderer */
-  renderer!: THREE.WebGLRenderer;
+  private renderer!: THREE.WebGLRenderer;
   /** Scene */
-  scene!: THREE.Scene;
+  private scene!: THREE.Scene;
   /** Controls */
-  controls!: Controls;
+  private controls!: Controls;
   /** Camera */
-  camera!: Camera;
+  private camera!: Camera;
   /** World */
-  world!: World;
+  private world!: World;
   /** Light */
-  lights!: THREE.DirectionalLight[];
+  private lights!: THREE.DirectionalLight[];
 
   /**
    * Constructor
@@ -65,7 +65,7 @@ export default class Application {
   /**
    * Set config
    */
-  setConfig() {
+  private setConfig() {
     //if (!this.config) this.config = { debug: window.location.hash === '#debug' }
     //else this.config.debug = window.location.hash === '#debug'
     this.config = {debug: true, showBoundingBoxes: false, touch: false};
@@ -84,14 +84,14 @@ export default class Application {
   /**
    * Set debug
    */
-  setDebug() {
+  private setDebug() {
     if (this.config.debug) this.debug = new dat.GUI();
   }
 
   /**
    * Set renderer
    */
-  setRenderer() {
+  private setRenderer() {
     // Scene
     this.scene = new THREE.Scene();
 
@@ -122,7 +122,7 @@ export default class Application {
   /**
    * Set camera
    */
-  setCamera() {
+  private setCamera() {
     this.camera = new Camera({
       time: this.time,
       sizes: this.sizes,
@@ -144,7 +144,7 @@ export default class Application {
   /**
    * Set Controls
    */
-  setControls() {
+  private setControls() {
     this.controls = new Controls({
       time: this.time,
       sizes: this.sizes,
@@ -157,7 +157,7 @@ export default class Application {
   /**
    * Set passes
    */
-  setPasses() {
+  private setPasses() {
     this.time.on('tick', () => {
       this.renderer.render(this.scene, this.camera.instance);
     });
@@ -173,7 +173,7 @@ export default class Application {
   /**
    * Set world
    */
-  setWorld() {
+  private setWorld() {
     this.world = new World({
       time: this.time,
       sizes: this.sizes,
@@ -189,7 +189,7 @@ export default class Application {
   /**
    * Set Light
    */
-  setLight() {
+  private setLight() {
     this.lights = [];
 
     const positions = [
@@ -244,7 +244,7 @@ export default class Application {
   /**
    * Destructor
    */
-  destructor() {
+  public destructor() {
     this.time.off('tick');
     this.sizes.off('resize');
 

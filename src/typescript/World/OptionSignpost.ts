@@ -6,18 +6,21 @@ import Time from '../Utils/Time';
 import Sizes from '../Utils/Sizes';
 
 export default class Option extends Signpost {
+  // TODO Hide viewingBoundingBox from public accessibility
   /** Viewing Bounding Box */
-  viewingBoundingBox!: THREE.Box3;
+  public viewingBoundingBox!: THREE.Box3;
   /** Is this a correct option? */
-  isCorrectOption: boolean;
+  private isCorrectOption: boolean;
   /** Has this sign been interacted with already? */
-  hasHadInteraction: boolean;
+  private hasHadInteraction: boolean;
+  /** Is this signpost's lights on? */
+  private isLightOn: boolean;
   /** Sounds */
-  sounds: Sounds;
+  private readonly sounds: Sounds;
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
   /** Sizes */
-  readonly sizes: Sizes;
+  private readonly sizes: Sizes;
 
   constructor(_params: {
     text: string;
@@ -37,6 +40,7 @@ export default class Option extends Signpost {
     this.sizes = _params.sizes;
 
     // Set Up
+    this.isLightOn = false;
     this.hasHadInteraction = false;
     this.setViewingBoundingBox();
   }
@@ -46,14 +50,13 @@ export default class Option extends Signpost {
    *
    * The bounding box for which the signpost lights up.
    */
-  setViewingBoundingBox() {
+  private setViewingBoundingBox() {
     const width = this.distanceBetweenPoles * 3;
     const depth = width * (2 / 3);
     const height = 50;
     const geometry = new THREE.BoxGeometry(width, height, depth);
 
     const mesh = new THREE.Mesh(geometry);
-    mesh.position.z = depth / 2;
     mesh.geometry.computeBoundingBox();
 
     this.viewingBoundingBox = new THREE.Box3().setFromObject(mesh);
@@ -62,25 +65,37 @@ export default class Option extends Signpost {
   /**
    * Light Up Signpost
    */
-  switchSignpostLightOn() {
-    if (this.hasHadInteraction) return;
-    this.plankMaterial.emissive = new THREE.Color('gray');
-    this.poleMaterial.emissive = new THREE.Color('brown');
+  public switchSignpostLightOn() {
+    if (!this.isLightOn) {
+      addSignpostBanner(this.$canvas, this.sizes);
+
+      if (!this.hasHadInteraction) {
+        this.plankMaterial.emissive = new THREE.Color('gray');
+        this.poleMaterial.emissive = new THREE.Color('brown');
+        this.isLightOn = true;
+      }
+    }
   }
 
   /**
    * Turn Off Signpost Light
    */
-  switchSignpostLightOff() {
-    if (this.hasHadInteraction) return;
-    this.plankMaterial.emissive = new THREE.Color('black');
-    this.poleMaterial.emissive = new THREE.Color('black');
+  public switchSignpostLightOff() {
+    if (this.isLightOn) {
+      removeSignpostBanner(this.$canvas);
+
+      if (!this.hasHadInteraction) {
+        this.plankMaterial.emissive = new THREE.Color('black');
+        this.poleMaterial.emissive = new THREE.Color('black');
+        this.isLightOn = false;
+      }
+    }
   }
 
   /**
    * InteractionLogic
    */
-  interaction() {
+  public interaction() {
     if (this.hasHadInteraction) return;
 
     if (this.isCorrectOption) {
@@ -135,4 +150,87 @@ export default class Option extends Signpost {
 
     this.hasHadInteraction = true;
   }
+}
+
+/**
+ * Adds the signpost to the client's banner.
+ *
+ * @param $canvas The canvas to be put on the banner.
+ * @param sizes Sizes for determining viewport sizes.
+ */
+function addSignpostBanner($canvas: HTMLCanvasElement, sizes: Sizes) {
+  const $newCanvas = cloneCanvas($canvas);
+
+  const newHeight = sizes.viewport.height / 3;
+  const newWidth = newHeight * sizes.viewport.aspect * devicePixelRatio;
+
+  resizeCanvas($newCanvas, newWidth, newHeight);
+
+  $('#banner').append($newCanvas);
+}
+
+/**
+ * Removes $canvas from the client's banner.
+ *
+ * @param $canvas The canvas to remove from the client's banner.
+ */
+function removeSignpostBanner($canvas: HTMLCanvasElement) {
+  $('.' + $canvas.className).each((e, i) => i.remove());
+}
+
+/**
+ * Clones a canvas and its class names.
+ */
+function cloneCanvas($oldCanvas: HTMLCanvasElement) {
+  // create a new canvas...
+  const $newCanvas = document.createElement('canvas');
+  const context = $newCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+  // set dimensions...
+  $newCanvas.width = $oldCanvas.width;
+  $newCanvas.height = $oldCanvas.height;
+
+  // apply the old canvas to the new one...
+  context.drawImage($oldCanvas, 0, 0);
+
+  // copy over class names...
+  $newCanvas.className = $oldCanvas.className;
+
+  //return the new canvas.
+  return $newCanvas;
+}
+
+/**
+ * Resizes $canvas to newWidth and newHeight.
+ */
+function resizeCanvas(
+  $canvas: HTMLCanvasElement,
+  newWidth: number,
+  newHeight: number
+): void {
+  const currentWidth = $canvas.width;
+  const currentHeight = $canvas.height;
+
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = currentWidth;
+  tempCanvas.height = currentHeight;
+
+  const tempContext = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+  tempContext.drawImage($canvas, 0, 0);
+
+  $canvas.width = newWidth;
+  $canvas.height = newHeight;
+
+  const context = $canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.drawImage(
+    tempCanvas,
+    0,
+    0,
+    currentWidth,
+    currentHeight,
+    0,
+    0,
+    newWidth,
+    newHeight
+  );
 }

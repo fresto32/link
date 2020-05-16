@@ -4,15 +4,15 @@ import Time from '../Utils/Time';
 export default class Sounds {
   // Utilities
   /** Time */
-  readonly time: Time;
+  private readonly time: Time;
 
   // Functionality
   /** Debug */
-  readonly debug: dat.GUI;
+  private readonly debug: dat.GUI;
   /** Debug Foler */
-  readonly debugFolder!: dat.GUI;
+  private readonly debugFolder!: dat.GUI;
   /** The settings of each sound file */
-  settings!: {
+  private readonly settings!: {
     name: string;
     sounds: string[];
     minDelta: number;
@@ -22,7 +22,7 @@ export default class Sounds {
     rateMax: number;
   }[];
   /** The sound items */
-  items!: {
+  public readonly items!: {
     name: string;
     minDelta: number;
     volumeMin: number;
@@ -49,14 +49,15 @@ export default class Sounds {
 
     // Set up
     this.items = [];
+    this.settings = [];
 
     this.setSettings();
     this.setMasterVolume();
     this.setMute();
   }
 
-  setSettings() {
-    this.settings = [
+  private setSettings() {
+    this.settings.push(
       {
         name: 'positiveTone',
         sounds: ['src/sounds/positive_tone.mp3'],
@@ -74,15 +75,15 @@ export default class Sounds {
         volumeMax: 10,
         rateMin: 10,
         rateMax: 10,
-      },
-    ];
+      }
+    );
 
     for (const _settings of this.settings) {
       this.add(_settings);
     }
   }
 
-  setMasterVolume() {
+  private setMasterVolume() {
     // Set up
     this.masterVolume = 1;
     Howler.volume(this.masterVolume);
@@ -104,7 +105,7 @@ export default class Sounds {
     }
   }
 
-  setMute() {
+  private setMute() {
     // Set up
     this.muted = false;
     Howler.mute(this.muted);
@@ -137,7 +138,7 @@ export default class Sounds {
     }
   }
 
-  add(_options: {
+  private add(_options: {
     name: string;
     minDelta: number;
     volumeMin: number;
@@ -171,7 +172,7 @@ export default class Sounds {
     this.items.push(item);
   }
 
-  play(_name: string) {
+  public play(_name: string) {
     const item = this.items.find(_item => _item.name === _name);
     const time = Date.now();
 

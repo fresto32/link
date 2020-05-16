@@ -10,37 +10,37 @@ import boundingBox from './Helpers/BoundingBox';
  */
 export default class Building {
   /** Container */
-  container: THREE.Object3D;
+  public readonly container: THREE.Object3D;
   /** Resources */
-  readonly resources: Resources;
+  private readonly resources: Resources;
   /** Debug */
-  readonly config: Config;
+  private readonly config: Config;
   /** Debug */
-  readonly debug: dat.GUI;
+  private readonly debug: dat.GUI;
   /** Ground */
-  readonly ground: THREE.Mesh;
+  private readonly ground: THREE.Mesh;
 
   // Building Functionality
   /** Number of width sections */
-  readonly numWidthSections: number;
+  private readonly numWidthSections: number;
   /** Number of depth sections */
-  readonly numDepthSections: number;
+  private readonly numDepthSections: number;
   /** Number of height sections */
-  readonly numHeightSections: number;
+  private readonly numHeightSections: number;
 
   // Dimensions of building models
   /** Floor Dimensions */
-  readonly floorDimensions: THREE.Vector3;
+  private readonly floorDimensions: THREE.Vector3;
   /** Roof Dimensions */
-  readonly roofDimensions: THREE.Vector3;
+  private readonly roofDimensions: THREE.Vector3;
   /** Wall Dimensions */
-  readonly wallDimensions: THREE.Vector3;
+  private readonly wallDimensions: THREE.Vector3;
 
   // Hiding upper floor objects on avatar entry functionality
   /** Non ground floor objects */
-  upperFloorObjects: THREE.Object3D[];
+  private readonly upperFloorObjects: THREE.Object3D[];
   /** Container Bounding Box */
-  boundingBox: THREE.Box3 | undefined;
+  private _boundingBox: THREE.Box3 | undefined;
 
   constructor(_params: {
     ground: THREE.Mesh;
@@ -93,7 +93,7 @@ export default class Building {
    * Setting the walls of building. A row of walls is produced for all sides and
    * at every level.
    */
-  setWalls() {
+  private setWalls() {
     const allModels = this.resources.models;
 
     const models = {
@@ -211,7 +211,7 @@ export default class Building {
   /**
    * Set Roof
    */
-  setRoof() {
+  private setRoof() {
     const models = this.resources.models;
     const roofModel = models.cabinRoof.scene.children[0].clone();
 
@@ -263,7 +263,7 @@ export default class Building {
   /**
    * Set Gables
    */
-  setGables() {
+  private setGables() {
     const models = this.resources.models;
 
     const windows = [
@@ -370,35 +370,10 @@ export default class Building {
     }
   }
 
-  computeBoundingBox() {
-    this.boundingBox = boundingBox(this.container);
-  }
-
-  setAvatarEntryInteraction(avatar: Avatar, time: Time) {
-    if (this.boundingBox === undefined)
-      this.boundingBox = boundingBox(this.container);
-
-    time.on('tick', () => {
-      if (this.boundingBox === undefined) return;
-
-      const avatarPosition = avatar.pirateCaptain.position.clone();
-      //* The precision of setOnPlane(...) may lead the avatar's position to
-      //* have a y that is just outside some bounding box (yet the x and z lie
-      //* in the box). So adjust this y value to push thoose points just outside
-      //* the exclusion box's y value into it.
-      avatarPosition.y += 0.5;
-
-      const showUpperFloor = !this.boundingBox.containsPoint(avatarPosition);
-      this.upperFloorObjects.forEach(object => {
-        object.visible = showUpperFloor;
-      });
-    });
-  }
-
   /**
    * Set Floor
    */
-  setFloor() {
+  private setFloor() {
     const floorModel = this.resources.models.cabinFloor.scene.children[0];
 
     // reason: inline width, depth, and height variables
@@ -418,6 +393,35 @@ export default class Building {
     }
   }
 
+  public get boundingBox() {
+    return this._boundingBox?.clone();
+  }
+
+  public computeBoundingBox() {
+    this._boundingBox = boundingBox(this.container);
+  }
+
+  public setAvatarEntryInteraction(avatar: Avatar, time: Time) {
+    if (this._boundingBox === undefined)
+      this._boundingBox = boundingBox(this.container);
+
+    time.on('tick', () => {
+      if (this._boundingBox === undefined) return;
+
+      const avatarPosition = avatar.pirateCaptain.position.clone();
+      //* The precision of setOnPlane(...) may lead the avatar's position to
+      //* have a y that is just outside some bounding box (yet the x and z lie
+      //* in the box). So adjust this y value to push thoose points just outside
+      //* the exclusion box's y value into it.
+      avatarPosition.y += 0.5;
+
+      const showUpperFloor = !this._boundingBox.containsPoint(avatarPosition);
+      this.upperFloorObjects.forEach(object => {
+        object.visible = showUpperFloor;
+      });
+    });
+  }
+
   /**
    * Adds a row of objects at specified positions.
    *
@@ -428,7 +432,7 @@ export default class Building {
    * @param condition Condition of loop.
    * @param initiation Initiation value of loop.
    */
-  addRowOfObjects(
+  private addRowOfObjects(
     model: (ndx: number) => THREE.Object3D,
     height: number,
     depth: (ndx: number) => number,
@@ -449,7 +453,7 @@ export default class Building {
    *
    * @param object Object to add to this container.
    */
-  addToContainer(object: THREE.Object3D, isUpperFloor: boolean) {
+  private addToContainer(object: THREE.Object3D, isUpperFloor: boolean) {
     this.container.add(object);
 
     if (isUpperFloor) this.upperFloorObjects.push(object);

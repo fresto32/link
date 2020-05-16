@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] Signpost Banners, Unit Tests, and Access Modifiers
+
+### Added
+
+- Added access modifiers to all class member variables and functions.
+- Added unit tests for all World Helpers.
+- No longer need to be in front of a signpost for it to light up and become interactable.
+- Upon entering a signpost's viewing bounding box, the prompt is displayed in a banner along the top of the client.
+  - In mobile, this banner is expected to span the entire width of the phone.
+  - This is shown below:
+
+<img src="doc_images/banner_mobile.jpg" width="200"/>
+<img src="doc_images/banner_desktop.png" width="600"/>
+
 ## [0.3.0] Touch Controls & Merging Geometries Improvements
 
 ### Added
