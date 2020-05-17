@@ -6,6 +6,7 @@ import Resources from './Resources';
 import Controls from './Controls';
 import Camera from './Camera';
 import World from './World';
+import ApplicationSettings from './Settings/Application';
 
 /**
  * Encapsulates all information required to run the application.
@@ -13,6 +14,8 @@ import World from './World';
 export default class Application {
   /** Canvas */
   private readonly $canvas: HTMLCanvasElement;
+  /** Settings */
+  private readonly settings: ApplicationSettings;
 
   // Utilities
   /** Time */
@@ -43,9 +46,10 @@ export default class Application {
   /**
    * Constructor
    */
-  constructor($canvas: HTMLCanvasElement) {
+  constructor($canvas: HTMLCanvasElement, settings: ApplicationSettings) {
     // Options
     this.$canvas = $canvas;
+    this.settings = settings;
 
     // Set up
     this.time = new Time();
@@ -66,9 +70,7 @@ export default class Application {
    * Set config
    */
   private setConfig() {
-    //if (!this.config) this.config = { debug: window.location.hash === '#debug' }
-    //else this.config.debug = window.location.hash === '#debug'
-    this.config = {debug: true, showBoundingBoxes: false, touch: false};
+    this.config = this.settings.config;
 
     window.addEventListener(
       'touchstart',
