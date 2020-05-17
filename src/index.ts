@@ -105,6 +105,28 @@ const settings: ApplicationSettings = {
         },
       },
     ],
+    sounds: {
+      itemSettings: [
+        {
+          name: 'positiveTone',
+          sounds: ['src/sounds/positive_tone.mp3'],
+          minDelta: 1000,
+          volumeMin: 10,
+          volumeMax: 10,
+          rateMin: 10,
+          rateMax: 10,
+        },
+        {
+          name: 'glitch',
+          sounds: ['src/sounds/glitch.mp3'],
+          minDelta: 1000,
+          volumeMin: 10,
+          volumeMax: 10,
+          rateMin: 10,
+          rateMax: 10,
+        },
+      ],
+    },
   },
 };
 

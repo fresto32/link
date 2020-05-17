@@ -1,5 +1,6 @@
 import {Howl, Howler} from 'howler';
 import Time from '../Utils/Time';
+import SoundsSettings from '../Settings/Sounds';
 
 export default class Sounds {
   // Utilities
@@ -11,16 +12,8 @@ export default class Sounds {
   private readonly debug: dat.GUI;
   /** Debug Foler */
   private readonly debugFolder!: dat.GUI;
-  /** The settings of each sound file */
-  private readonly settings!: {
-    name: string;
-    sounds: string[];
-    minDelta: number;
-    volumeMin: number;
-    volumeMax: number;
-    rateMin: number;
-    rateMax: number;
-  }[];
+  /** Sounds Settings */
+  private readonly settings: SoundsSettings;
   /** The sound items */
   public readonly items!: {
     name: string;
@@ -37,10 +30,11 @@ export default class Sounds {
   /** Whether Howler is muted */
   muted!: boolean;
 
-  constructor(_params: {time: Time; debug: dat.GUI}) {
+  constructor(_params: {time: Time; debug: dat.GUI; settings: SoundsSettings}) {
     // Parameters
     this.time = _params.time;
     this.debug = _params.debug;
+    this.settings = _params.settings;
 
     // Debug
     if (this.debug) {
@@ -49,7 +43,6 @@ export default class Sounds {
 
     // Set up
     this.items = [];
-    this.settings = [];
 
     this.setSettings();
     this.setMasterVolume();
@@ -57,28 +50,7 @@ export default class Sounds {
   }
 
   private setSettings() {
-    this.settings.push(
-      {
-        name: 'positiveTone',
-        sounds: ['src/sounds/positive_tone.mp3'],
-        minDelta: 1000,
-        volumeMin: 10,
-        volumeMax: 10,
-        rateMin: 10,
-        rateMax: 10,
-      },
-      {
-        name: 'glitch',
-        sounds: ['src/sounds/glitch.mp3'],
-        minDelta: 1000,
-        volumeMin: 10,
-        volumeMax: 10,
-        rateMin: 10,
-        rateMax: 10,
-      }
-    );
-
-    for (const _settings of this.settings) {
+    for (const _settings of this.settings.itemSettings) {
       this.add(_settings);
     }
   }

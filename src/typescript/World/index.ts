@@ -106,7 +106,11 @@ export default class {
    * Set Sounds
    */
   private setSounds() {
-    this.sounds = new Sounds({time: this.time, debug: this.debug});
+    this.sounds = new Sounds({
+      time: this.time,
+      debug: this.debug,
+      settings: this.settings.sounds,
+    });
   }
 
   /**
