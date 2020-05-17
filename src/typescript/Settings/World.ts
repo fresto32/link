@@ -1,5 +1,5 @@
 import PromptSettings from './Prompt';
-import OptionSettings from './OptionSettings';
+import OptionSettings from './Option';
 import SoundsSettings from './Sounds';
 import SpawnIslandSettings from './SpawnIsland';
 
