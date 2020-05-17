@@ -54,7 +54,7 @@ export default class Application {
     // Set up
     this.time = new Time();
     this.sizes = new Sizes();
-    this.resources = new Resources();
+    this.resources = new Resources({settings: this.settings.resources});
 
     this.setConfig();
     this.setDebug();
