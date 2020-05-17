@@ -215,6 +215,7 @@ export default class {
       config: this.config,
       debug: this.debug,
       objects: this.objects,
+      settings: this.settings.spawnIsland,
     });
     this.container.add(this.spawnIsland.ground);
   }

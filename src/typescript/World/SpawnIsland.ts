@@ -8,6 +8,7 @@ import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
 import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
+import SpawnIslandSettings from '../Settings/SpawnIsland';
 
 export default class SpawnIsland {
   // TODO: Make ground and buildings private/readonly. Create readonly setters
@@ -24,6 +25,8 @@ export default class SpawnIsland {
   private readonly debug: dat.GUI;
   /** Objects */
   private readonly objects: Objects;
+  /** Settings */
+  private readonly settings: SpawnIslandSettings;
   /** Areas that ought to be flat and contain no shrubbery */
   private readonly exclusionAreas: THREE.Box3[];
 
@@ -32,12 +35,14 @@ export default class SpawnIsland {
     config: Config;
     debug: dat.GUI;
     objects: Objects;
+    settings: SpawnIslandSettings;
   }) {
     // Params
     this.resources = _params.resources;
     this.config = _params.config;
     this.debug = _params.debug;
     this.objects = _params.objects;
+    this.settings = _params.settings;
 
     // Setting up member variables
     this.exclusionAreas = [];
