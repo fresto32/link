@@ -127,6 +127,129 @@ const settings: ApplicationSettings = {
         },
       ],
     },
+    spawnIsland: {
+      ground: {
+        texture: 'grass',
+        emissive: 'green',
+        width: 320,
+        depth: 220,
+      },
+      border: {
+        model: 'fence',
+      },
+      unaryLandmarks: [
+        {
+          model: 'shipDark',
+          scale: 4,
+          position: {
+            x: 75,
+            z: 50,
+          },
+        },
+        {
+          model: 'shipWreck',
+          scale: 4,
+          rotation: Math.PI / 1.5,
+          position: {
+            x: -75,
+            z: -50,
+          },
+        },
+        {
+          model: 'tower',
+          scale: 4,
+          position: {
+            x: -75,
+            z: 50,
+          },
+        },
+      ],
+      clusters: [
+        {
+          models: ['palmShort', 'palmLong'],
+          numObjects: 80,
+          scale: 4,
+          position: {
+            xCenter: 75,
+            zCenter: -50,
+            xSpread: 60,
+            zSpread: 40,
+          },
+          obeyExclusionAreas: false,
+        },
+        {
+          models: ['formationRock', 'formationLargeRock'],
+          numObjects: 30,
+          scale: 2,
+          position: {
+            xCenter: 0,
+            zCenter: 0,
+            xSpread: 150,
+            zSpread: 100,
+          },
+          obeyExclusionAreas: true,
+        },
+        {
+          models: ['formationStone', 'formationLargeStone'],
+          numObjects: 30,
+          scale: 1.5,
+          position: {
+            xCenter: 0,
+            zCenter: 0,
+            xSpread: 150,
+            zSpread: 100,
+          },
+          obeyExclusionAreas: true,
+        },
+      ],
+      buildings: [
+        {
+          numWidthSections: 1,
+          numDepthSections: 1,
+          numHeightSections: 1,
+          position: {
+            x: 20,
+            z: 30,
+          },
+        },
+        {
+          numWidthSections: 1,
+          numDepthSections: 1,
+          numHeightSections: 1,
+          position: {
+            x: 10,
+            z: 30,
+          },
+        },
+        {
+          numWidthSections: 3,
+          numDepthSections: 2,
+          numHeightSections: 1,
+          position: {
+            x: -20,
+            z: 30,
+          },
+        },
+        {
+          numWidthSections: 2,
+          numDepthSections: 2,
+          numHeightSections: 1,
+          position: {
+            x: 20,
+            z: 50,
+          },
+        },
+        {
+          numWidthSections: 5,
+          numDepthSections: 5,
+          numHeightSections: 2,
+          position: {
+            x: -20,
+            z: 50,
+          },
+        },
+      ],
+    },
   },
 };
 
