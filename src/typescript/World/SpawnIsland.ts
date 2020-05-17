@@ -51,11 +51,8 @@ export default class SpawnIsland {
     this.setBuildings();
     this.setGround();
     this.setBorder();
-    this.setPirateBoat();
-    this.setPalmTrees();
-    this.setShipWreck();
-    this.setTower();
-    this.setRockFormations();
+    this.setUnaryLandmarks();
+    this.setClusters();
     this.setGrassTufts();
   }
 
@@ -65,7 +62,7 @@ export default class SpawnIsland {
    * The ground for the spawn island is a single sided plane.
    */
   private setGround() {
-    const texture = this.resources.textures.grass;
+    const texture = this.resources.textures[this.settings.ground.texture];
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.x = 10;
@@ -73,10 +70,15 @@ export default class SpawnIsland {
 
     const backgroundMaterial = new THREE.MeshPhongMaterial({
       map: texture,
-      emissive: 'green',
+      emissive: this.settings.ground.emissive,
     });
 
-    const geometry = new THREE.PlaneGeometry(320, 220, 5, 5);
+    const geometry = new THREE.PlaneGeometry(
+      this.settings.ground.width,
+      this.settings.ground.depth,
+      5,
+      5
+    );
     this.ground = new THREE.Mesh(geometry, backgroundMaterial);
 
     // Rotate plane to be orthogonal to y axis. This is baked into the ground's
@@ -100,7 +102,8 @@ export default class SpawnIsland {
    * background plane.
    */
   private setBorder() {
-    const fenceVertical = this.resources.models.fence.scene.children[0].clone();
+    const model = this.resources.models[this.settings.border.model];
+    const fenceVertical = model.scene.children[0].clone();
     setScale(fenceVertical);
     const fenceHorizontal = fenceVertical.clone().rotateY(Math.PI / 2);
 
@@ -190,73 +193,40 @@ export default class SpawnIsland {
   }
 
   /**
-   * Set Pirate Boat
-   *
-   * Sets a pirate boat in the upper right quadrant.
+   * Sets all the unary landmarks in settings.
    */
-  private setPirateBoat() {
-    const shipDark = this.resources.models.shipDark.scene.children[0];
-    setScale(shipDark);
-    setOnPlane(this.ground, shipDark, 75, 50);
-    this.objects.add(shipDark, {isCollidable: true});
+  private setUnaryLandmarks() {
+    for (const landmark of this.settings.unaryLandmarks) {
+      const model = this.resources.models[landmark.model].scene.children[0];
+      setScale(model, landmark.scale);
+      if (landmark.rotation) model.rotateY(landmark.rotation);
+      setOnPlane(this.ground, model, landmark.position.x, landmark.position.z);
+      this.objects.add(model, {isCollidable: true});
+    }
   }
 
   /**
-   * Set Palm Trees
+   * Sets all the clusters in settings.
    *
-   * Sets some palm trees in the bottom right quadrant
+   * Clusters may or may not be landmarks.
    */
-  private setPalmTrees() {
+  private setClusters() {
     const items = this.resources.models;
-    const palmModels: THREE.Object3D[] = [
-      items.palmShort.scene.children[0],
-      items.palmLong.scene.children[0],
-    ];
-    this.setModelCluster(palmModels, 80, 4, 75, -50, 60, 40);
-  }
 
-  /**
-   * Set Ship Wreck
-   *
-   * Sets a ship wreck in the bottom left hand quadrant.
-   */
-  private setShipWreck() {
-    const shipWreck = this.resources.models.shipWreck.scene.children[0];
-    setScale(shipWreck);
-    shipWreck.rotateY(Math.PI / 1.5);
-    setOnPlane(this.ground, shipWreck, -75, -50);
-    this.objects.add(shipWreck, {isCollidable: true});
-  }
-
-  /**
-   * Set Tower
-   *
-   * Sets a tower in the upper left quadrant.
-   */
-  private setTower() {
-    const tower = this.resources.models.tower.scene.children[0];
-    setScale(tower);
-    setOnPlane(this.ground, tower, -75, 50);
-    this.objects.add(tower, {isCollidable: true});
-  }
-
-  /**
-   * Set Rock Formations
-   *
-   * Sets rock formations around the map to add more scenery
-   */
-  private setRockFormations() {
-    const items = this.resources.models;
-    const rocks: THREE.Object3D[] = [
-      items.formationLargeRock.scene.children[0],
-      items.formationRock.scene.children[0],
-    ];
-    const stones: THREE.Object3D[] = [
-      items.formationLargeStone.scene.children[0],
-      items.formationStone.scene.children[0],
-    ];
-    this.setModelCluster(rocks, 30, 2, 0, 0, 150, 100, this.exclusionAreas);
-    this.setModelCluster(stones, 30, 1.5, 0, 0, 150, 100, this.exclusionAreas);
+    for (const cluster of this.settings.clusters) {
+      const models: THREE.Object3D[] = [];
+      cluster.models.forEach(m => models.push(items[m].scene.children[0]));
+      this.setModelCluster(
+        models,
+        cluster.numObjects,
+        cluster.scale,
+        cluster.position.xCenter,
+        cluster.position.zCenter,
+        cluster.position.xSpread,
+        cluster.position.zSpread,
+        cluster.obeyExclusionAreas ? this.exclusionAreas : undefined
+      );
+    }
   }
 
   /**
@@ -285,45 +255,7 @@ export default class SpawnIsland {
   private setBuildings() {
     this.buildings = [];
 
-    const buildingDimensions = [
-      {
-        numWidthSections: 1,
-        numDepthSections: 1,
-        numHeightSections: 1,
-        xPosition: 20,
-        zPosition: 30,
-      },
-      {
-        numWidthSections: 1,
-        numDepthSections: 1,
-        numHeightSections: 1,
-        xPosition: 10,
-        zPosition: 30,
-      },
-      {
-        numWidthSections: 3,
-        numDepthSections: 2,
-        numHeightSections: 1,
-        xPosition: -20,
-        zPosition: 30,
-      },
-      {
-        numWidthSections: 2,
-        numDepthSections: 2,
-        numHeightSections: 1,
-        xPosition: 20,
-        zPosition: 50,
-      },
-      {
-        numWidthSections: 5,
-        numDepthSections: 5,
-        numHeightSections: 2,
-        xPosition: -20,
-        zPosition: 50,
-      },
-    ];
-
-    buildingDimensions.forEach(dimension => {
+    this.settings.buildings.forEach(dimension => {
       const house = new Building({
         ground: this.ground,
         resources: this.resources,
@@ -336,8 +268,8 @@ export default class SpawnIsland {
         },
       });
 
-      house.container.position.z = dimension.zPosition;
-      house.container.position.x = dimension.xPosition;
+      house.container.position.x = dimension.position.x;
+      house.container.position.z = dimension.position.z;
       house.container.scale.copy(new THREE.Vector3(6, 6, 6));
       house.container.updateMatrix();
       house.computeBoundingBox();
