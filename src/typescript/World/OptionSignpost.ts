@@ -24,7 +24,7 @@ export default class Option extends Signpost {
 
   constructor(_params: {
     text: string;
-    picture: THREE.Texture | null;
+    picture?: THREE.Texture;
     textTextureAnisotropy: number;
     isCorrectOption: boolean;
     sounds: Sounds;

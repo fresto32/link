@@ -12,6 +12,7 @@ import SpawnIsland from './SpawnIsland';
 import Avatar from './Avatar';
 import setOnPlane from './Helpers/SetOnPlane';
 import Sounds from './Sounds';
+import WorldSettings from '../Settings/World';
 
 export default class {
   // Utilities
@@ -29,6 +30,8 @@ export default class {
   private readonly debug: dat.GUI;
   /** Renderer */
   private readonly renderer: THREE.WebGLRenderer;
+  /** Settings */
+  private readonly settings: WorldSettings;
 
   // World Functionality
   /** Container */
@@ -61,6 +64,7 @@ export default class {
     debug: dat.GUI;
     renderer: THREE.WebGLRenderer;
     controls: Controls;
+    settings: WorldSettings;
   }) {
     // Options
     this.time = _params.time;
@@ -70,6 +74,7 @@ export default class {
     this.debug = _params.debug;
     this.renderer = _params.renderer;
     this.controls = _params.controls;
+    this.settings = _params.settings;
 
     // Container
     this.container = new THREE.Object3D();
@@ -120,8 +125,11 @@ export default class {
    */
   private setPrompt() {
     this.prompt = new Signpost({
-      text: 'What is an example of an O(n) sorting algoritm?',
-      picture: null,
+      text: this.settings.prompt.text,
+      picture:
+        this.settings.prompt.picture !== undefined
+          ? this.resources.textures[this.settings.prompt.picture]
+          : undefined,
       textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
     });
     setOnPlane(this.spawnIsland.ground, this.prompt.container, 0, -10);
@@ -132,49 +140,31 @@ export default class {
    * Set Options
    */
   private setOptions() {
-    this.options = [
-      new OptionSignpost({
-        text: 'Merge sort',
-        picture: this.resources.textures.mergeSort,
-        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
-        isCorrectOption: false,
-        sounds: this.sounds,
-        time: this.time,
-        sizes: this.sizes,
-      }),
-      new OptionSignpost({
-        text: 'Radix sort',
-        picture: this.resources.textures.radixSort,
-        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
-        isCorrectOption: true,
-        sounds: this.sounds,
-        time: this.time,
-        sizes: this.sizes,
-      }),
-      new OptionSignpost({
-        text: 'Quick sort',
-        picture: this.resources.textures.quickSort,
-        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
-        isCorrectOption: false,
-        sounds: this.sounds,
-        time: this.time,
-        sizes: this.sizes,
-      }),
-      new OptionSignpost({
-        text: 'Insertion sort',
-        picture: this.resources.textures.insertionSort,
-        textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
-        isCorrectOption: false,
-        sounds: this.sounds,
-        time: this.time,
-        sizes: this.sizes,
-      }),
-    ];
+    this.options = [];
 
-    setOnPlane(this.spawnIsland.ground, this.options[0].container, 75, 30);
-    setOnPlane(this.spawnIsland.ground, this.options[1].container, 75, -30);
-    setOnPlane(this.spawnIsland.ground, this.options[2].container, -75, 30);
-    setOnPlane(this.spawnIsland.ground, this.options[3].container, -75, -30);
+    for (const option of this.settings.options) {
+      this.options.push(
+        new OptionSignpost({
+          text: option.text,
+          picture:
+            option.picture !== undefined
+              ? this.resources.textures[option.picture]
+              : undefined,
+          textTextureAnisotropy: this.renderer.capabilities.getMaxAnisotropy(),
+          isCorrectOption: option.isCorrectOption,
+          sounds: this.sounds,
+          time: this.time,
+          sizes: this.sizes,
+        })
+      );
+
+      setOnPlane(
+        this.spawnIsland.ground,
+        this.options[this.options.length - 1].container,
+        option.position.x,
+        option.position.z
+      );
+    }
 
     this.options.forEach(o => {
       o.container.rotateY(Math.PI * 2 * Math.random());

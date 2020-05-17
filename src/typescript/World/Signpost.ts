@@ -16,7 +16,7 @@ export default class Signpost {
   /** Anisotropy used in rendering textTexture */
   protected textTextureAnisotropy!: number;
   /** Picture to write to the signage */
-  protected picture: THREE.Texture | null;
+  protected picture?: THREE.Texture;
   /** Background Mesh */
   protected background!: THREE.Mesh;
   /** Border Mesh */
@@ -57,7 +57,7 @@ export default class Signpost {
 
   constructor(_params: {
     text: string;
-    picture: THREE.Texture | null;
+    picture?: THREE.Texture;
     textTextureAnisotropy: number;
   }) {
     // Container
@@ -111,7 +111,7 @@ export default class Signpost {
 
     this.$canvas.width = 1200;
 
-    if (this.picture !== null) {
+    if (this.picture !== undefined) {
       imageDimensions = ImageDimensionsInCanvas(
         context,
         this.$canvas,
@@ -138,7 +138,7 @@ export default class Signpost {
       context.fillText(line, horizontalPadding, (1 + i) * this.textHeight);
     });
 
-    if (this.picture !== null) {
+    if (this.picture !== undefined) {
       context.drawImage(
         this.picture.image,
         imageDimensions.horizontalPadding,

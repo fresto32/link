@@ -184,6 +184,7 @@ export default class Application {
       debug: this.debug,
       renderer: this.renderer,
       controls: this.controls,
+      settings: this.settings.world,
     });
     this.scene.add(this.world.container);
   }

@@ -63,6 +63,49 @@ const settings: ApplicationSettings = {
 
     ]
   },
+  world: {
+    prompt: {
+      text: 'What is an example of an O(n) sorting algoritm?',
+    },
+    options: [
+      {
+        text: 'Merge sort',
+        picture: 'mergeSort',
+        isCorrectOption: false,
+        position: {
+          x: 75,
+          z: 30,
+        },
+      },
+      {
+        text: 'Radix sort',
+        picture: 'radixSort',
+        isCorrectOption: true,
+        position: {
+          x: 75,
+          z: -30,
+        },
+      },
+      {
+        text: 'Quick sort',
+        picture: 'quickSort',
+        isCorrectOption: false,
+        position: {
+          x: -75,
+          z: 30,
+        },
+      },
+      {
+        text: 'Insertion sort',
+        picture: 'insertionSort',
+        isCorrectOption: false,
+        position: {
+          x: -75,
+          z: -30,
+        },
+      },
+    ],
+  },
 };
 
 new Application($('#c')[0] as HTMLCanvasElement, settings);
