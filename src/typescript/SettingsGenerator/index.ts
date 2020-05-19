@@ -1,6 +1,6 @@
-import ApplicationSettings from './Settings/Application';
-import ResourcesSettings from './Settings/Resources';
-import WorldSettings from './Settings/World';
+import ApplicationSettings from '../Settings/Application';
+import ResourcesSettings from '../Settings/Resources';
+import WorldSettings from '../Settings/World';
 
 export default class SettingsGenerator implements ApplicationSettings {
   config: Config;
