@@ -199,7 +199,6 @@ export default class SpawnIsland {
     for (const landmark of this.settings.unaryLandmarks) {
       const model = this.resources.models[landmark.model].scene.children[0];
       setScale(model, landmark.scale);
-      if (landmark.rotation) model.rotateY(landmark.rotation);
       setOnPlane(this.ground, model, landmark.position.x, landmark.position.z);
       this.objects.add(model, {isCollidable: true});
     }
