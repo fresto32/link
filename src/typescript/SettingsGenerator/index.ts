@@ -72,8 +72,8 @@ export default class SettingsGenerator implements ApplicationSettings {
         picture: 'mergeSort',
         isCorrectOption: false,
         position: {
-          x: 75,
-          z: 30,
+          x: 55,
+          z: 20,
         },
       },
       {
@@ -81,8 +81,8 @@ export default class SettingsGenerator implements ApplicationSettings {
         picture: 'radixSort',
         isCorrectOption: true,
         position: {
-          x: 75,
-          z: -30,
+          x: 55,
+          z: -20,
         },
       },
       {
@@ -90,8 +90,8 @@ export default class SettingsGenerator implements ApplicationSettings {
         picture: 'quickSort',
         isCorrectOption: false,
         position: {
-          x: -75,
-          z: 30,
+          x: -55,
+          z: 20,
         },
       },
       {
@@ -99,8 +99,8 @@ export default class SettingsGenerator implements ApplicationSettings {
         picture: 'insertionSort',
         isCorrectOption: false,
         position: {
-          x: -75,
-          z: -30,
+          x: -55,
+          z: -20,
         },
       }
     );
