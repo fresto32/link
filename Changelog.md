@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - World settings (e.g. landmark models, positions, ground color etc) have been moved out of construction classes and into individual setting interfaces.
   - This means that, if we wanted to change some world setting, all we need to do is modify the object in index.ts.
   - This is in preparation for creating a server and splitting client from server logic.
+- Models are randomly chosen to act as landmarks from a wider selection.
+- Skyboxes are randomly selected.
 
 ## [0.4.0] Signpost Banners, Unit Tests, and Access Modifiers
 
