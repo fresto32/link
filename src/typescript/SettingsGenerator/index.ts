@@ -1,6 +1,7 @@
 import ApplicationSettings from '../Settings/Application';
 import ResourcesSettings from '../Settings/Resources';
 import WorldSettings from '../Settings/World';
+import Landmarks from './Landmarks';
 
 export default class SettingsGenerator implements ApplicationSettings {
   config: Config;
@@ -40,10 +41,10 @@ export default class SettingsGenerator implements ApplicationSettings {
     this.setPrompt();
     this.setOptions();
     this.setSounds();
-    this.setUnaryLandmarks();
     this.setClusters();
     this.setBuildings();
     this.setSkybox();
+    this.setLandmarks();
   }
 
   private setConstantResources() {
@@ -137,56 +138,8 @@ export default class SettingsGenerator implements ApplicationSettings {
     );
   }
 
-  private setUnaryLandmarks() {
-    this.world.spawnIsland.unaryLandmarks.push(
-      {
-        model: 'shipDark',
-        scale: 4,
-        position: {
-          x: 75,
-          z: 50,
-        },
-      },
-      {
-        model: 'shipWreck',
-        scale: 4,
-        rotation: Math.PI / 1.5,
-        position: {
-          x: -75,
-          z: -50,
-        },
-      },
-      {
-        model: 'tower',
-        scale: 4,
-        position: {
-          x: -75,
-          z: 50,
-        },
-      }
-    );
-
-    this.resources.items.push(
-      {name: 'shipDark', source: 'src/models/pirateKit/ship_dark.gltf'},
-      {name: 'shipWreck', source: 'src/models/pirateKit/ship_wreck.gltf'},
-      {name: 'tower', source: 'src/models/pirateKit/tower.gltf'}
-    );
-  }
-
   private setClusters() {
     this.world.spawnIsland.clusters.push(
-      {
-        models: ['palmShort', 'palmLong'],
-        numObjects: 80,
-        scale: 4,
-        position: {
-          xCenter: 75,
-          zCenter: -50,
-          xSpread: 60,
-          zSpread: 40,
-        },
-        obeyExclusionAreas: false,
-      },
       {
         models: ['formationRock', 'formationLargeRock'],
         numObjects: 30,
@@ -215,8 +168,6 @@ export default class SettingsGenerator implements ApplicationSettings {
     // Reason: consistent formatting of resources items
     // prettier-ignore
     this.resources.items.push(
-      {name: 'palmLong', source: 'src/models/pirateKit/palm_long.gltf'},
-      {name: 'palmShort', source: 'src/models/pirateKit/palm_short.gltf'},
       {name: 'formationRock', source: 'src/models/pirateKit/formation_rock.gltf'},
       {name: 'formationLargeRock', source: 'src/models/pirateKit/formationLarge_rock.gltf'},
       {name: 'formationStone', source: 'src/models/pirateKit/formation_stone.gltf'},
@@ -302,5 +253,14 @@ export default class SettingsGenerator implements ApplicationSettings {
       {name: 'skyboxRt', source: 'src/models/skybox/' + num + '/rt.jpg', type: 'texture'},
       {name: 'skyboxUp', source: 'src/models/skybox/' + num + '/up.jpg', type: 'texture'}
     )
+  }
+
+  private setLandmarks() {
+    const landmarks = new Landmarks();
+    landmarks.setLandmarks(
+      this.resources,
+      this.world.spawnIsland.unaryLandmarks,
+      this.world.spawnIsland.clusters
+    );
   }
 }
