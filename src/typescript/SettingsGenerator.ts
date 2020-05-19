@@ -36,7 +36,7 @@ export default class SettingsGenerator implements ApplicationSettings {
       },
     };
 
-    this.setStaticResources();
+    this.setConstantResources();
     this.setPrompt();
     this.setOptions();
     this.setSounds();
@@ -46,7 +46,7 @@ export default class SettingsGenerator implements ApplicationSettings {
     this.setSkybox();
   }
 
-  private setStaticResources() {
+  private setConstantResources() {
     // Reason: consistent formatting of resources items
     // prettier-ignore
     this.resources.items.push(
