@@ -290,15 +290,17 @@ export default class SettingsGenerator implements ApplicationSettings {
   }
 
   private setSkybox() {
+    const num = Math.floor(Math.random() * 46).toString();
+
     // Reason: consistent formatting of resources items
     // prettier-ignore
     this.resources.items.push(
-      {name: 'skyboxBk', source: 'src/models/skybox/5/bk.jpg', type: 'texture'},
-      {name: 'skyboxDn', source: 'src/models/skybox/5/dn.jpg', type: 'texture'},
-      {name: 'skyboxFt', source: 'src/models/skybox/5/ft.jpg', type: 'texture'},
-      {name: 'skyboxLf', source: 'src/models/skybox/5/lf.jpg', type: 'texture'},
-      {name: 'skyboxRt', source: 'src/models/skybox/5/rt.jpg', type: 'texture'},
-      {name: 'skyboxUp', source: 'src/models/skybox/5/up.jpg', type: 'texture'}
+      {name: 'skyboxBk', source: 'src/models/skybox/' + num + '/bk.jpg', type: 'texture'},
+      {name: 'skyboxDn', source: 'src/models/skybox/' + num + '/dn.jpg', type: 'texture'},
+      {name: 'skyboxFt', source: 'src/models/skybox/' + num + '/ft.jpg', type: 'texture'},
+      {name: 'skyboxLf', source: 'src/models/skybox/' + num + '/lf.jpg', type: 'texture'},
+      {name: 'skyboxRt', source: 'src/models/skybox/' + num + '/rt.jpg', type: 'texture'},
+      {name: 'skyboxUp', source: 'src/models/skybox/' + num + '/up.jpg', type: 'texture'}
     )
   }
 }
