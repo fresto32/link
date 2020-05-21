@@ -12,7 +12,7 @@ import SpawnIsland from './SpawnIsland';
 import Avatar from './Avatar';
 import setOnPlane from './Helpers/SetOnPlane';
 import Sounds from './Sounds';
-import WorldSettings from '../Settings/World';
+import WorldSettings from '../Settings/Types/World';
 
 export default class {
   // Utilities

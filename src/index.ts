@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import Application from './typescript/Application';
-import SettingsGenerator from './typescript/SettingsGenerator';
+import SettingsGenerator from './typescript/Settings';
 
 const settings = new SettingsGenerator();
 

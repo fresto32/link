@@ -1,6 +1,6 @@
 import {Howl, Howler} from 'howler';
 import Time from '../Utils/Time';
-import SoundsSettings from '../Settings/Sounds';
+import SoundsSettings from '../Settings/Types/Sounds';
 
 export default class Sounds {
   // Utilities

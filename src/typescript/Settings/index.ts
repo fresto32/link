@@ -1,6 +1,6 @@
-import ApplicationSettings from '../Settings/Application';
-import ResourcesSettings from '../Settings/Resources';
-import WorldSettings from '../Settings/World';
+import ApplicationSettings from './Types/Application';
+import ResourcesSettings from './Types/Resources';
+import WorldSettings from './Types/World';
 import Landmarks from './Landmarks';
 
 export default class SettingsGenerator implements ApplicationSettings {

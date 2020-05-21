@@ -8,7 +8,7 @@ import grassTufts from './GrassTufts';
 import Building from './Building';
 import RandomPoint from './Helpers/RandomPoint';
 import {flattenPlaneToBoxes} from './Helpers/FlattenPlane';
-import SpawnIslandSettings from '../Settings/SpawnIsland';
+import SpawnIslandSettings from '../Settings/Types/SpawnIsland';
 
 export default class SpawnIsland {
   // TODO: Make ground and buildings private/readonly. Create readonly setters

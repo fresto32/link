@@ -6,7 +6,7 @@ import Resources from './Resources';
 import Controls from './Controls';
 import Camera from './Camera';
 import World from './World';
-import ApplicationSettings from './Settings/Application';
+import ApplicationSettings from './Settings/Types/Application';
 
 /**
  * Encapsulates all information required to run the application.

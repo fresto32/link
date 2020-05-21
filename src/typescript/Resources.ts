@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import Loader from './Utils/Loader';
 import EventEmitter from './Utils/EventEmitter';
-import ResourcesSettings from './Settings/Resources';
+import ResourcesSettings from './Settings/Types/Resources';
 
 export default class Resources extends EventEmitter {
   /** Loader to load all item and texture resources */

@@ -1,4 +1,4 @@
-import ResourcesSettings from '../Settings/Resources';
+import ResourcesSettings from './Types/Resources';
 
 interface Landmark {
   sources: {name: string; source: string}[];
