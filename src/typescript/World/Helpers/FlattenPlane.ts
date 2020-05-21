@@ -55,7 +55,7 @@ export function flattenPlaneToPoints(
       pt.z
     );
 
-    if (faceInPlaneContainingPt === null)
+    if (faceInPlaneContainingPt === undefined)
       throw console.error('Plane does not contain ' + pt + '.');
 
     if (plane.geometry instanceof THREE.BufferGeometry)

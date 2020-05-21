@@ -36,7 +36,7 @@ export default function setOnPlane(
   // Find the face that contains the x and z of position...
   const containingFace = faceInPlaneContainingPoint(plane, x, z);
 
-  if (containingFace === null) {
+  if (containingFace === undefined) {
     throw console.error('Position (x,z) is not found in plane.');
   }
 

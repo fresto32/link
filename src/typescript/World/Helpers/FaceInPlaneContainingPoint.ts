@@ -12,11 +12,11 @@ export default function faceInPlaneContainingPoint(
   plane: THREE.Mesh,
   x: number,
   z: number
-): THREE.Face3 | null {
-  if (plane.geometry instanceof THREE.BufferGeometry) return null;
+): THREE.Face3 | undefined {
+  if (plane.geometry instanceof THREE.BufferGeometry) return undefined;
 
   // Find the face that contains the x and z of position...
-  let containingFace: THREE.Face3 | null = null;
+  let containingFace: THREE.Face3 | undefined;
   plane.geometry.faces.some(face => {
     if (plane.geometry instanceof THREE.BufferGeometry) return;
     const vertexA = plane.geometry.vertices[face.a];
