@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import FaceContainingPoint from './FaceContainingPoint';
+import faceInPlaneContainingPoint from './FaceInPlaneContainingPoint';
 
 /**
  * Flattens the plane so that the floor of each box lies on a plane that is
@@ -49,16 +49,20 @@ export function flattenPlaneToPoints(
   height: number
 ) {
   pts.forEach(pt => {
-    const faceContainingPoint = FaceContainingPoint(plane, pt.x, pt.z);
+    const faceInPlaneContainingPt = faceInPlaneContainingPoint(
+      plane,
+      pt.x,
+      pt.z
+    );
 
-    if (faceContainingPoint === null)
+    if (faceInPlaneContainingPt === null)
       throw console.error('Plane does not contain ' + pt + '.');
 
     if (plane.geometry instanceof THREE.BufferGeometry)
       throw console.error('Plane buffer geometry not supported.');
 
-    plane.geometry.vertices[faceContainingPoint.a].y = height;
-    plane.geometry.vertices[faceContainingPoint.b].y = height;
-    plane.geometry.vertices[faceContainingPoint.c].y = height;
+    plane.geometry.vertices[faceInPlaneContainingPt.a].y = height;
+    plane.geometry.vertices[faceInPlaneContainingPt.b].y = height;
+    plane.geometry.vertices[faceInPlaneContainingPt.c].y = height;
   });
 }

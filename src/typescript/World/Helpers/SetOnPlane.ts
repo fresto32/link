@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import FaceContainingPoint from './FaceContainingPoint';
+import faceInPlaneContainingPoint from './FaceInPlaneContainingPoint';
 
 /**
  * Finds the corresponding y on a flat or undulating plane given x and z
@@ -34,7 +34,7 @@ export default function setOnPlane(
   }
 
   // Find the face that contains the x and z of position...
-  const containingFace = FaceContainingPoint(plane, x, z);
+  const containingFace = faceInPlaneContainingPoint(plane, x, z);
 
   if (containingFace === null) {
     throw console.error('Position (x,z) is not found in plane.');

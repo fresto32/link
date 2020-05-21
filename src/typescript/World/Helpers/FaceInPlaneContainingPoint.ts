@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
 /**
- * Finds a THREE.Face in plane that contains x and z. If none found, null is
+ * Finds the THREE.Face in plane that contains x and z. If none found, null is
  * returned.
  *
  * @param plane The plane to find the face containing the x and z coordinates.
  * @param x The x coordinate.
  * @param z The z coordinate.
  */
-export default function FaceContainingPoint(
+export default function faceInPlaneContainingPoint(
   plane: THREE.Mesh,
   x: number,
   z: number

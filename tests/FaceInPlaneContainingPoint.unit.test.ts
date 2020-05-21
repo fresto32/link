@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import FaceContainingPoint from '../src/typescript/World/Helpers/FaceContainingPoint';
+import faceInPlaneContainingPoint from '../src/typescript/World/Helpers/FaceInPlaneContainingPoint';
 
 describe('Face Containing Point Helper', () => {
   describe('Single Face', () => {
@@ -37,7 +37,7 @@ describe('Face Containing Point Helper', () => {
       const x = (baseVertices[0].x + baseVertices[1].x) / 2;
       const z = baseVertices[0].z + 0.01 * peakVertex.z;
 
-      const actualFace = FaceContainingPoint(plane, x, z);
+      const actualFace = faceInPlaneContainingPoint(plane, x, z);
 
       expect(actualFace).to.equal(expectedFace);
     });
@@ -58,7 +58,7 @@ describe('Face Containing Point Helper', () => {
       // Similarly, for z...
       const z = planeDepth;
 
-      const actualFace = FaceContainingPoint(plane, x, z);
+      const actualFace = faceInPlaneContainingPoint(plane, x, z);
 
       expect(actualFace).to.be.null;
     });
@@ -99,7 +99,7 @@ describe('Face Containing Point Helper', () => {
         const x = (baseVertices[0].x + baseVertices[1].x) / 2;
         const z = baseVertices[0].z + 0.01 * peakVertex.z;
 
-        const actualFace = FaceContainingPoint(plane, x, z);
+        const actualFace = faceInPlaneContainingPoint(plane, x, z);
 
         expect(actualFace).to.equal(expectedFace);
       }
