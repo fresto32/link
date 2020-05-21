@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 import Application from './typescript/Application';
-import SettingsGenerator from './typescript/Settings';
+import Settings from './typescript/Settings';
 
-const settings = new SettingsGenerator();
+const canvas = $('#c')[0] as HTMLCanvasElement;
+const settings = new Settings();
 
-new Application($('#c')[0] as HTMLCanvasElement, settings);
+new Application(canvas, settings);

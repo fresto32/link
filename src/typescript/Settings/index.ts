@@ -3,7 +3,7 @@ import ResourcesSettings from './Types/Resources';
 import WorldSettings from './Types/World';
 import Landmarks from './Landmarks';
 
-export default class SettingsGenerator implements ApplicationSettings {
+export default class Settings implements ApplicationSettings {
   config: Config;
   resources: ResourcesSettings;
   world: WorldSettings;
