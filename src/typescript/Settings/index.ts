@@ -176,53 +176,29 @@ export default class Settings implements ApplicationSettings {
   }
 
   private setBuildings() {
-    this.world.spawnIsland.buildings.push(
-      {
-        numWidthSections: 1,
-        numDepthSections: 1,
-        numHeightSections: 1,
+    const numBuildings = this.randomInt(0, 5);
+
+    for (let i = 0; i < numBuildings; i++) {
+      const numWidthSections = this.randomInt(1, 5);
+      const numHeightSections = this.randomInt(1, 4);
+      const numDepthSections = this.randomInt(1, numWidthSections + 1);
+
+      const maxX = this.world.spawnIsland.ground.width / 2;
+      const maxZ = this.world.spawnIsland.ground.depth / 2;
+
+      const positionX = this.randomInt(-0.8 * maxX, 0.8 * maxX);
+      const positionZ = this.randomInt(-0.8 * maxZ, 0.8 * maxZ);
+
+      this.world.spawnIsland.buildings.push({
+        numWidthSections: numWidthSections,
+        numDepthSections: numDepthSections,
+        numHeightSections: numHeightSections,
         position: {
-          x: 20,
-          z: 30,
+          x: positionX,
+          z: positionZ,
         },
-      },
-      {
-        numWidthSections: 1,
-        numDepthSections: 1,
-        numHeightSections: 1,
-        position: {
-          x: 10,
-          z: 30,
-        },
-      },
-      {
-        numWidthSections: 3,
-        numDepthSections: 2,
-        numHeightSections: 1,
-        position: {
-          x: -20,
-          z: 30,
-        },
-      },
-      {
-        numWidthSections: 2,
-        numDepthSections: 2,
-        numHeightSections: 1,
-        position: {
-          x: 20,
-          z: 50,
-        },
-      },
-      {
-        numWidthSections: 5,
-        numDepthSections: 5,
-        numHeightSections: 2,
-        position: {
-          x: -20,
-          z: 50,
-        },
-      }
-    );
+      });
+    }
 
     // Reason: consistent formatting of resources items
     // prettier-ignore
