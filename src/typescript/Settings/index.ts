@@ -217,7 +217,7 @@ export default class Settings implements ApplicationSettings {
   }
 
   private setSkybox() {
-    const num = this.randomInt(0, 46).toString();
+    const num = this.randomInt(1, 46).toString();
 
     // Reason: consistent formatting of resources items
     // prettier-ignore
