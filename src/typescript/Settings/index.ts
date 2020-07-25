@@ -241,7 +241,7 @@ export default class Settings implements ApplicationSettings {
   }
 
   private setSkybox() {
-    const num = Math.floor(Math.random() * 46).toString();
+    const num = this.randomInt(0, 46).toString();
 
     // Reason: consistent formatting of resources items
     // prettier-ignore
@@ -262,5 +262,9 @@ export default class Settings implements ApplicationSettings {
       this.world.spawnIsland.unaryLandmarks,
       this.world.spawnIsland.clusters
     );
+  }
+
+  private randomInt(min: number, max: number) {
+    return min + Math.floor(Math.random() * (max - min));
   }
 }
