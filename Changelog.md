@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This is in preparation for creating a server and splitting client from server logic.
 - Models are randomly chosen to act as landmarks from a wider selection.
 - Skyboxes are randomly selected.
+- Building geometry, number, and location are randomised.
+
+### Fixed
+
+- Skybox image naming are now consistent and file types are jpg.
 
 ## [0.4.0] Signpost Banners, Unit Tests, and Access Modifiers
 
