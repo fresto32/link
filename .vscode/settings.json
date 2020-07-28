@@ -1,0 +1,7 @@
+{
+  "eslint.codeAction.showDocumentation": {
+
+    "enable": true
+  },
+  "eslint.workingDirectories": ["./front_end", "./back_end"]
+}
