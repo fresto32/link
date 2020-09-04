@@ -18,7 +18,8 @@ export default function faceInPlaneContainingPoint(
   // Find the face that contains the x and z of position...
   let containingFace: THREE.Face3 | undefined;
   plane.geometry.faces.some(face => {
-    if (plane.geometry instanceof THREE.BufferGeometry) return;
+    /* istanbul ignore next */ // this is already tested above.
+    if (plane.geometry instanceof THREE.BufferGeometry) return undefined;
     const vertexA = plane.geometry.vertices[face.a];
     const vertexB = plane.geometry.vertices[face.b];
     const vertexC = plane.geometry.vertices[face.c];

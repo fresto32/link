@@ -56,13 +56,16 @@ export function flattenPlaneToPoints(
     );
 
     if (faceInPlaneContainingPt === undefined)
-      throw console.error('Plane does not contain ' + pt + '.');
+      throw new Error(
+        'Plane does not contain ' + pt + ' or plane has buffer geometry.'
+      );
 
-    if (plane.geometry instanceof THREE.BufferGeometry)
-      throw console.error('Plane buffer geometry not supported.');
+    // Can cast to geometry since faceInPlaneContainingPoint(...) checks for
+    // BufferGeometry.
+    const geometry = plane.geometry as THREE.Geometry;
 
-    plane.geometry.vertices[faceInPlaneContainingPt.a].y = height;
-    plane.geometry.vertices[faceInPlaneContainingPt.b].y = height;
-    plane.geometry.vertices[faceInPlaneContainingPt.c].y = height;
+    geometry.vertices[faceInPlaneContainingPt.a].y = height;
+    geometry.vertices[faceInPlaneContainingPt.b].y = height;
+    geometry.vertices[faceInPlaneContainingPt.c].y = height;
   });
 }

@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import faceInPlaneContainingPoint from '../src/typescript/World/Helpers/FaceInPlaneContainingPoint';
+import faceInPlaneContainingPoint from './FaceInPlaneContainingPoint';
 
-describe('Face Containing Point Helper', () => {
+describe('Face In Plane Containing Point Helper', () => {
   describe('Single Face', () => {
     it('should return expected face if position in plane', () => {
       const plane = setUpPlane();
@@ -60,7 +60,7 @@ describe('Face Containing Point Helper', () => {
 
       const actualFace = faceInPlaneContainingPoint(plane, x, z);
 
-      expect(actualFace).to.be.null;
+      expect(actualFace).to.be.undefined;
     });
   });
 
@@ -104,6 +104,15 @@ describe('Face Containing Point Helper', () => {
         expect(actualFace).to.equal(expectedFace);
       }
     });
+  });
+
+  it('should return undefined if plane.geometry is buffer geometry', () => {
+    const bufferGeometry = new THREE.BufferGeometry();
+    const plane = new THREE.Mesh(bufferGeometry);
+
+    const result = faceInPlaneContainingPoint(plane, 0, 0);
+
+    expect(result).to.be.undefined;
   });
 });
 

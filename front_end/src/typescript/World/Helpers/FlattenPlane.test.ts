@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import {flattenPlaneToBoxes} from '../src/typescript/World/Helpers/FlattenPlane';
+import {flattenPlaneToBoxes} from './FlattenPlane';
 
 describe('FlattenPlane Helper', () => {
   describe('Empty boxes array', () => {
@@ -11,7 +11,7 @@ describe('FlattenPlane Helper', () => {
         const plane = setUpPlane();
 
         if (plane.geometry instanceof THREE.BufferGeometry) {
-          throw Error('Plane geometry is type BufferGeometry');
+          throw Error('Plane geometry is type BufferGeometry.');
         }
 
         const expectedVertices = plane.geometry.vertices.map(vertex =>
@@ -38,7 +38,7 @@ describe('FlattenPlane Helper', () => {
         randomizePlane(plane);
 
         if (plane.geometry instanceof THREE.BufferGeometry) {
-          throw Error('Plane geometry is type BufferGeometry');
+          throw Error('Plane geometry is type BufferGeometry.');
         }
 
         const expectedVertices = plane.geometry.vertices.map(vertex =>
@@ -66,7 +66,7 @@ describe('FlattenPlane Helper', () => {
         const plane = setUpPlane();
 
         if (plane.geometry instanceof THREE.BufferGeometry) {
-          throw Error('Plane geometry is type BufferGeometry');
+          throw Error('Plane geometry is type BufferGeometry.');
         }
 
         const expectedVertices = plane.geometry.vertices.map(vertex =>
@@ -91,13 +91,14 @@ describe('FlattenPlane Helper', () => {
         }
       });
     });
+
     describe('Undulating plane', () => {
       it('should return a plane flattened in the box region, but otherwise the same', () => {
         const plane = setUpPlane();
         randomizePlane(plane);
 
         if (plane.geometry instanceof THREE.BufferGeometry) {
-          throw Error('Plane geometry is type BufferGeometry');
+          throw Error('Plane geometry is type BufferGeometry.');
         }
 
         const expectedVertices = plane.geometry.vertices.map(vertex =>
@@ -142,6 +143,55 @@ describe('FlattenPlane Helper', () => {
       });
     });
   });
+
+  describe('early exceptions', () => {
+    it('should throw error if pts are not contained by plane', () => {
+      const plane = setUpPlane();
+
+      if (plane.geometry instanceof THREE.BufferGeometry) {
+        throw Error('Plane geometry is type BufferGeometry.');
+      }
+
+      const boxesOutOfPlane: THREE.Box3[] = [
+        new THREE.Box3(
+          new THREE.Vector3(1000, 1000, 100),
+          new THREE.Vector3(10000, 10000, 1000)
+        ),
+      ];
+
+      expect(
+        flattenPlaneToBoxes.bind(flattenPlaneToBoxes, plane, boxesOutOfPlane)
+      ).to.throw;
+    });
+
+    it('should throw error plane geometry is BufferGeometry', () => {
+      const plane = setUpPlane();
+      randomizePlane(plane);
+
+      if (plane.geometry instanceof THREE.BufferGeometry) {
+        throw Error('Plane geometry is type BufferGeometry.');
+      }
+
+      const minX = 0;
+      const minY = 0;
+      const minZ = 0;
+      const maxX = 5;
+      const maxY = 2;
+      const maxZ = 5;
+
+      const box = new THREE.Box3(
+        new THREE.Vector3(minX, minY, minZ),
+        new THREE.Vector3(maxX, maxY, maxZ)
+      );
+
+      const geometry = new THREE.BufferGeometry().fromGeometry(plane.geometry);
+      plane.geometry = geometry;
+
+      expect(
+        flattenPlaneToBoxes.bind(flattenPlaneToBoxes, plane, [box])
+      ).to.throw();
+    });
+  });
 });
 
 function setUpPlane(width = 10, depth = 10) {
@@ -154,7 +204,7 @@ function setUpPlane(width = 10, depth = 10) {
 
 function randomizePlane(plane: THREE.Mesh) {
   if (plane.geometry instanceof THREE.BufferGeometry) {
-    throw Error('Plane geometry is type BufferGeometry');
+    throw Error('Plane geometry is type BufferGeometry.');
   }
 
   plane.geometry.vertices.forEach(vertex => {

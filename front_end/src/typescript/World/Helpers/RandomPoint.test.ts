@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import randomPoint from '../src/typescript/World/Helpers/RandomPoint';
+import randomPoint from './RandomPoint';
 
 describe('randomPoint Helper', () => {
   describe('without exclusion areas', () => {

@@ -136,11 +136,16 @@ export default class SpawnIsland {
         );
         positions.push(fence.position);
       }
-      const clusters = generateObjectCluster(_params.model, positions, null, {
-        plane: this.ground,
-        objectRotationAxis: _params.objectRotationAxis,
-        rotateRelativeTo: _params.rotateRelativeTo,
-      });
+      const clusters = generateObjectCluster(
+        _params.model,
+        positions,
+        undefined,
+        {
+          plane: this.ground,
+          objectRotationAxis: _params.objectRotationAxis,
+          rotateRelativeTo: _params.rotateRelativeTo,
+        }
+      );
       clusters.forEach(cluster => {
         this.objects.add(cluster.mesh, {
           isCollidable: true,

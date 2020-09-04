@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Istanbul unit testing coverage support.
+- World Helpers unit tests have 100% statement, branches, line, and function coverage.
 
 ### Changed
 

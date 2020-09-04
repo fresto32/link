@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import objectDimensions from '../src/typescript/World/Helpers/ObjectDimensions';
+import objectDimensions from './ObjectDimensions';
 
 describe('Object Dimensions Helper', () => {
   describe('Object at origin', () => {

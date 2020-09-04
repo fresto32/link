@@ -18,26 +18,26 @@ import faceInPlaneContainingPoint from './FaceInPlaneContainingPoint';
  * @param objectRotationAxis If specified, the axis of the object which the
  * object will rotate about.
  * @param rotateRelativeTo If specified, the plane axis which the object will be
- * rotated by.
+ * rotated by (i.e. the object will be parallel to this axis).
  * @returns y coordinate on the plane that corresponds to x and z.
  */
 export default function setOnPlane(
   plane: THREE.Mesh,
-  object: THREE.Object3D | null = null,
+  object: THREE.Object3D | undefined = undefined,
   x: number,
   z: number,
   objectRotationAxis: 'x' | 'y' | 'z' | '' = '',
   rotateRelativeTo: 'x' | 'y' | 'z' | '' = ''
 ): number {
   if (plane.geometry instanceof THREE.BufferGeometry) {
-    throw console.error('Buffer planes are not currently supported.');
+    throw new Error('Buffer planes are not currently supported.');
   }
 
   // Find the face that contains the x and z of position...
   const containingFace = faceInPlaneContainingPoint(plane, x, z);
 
   if (containingFace === undefined) {
-    throw console.error('Position (x,z) is not found in plane.');
+    throw new Error('Position (x,z) is not found in plane.');
   }
 
   const faceVertex1 = plane.geometry.vertices[containingFace!.a];
@@ -52,13 +52,13 @@ export default function setOnPlane(
   );
 
   // Handle object rotation...
-  if (object !== null && objectRotationAxis !== '' && rotateRelativeTo !== '') {
+  if (object && objectRotationAxis !== '' && rotateRelativeTo !== '') {
     const normal = new THREE.Vector2();
     const rotationAxis = new THREE.Vector3(0, 0, 0);
 
     if (objectRotationAxis === 'x') rotationAxis.x = 1;
     else if (objectRotationAxis === 'y') rotationAxis.y = 1;
-    else if (objectRotationAxis === 'z') rotationAxis.z = 1;
+    else rotationAxis.z = 1; // objectRotationAxis is 'z'.
 
     if (rotateRelativeTo === 'x') {
       normal.x = planeOfContainingFace.normal.x;
@@ -66,7 +66,8 @@ export default function setOnPlane(
     } else if (rotateRelativeTo === 'y') {
       normal.x = planeOfContainingFace.normal.x;
       normal.y = planeOfContainingFace.normal.z;
-    } else if (rotateRelativeTo === 'z') {
+    } else {
+      // rotateRelativeTo is 'z'
       normal.x = -planeOfContainingFace.normal.z; // - to account for mirroring
       normal.y = planeOfContainingFace.normal.y;
     }
@@ -95,7 +96,7 @@ export default function setOnPlane(
 
   const y = (a * (x - x1) + c * (z - z1)) / -b + y1; // [1]
 
-  if (object !== null) object.position.set(x, y, z);
+  object?.position.set(x, y, z);
 
   return y;
 }

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as chai from 'chai';
 const expect = chai.expect;
 
-import boundingBox from '../src/typescript/World/Helpers/BoundingBox';
+import boundingBox from './BoundingBox';
 
 describe('Bounding Box Helper', () => {
   it('should return the same as Box3.setFromObject(...)', () => {

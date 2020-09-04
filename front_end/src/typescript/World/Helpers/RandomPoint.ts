@@ -25,7 +25,7 @@ export default function randomPoint(
   do {
     pt.x = xCenter + Math.random() * xSpread * (Math.random() > 0.5 ? -1 : 1);
     pt.z = zCenter + Math.random() * zSpread * (Math.random() > 0.5 ? -1 : 1);
-    pt.y = setOnPlane(ground, null, pt.x, pt.z);
+    pt.y = setOnPlane(ground, undefined, pt.x, pt.z);
   } while (isInExclusionArea(pt, exclusionAreas));
 
   return pt;

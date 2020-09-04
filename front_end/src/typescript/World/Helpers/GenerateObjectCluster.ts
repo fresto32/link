@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BufferGeometryUtils} from 'three/examples/jsm/utils/BufferGeometryUtils';
+import {BufferGeometryUtils} from './ThreeHelpers/BufferGeometryUtils';
 import setOnPlane from './SetOnPlane';
 
 /**
@@ -17,6 +17,9 @@ interface Cluster {
  * each position of objectPositions. Returned meshes are optimised for
  * performance - geometries are merged and minimal materials used.
  *
+ * In other words, if an object is placed at 50 locations and the object
+ * contains 3 meshes, a total of 3 meshes will be returned.
+ *
  * @param object The object that is to be clustered.
  * @param objectPositions The positions where each object should reside in the
  * generated meshes.
@@ -31,7 +34,7 @@ interface Cluster {
 export default function generateObjectCluster(
   object: THREE.Object3D,
   objectPositions: THREE.Vector3[],
-  globalTransform: THREE.Matrix4 | null = null,
+  globalTransform?: THREE.Matrix4,
   rotationTransform?: {
     plane: THREE.Mesh;
     objectRotationAxis: 'x' | 'y' | 'z';
@@ -40,7 +43,7 @@ export default function generateObjectCluster(
 ): Cluster[] {
   // Since we are supplying positions via objectPositions, we don't want any
   // residual positions in object to affect later transformations.
-  if (globalTransform === null) {
+  if (!globalTransform) {
     object.position.copy(new THREE.Vector3(0, 0, 0));
   }
   object.updateMatrix();
@@ -52,7 +55,7 @@ export default function generateObjectCluster(
   const unifiedMeshes: Cluster[] = [];
 
   object.children.forEach(child => {
-    if (child.type !== 'Mesh') {
+    if (child.type === 'Object3D' || child.type === 'Group') {
       // Handle children of object that are more collections of meshs (i.e.
       // THREE.Group or THREE.Object3D)...
       unifiedMeshes.push(
@@ -74,7 +77,7 @@ export default function generateObjectCluster(
         )
       );
     } else {
-      throw console.error('Unexpected type of ' + child.type + ' .');
+      throw new Error('Unexpected type of ' + child.type + '.');
     }
   });
 
@@ -203,8 +206,12 @@ function setObjectsInMesh(
     false
   );
 
+  /* istanbul ignore next */
   return {
-    mesh: new THREE.Mesh(mergedGeometry, objectMesh.material),
+    mesh: new THREE.Mesh(
+      mergedGeometry ? mergedGeometry : undefined,
+      objectMesh.material
+    ),
     boundingBoxes: collisionBoxes,
   };
 }
