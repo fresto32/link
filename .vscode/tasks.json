@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compile",
+      "command": "cd back_end && npm run compile",
+      "type": "shell"
+    }
+  ]
+}

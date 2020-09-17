@@ -1,7 +1,13 @@
 {
   "eslint.codeAction.showDocumentation": {
-
     "enable": true
   },
-  "eslint.workingDirectories": ["./front_end", "./back_end"]
+  "eslint.workingDirectories": ["./front_end", "./back_end"],
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/build": true,
+    "**/lib": true
+  }
 }
