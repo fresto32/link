@@ -9,5 +9,8 @@
     "**/*.code-search": true,
     "**/build": true,
     "**/lib": true
+  },
+  "material-icon-theme.folders.associations": {
+    "**.test.js": "Test-ts"
   }
 }
