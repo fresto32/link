@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] Initial Implementation of the Backend
+
+### Added
+
+- Added a barebones backend and database.
+  - The backend is built with node express in TypeScript.
+  - A MongoDB is used for the database.
+  - Added Mocha unit testing and Istanbul unit test code coverage tooling.
+- Istanbul unit testing coverage support.
+- World Helpers unit tests have 100% statement, branches, line, and function coverage.
+
+### Changed
+
+- World settings (e.g. landmark models, positions, ground color etc) have been moved out of construction classes and into individual setting interfaces.
+  - This means that, if we wanted to change some world setting, all we need to do is modify the object in index.ts.
+  - This is in preparation for creating a server and splitting client from server logic.
+- Models are randomly chosen to act as landmarks from a wider selection.
+- Skyboxes are randomly selected.
+- Building geometry, number, and location are randomised.
+
+### Fixed
+
+- Skybox image naming are now consistent and file types are jpg.
+
 ## [0.4.0] Signpost Banners, Unit Tests, and Access Modifiers
 
 ### Added
@@ -48,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Object collision has been added.
   - When the avatar collides with a collidable object, the avatar's moves back.
   - Object clusters now generate bounding boxes for each object in the cluster for collision detection.
-- ```Objects``` class now universally handles adding objects to containers.
+- `Objects` class now universally handles adding objects to containers.
 
 ## [0.1.0] Initial
 
@@ -63,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Signposts light up green / red depending on whether they are the right answer or not.
   - The correct signpost emits fireworks on correct guess.
 - Google's Typescript Style Guide enforcer.
-  - Use ``` npx gts check ``` to run the check before commits.
+  - Use `npx gts check` to run the check before commits.
   - Or, even better, integrate it into VS Code using Prettier.
 - Avatar movement via:
   - wasd or arrow keys
@@ -74,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Camera is locked onto avatar.
 - Map fencing and borders.
 - Skybox.
-- Geometry merging performance improvements: see: ```GenerateObjectCluster.ts```.
+- Geometry merging performance improvements: see: `GenerateObjectCluster.ts`.
 - Arbitrarily sized buildings.
   - Buildings can be constructed with an arbitrary number of height, depth, and width sections.
   - Buildings upper floors are hidden on avatar entry.

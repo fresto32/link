@@ -10,6 +10,22 @@
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "env": { "NODE_ENV": "development" },
+      "preLaunchTask": "compile",
+      "request": "launch",
+      "name": "Mocha Tests",
+      "program": "${workspaceFolder}/back_end/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "'${workspaceFolder}/back_end/build/{,!(public)/**}/*.test.js'"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
