@@ -14,21 +14,6 @@
     "pretest": "npm run compile",
     "posttest": "npm run check"
   },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "**/*.test.ts"
-    ],
-    "reporter": [
-      "html",
-      "text"
-    ],
-    "all": false
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pinqy520/three-typescript-starter.git"
@@ -52,7 +37,7 @@
     "source-map-support": "^0.5.19",
     "style-loader": "latest",
     "ts-node": "^9.0.0",
-    "typescript": "~3.8.0",
+    "typescript": "^3.8.0",
     "webpack": "latest",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "latest"
@@ -72,5 +57,20 @@
     "mocha": "^7.1.1",
     "sinon": "^9.0.2",
     "three": "latest"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/*.test.ts"
+    ],
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "all": false
   }
 }
