@@ -24,6 +24,10 @@ export abstract class Database {
   }
 
   static async drop() {
+    if (process.env.NODE_ENV !== 'development') {
+      throw new Error('Cannot drop database programmatically.');
+    }
+
     const db = Database.connection();
     await db.dropDatabase();
   }

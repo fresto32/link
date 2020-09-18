@@ -70,6 +70,7 @@ describe('SchedulerController Unit Tests', () => {
     it('should return a JSON object with the "error" param', () => {
       const nextCardFake = sinon.fake.throws(new Error());
       sinon.replace(Repository, 'nextCard', nextCardFake);
+      Logger.Err = sinon.stub();
 
       chai
         .request(server.getExpressInstance())
@@ -86,6 +87,7 @@ describe('SchedulerController Unit Tests', () => {
     it(`should return a status code of "${BAD_REQUEST}" if message was unsuccessful`, () => {
       const nextCardFake = sinon.fake.throws(new Error());
       sinon.replace(Repository, 'nextCard', nextCardFake);
+      Logger.Err = sinon.stub();
 
       chai
         .request(server.getExpressInstance())
