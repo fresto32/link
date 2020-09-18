@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm install --only=prod && NODE_ENV=production node ./build/start.js",
+    "start": "npm build && npm install --only=prod && NODE_ENV=production node ./build/src/start.js",
     "start-dev": "NODE_ENV=development nodemon --config \"./util/nodemon.json\"/",
     "test": "NODE_ENV=development nyc mocha './build/{,!(public)/**}/*.test.js'",
     "build": "sh ./util/buildForProd.sh",

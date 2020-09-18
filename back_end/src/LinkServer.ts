@@ -67,7 +67,7 @@ class LinkServer extends Server {
   }
 
   private getFrontEndDirectory(): string {
-    return path.join(__dirname, 'public/remembrance_card_app/src/');
+    return path.join(__dirname, 'public/app/');
   }
 
   private serveDevelopmentMessageOnly(): void {
