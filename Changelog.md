@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a barebones backend and database.
   - The backend is built with node express in TypeScript.
   - A MongoDB is used for the database.
+  - Added Mocha unit testing and Istanbul unit test code coverage tooling.
 - Istanbul unit testing coverage support.
 - World Helpers unit tests have 100% statement, branches, line, and function coverage.
 

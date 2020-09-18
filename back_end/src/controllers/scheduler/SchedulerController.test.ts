@@ -4,7 +4,7 @@ import {fail} from 'assert';
 import * as chai from 'chai';
 import {BAD_REQUEST, OK} from 'http-status-codes';
 import * as sinon from 'sinon';
-import TestServer from '../../../tests/TestServer.test';
+import TestServer from '../../../test/TestServer.test';
 import {Fixtures} from '../../database/Fixtures';
 import {Repository} from '../../database/Repository';
 import {UserCard} from '../../models/UserCard';
