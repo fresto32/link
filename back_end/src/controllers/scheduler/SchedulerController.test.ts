@@ -2,7 +2,7 @@ import {Logger} from '@overnightjs/logger';
 import {DocumentType} from '@typegoose/typegoose';
 import {fail} from 'assert';
 import * as chai from 'chai';
-import {BAD_REQUEST, OK} from 'http-status-codes';
+import {INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
 import * as sinon from 'sinon';
 import TestServer from '../../../test/TestServer.test';
 import {Fixtures} from '../../database/Fixtures';
@@ -84,7 +84,7 @@ describe('SchedulerController Unit Tests', () => {
         });
     });
 
-    it(`should return a status code of "${BAD_REQUEST}" if message was unsuccessful`, () => {
+    it(`should return a status code of "${INTERNAL_SERVER_ERROR}" if message was unsuccessful`, () => {
       const nextCardFake = sinon.fake.throws(new Error());
       sinon.replace(Repository, 'nextCard', nextCardFake);
       Logger.Err = sinon.stub();
@@ -97,7 +97,7 @@ describe('SchedulerController Unit Tests', () => {
             Logger.Err(err, true);
           }
 
-          expect(res.status).to.equal(BAD_REQUEST);
+          expect(res.status).to.equal(INTERNAL_SERVER_ERROR);
         });
     });
   });
