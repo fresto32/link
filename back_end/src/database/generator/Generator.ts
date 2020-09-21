@@ -1,11 +1,9 @@
-import {getModelForClass} from '@typegoose/typegoose';
-import CardSettings from '../../models/Card';
+import {CardSettings} from '../../models/CardSettings';
 import ResourcesSettings from '../../models/types/Resources';
 import WorldSettings from '../../models/types/World';
-import {Database} from '../Database';
 import Landmarks from './Landmarks';
 
-export class Card implements CardSettings {
+export class CardSettingsGenerator implements CardSettings {
   resources: ResourcesSettings;
   world: WorldSettings;
 
@@ -243,7 +241,3 @@ export class Card implements CardSettings {
     return min + Math.floor(Math.random() * (max - min));
   }
 }
-
-export const CardModel = getModelForClass(Card, {
-  existingConnection: Database.connection(),
-});

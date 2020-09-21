@@ -1,7 +1,8 @@
 import {DocumentType} from '@typegoose/typegoose';
+import {CardSettings, CardSettingsModel} from '../models/CardSettings';
 import {UserCard, UserCardModel} from '../models/UserCard';
 import {Database} from './Database';
-import {Card, CardModel} from './generator/Generator';
+import {CardSettingsGenerator} from './generator/Generator';
 
 export const NUM_CARD_FIXTURES = 20;
 
@@ -20,13 +21,13 @@ async function AddCardFixtures(NumCards: number = NUM_CARD_FIXTURES) {
 }
 
 async function createCard() {
-  const card = new Card();
-  const cardDocument = await CardModel.create(card as Card);
+  const card: CardSettings = new CardSettingsGenerator();
+  const cardDocument = await CardSettingsModel.create(card as CardSettings);
   await cardDocument.save();
   return cardDocument;
 }
 
-async function createUserCardFor(cardDocument: DocumentType<Card>) {
+async function createUserCardFor(cardDocument: DocumentType<CardSettings>) {
   const userCard = new UserCard();
   userCard.card = cardDocument._id;
 
