@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import Resources from '../Resources';
 import Time from '../Utils/Time';
 import Avatar from './Avatar';
-import objectDimensions from './Helpers/ObjectDimensions';
 import boundingBox from './Helpers/BoundingBox';
+import objectDimensions from './Helpers/ObjectDimensions';
 
 /**
  * Creates a building.
@@ -245,7 +245,7 @@ export default class Building {
     }
 
     // If there are an odd number of width sections, we need to fill in the
-    // hole at the top of the building with a cental roof...
+    // hole at the top of the building with a central roof...
     if (this.numWidthSections % 2 === 1) {
       const width = () => roofLevels * this.wallDimensions.x;
       const height =
@@ -411,7 +411,7 @@ export default class Building {
       const avatarPosition = avatar.pirateCaptain.position.clone();
       //* The precision of setOnPlane(...) may lead the avatar's position to
       //* have a y that is just outside some bounding box (yet the x and z lie
-      //* in the box). So adjust this y value to push thoose points just outside
+      //* in the box). So adjust this y value to push those points just outside
       //* the exclusion box's y value into it.
       avatarPosition.y += 0.5;
 
