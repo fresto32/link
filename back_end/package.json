@@ -9,6 +9,7 @@
     "test": "NODE_ENV=development nyc mocha './build/{,!(public)/**}/*.test.js'",
     "build": "sh ./util/buildForProd.sh",
     "proxy": "sh ./util/startLocalProxy.sh",
+    "backup": "sh ./util/backupMongo.sh",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc",
