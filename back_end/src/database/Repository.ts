@@ -7,8 +7,8 @@ export class Repository {
 
   static async nextCard() {
     return await UserCardModel.findOne()
-      .sort({dueData: 'ascending'})
-      .populate('cards')
+      .sort({dueDate: 'ascending'})
+      .populate('card')
       .exec();
   }
 }
