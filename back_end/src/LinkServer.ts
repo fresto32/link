@@ -25,7 +25,7 @@ class LinkServer extends Server {
   }
 
   private setupControllers(): void {
-    super.addControllers(this.allControllerInstances);
+    super.addControllers(this.allControllerInstances());
   }
 
   // TODO: Qualify the any array.
