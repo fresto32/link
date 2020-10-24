@@ -1,7 +1,7 @@
 import {prop} from '@typegoose/typegoose';
 
 export default class ClusterSettings {
-  @prop({required: true})
+  @prop({required: true, type: () => [String]})
   models!: string[];
 
   @prop({required: true})

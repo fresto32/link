@@ -1,7 +1,7 @@
 import {prop} from '@typegoose/typegoose';
 
 export default class ResourcesSettings {
-  @prop({required: true})
+  @prop({required: true, type: () => [Item]})
   items!: Item[];
 }
 

@@ -1,6 +1,6 @@
 import {prop} from '@typegoose/typegoose';
-import PromptSettings from './Prompt';
 import OptionSettings from './Option';
+import PromptSettings from './Prompt';
 import SoundsSettings from './Sounds';
 import SpawnIslandSettings from './SpawnIsland';
 
@@ -8,7 +8,7 @@ export default class WorldSettings {
   @prop({required: true})
   prompt!: PromptSettings;
 
-  @prop({required: true})
+  @prop({required: true, type: () => [OptionSettings]})
   options!: OptionSettings[];
 
   @prop({required: true})

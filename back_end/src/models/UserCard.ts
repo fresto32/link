@@ -1,6 +1,6 @@
 import {getModelForClass, prop, Ref} from '@typegoose/typegoose';
-import {Card} from '../database/generator/Generator';
 import {Database} from '../database/Database';
+import {CardSettings} from './CardSettings';
 
 /**
  * A Card that is associated with a User account.
@@ -9,8 +9,8 @@ export class UserCard {
   /**
    * The card for this UserCard.
    */
-  @prop({ref: 'Card'})
-  public card!: Ref<Card>;
+  @prop({ref: () => CardSettings})
+  public card!: Ref<CardSettings>;
 
   /**
    * When this card is due to be revised.

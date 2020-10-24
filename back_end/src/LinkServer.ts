@@ -25,7 +25,7 @@ class LinkServer extends Server {
   }
 
   private setupControllers(): void {
-    super.addControllers(this.allControllerInstances);
+    super.addControllers(this.allControllerInstances());
   }
 
   // TODO: Qualify the any array.
@@ -39,6 +39,7 @@ class LinkServer extends Server {
         // TODO: Qualify the any array.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const Controller = (controllers as any)[name];
+        Logger.Info(`Setting up controller named: ${name}.`);
         controllerInstances.push(new Controller());
       }
     }
@@ -61,6 +62,8 @@ class LinkServer extends Server {
     this.app.set('views', frontEndDir);
     this.app.use(express.static(frontEndDir));
 
+    Logger.Imp('Serving front end.');
+
     this.app.get('*', (req, res) => {
       res.sendFile('index.html', {root: frontEndDir});
     });
@@ -71,12 +74,14 @@ class LinkServer extends Server {
   }
 
   private serveDevelopmentMessageOnly(): void {
-    this.app.get('*', (req, res) => res.send(this.DEV_MSG));
+    this.app.get('*', (req, res) => {
+      res.send(this.DEV_MSG);
+    });
   }
 
   public start(port: number): void {
     this.app.listen(port, () => {
-      Logger.Imp(this.SERVER_START_MSG + port);
+      Logger.Imp(this.SERVER_START_MSG + port + '.');
     });
   }
 }

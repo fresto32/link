@@ -1,12 +1,12 @@
-import * as THREE from 'three';
 import * as dat from 'dat.gui';
-import Time from './Utils/Time';
-import Sizes from './Utils/Sizes';
-import Resources from './Resources';
-import Controls from './Controls';
+import * as THREE from 'three';
 import Camera from './Camera';
-import World from './World';
+import Controls from './Controls';
+import Resources from './Resources';
 import ApplicationSettings from './Settings/Types/Application';
+import Sizes from './Utils/Sizes';
+import Time from './Utils/Time';
+import World from './World';
 
 /**
  * Encapsulates all information required to run the application.

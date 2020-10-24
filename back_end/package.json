@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm build && npm install --only=prod && NODE_ENV=production node ./build/src/start.js",
+    "start": "npm run build && npm install --only=prod && NODE_ENV=production node ./build/src/start.js",
     "start-dev": "NODE_ENV=development nodemon --config \"./util/nodemon.json\"/",
     "test": "NODE_ENV=development nyc mocha './build/{,!(public)/**}/*.test.js'",
     "build": "sh ./util/buildForProd.sh",
+    "proxy": "sh ./util/startLocalProxy.sh",
+    "backup": "sh ./util/backupMongo.sh",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc",
@@ -45,9 +47,11 @@
     "gts": "^2.0.2",
     "http-status-codes": "^1.4.0",
     "mocha": "^8.1.3",
+    "mongodb": "^3.6.2",
     "mongoose": "^5.10.5",
     "sinon": "^9.0.3",
-    "ts-mongoose": "0.0.21"
+    "ts-mongoose": "0.0.21",
+    "ts-sinon": "^2.0.1"
   },
   "nyc": {
     "extension": [

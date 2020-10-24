@@ -1,7 +1,7 @@
-import * as THREE from 'three';
-import Time from './Utils/Time';
-import Sizes from './Utils/Sizes';
 import CameraControls from 'camera-controls';
+import * as THREE from 'three';
+import Sizes from './Utils/Sizes';
+import Time from './Utils/Time';
 
 export default class Camera {
   // Container
@@ -25,7 +25,7 @@ export default class Camera {
 
   // Camera details
   // TODO: Make instance private, but set up a readonly getter.
-  public instance!: THREE.PerspectiveCamera;
+  public readonly instance!: THREE.PerspectiveCamera;
   public readonly target: THREE.Vector3;
   public readonly oldTarget: THREE.Vector3;
 

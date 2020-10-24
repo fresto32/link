@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import Time from './Utils/Time';
-import Sizes from './Utils/Sizes';
-import EventEmitter from './Utils/EventEmitter';
 import CameraControls from 'camera-controls';
+import * as THREE from 'three';
+import EventEmitter from './Utils/EventEmitter';
+import Sizes from './Utils/Sizes';
+import Time from './Utils/Time';
 
 export default class Controls extends EventEmitter {
   // Utilities

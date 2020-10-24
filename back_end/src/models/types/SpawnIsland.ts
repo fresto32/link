@@ -1,5 +1,4 @@
 import {prop} from '@typegoose/typegoose';
-
 import BuildingSettings from './Building';
 import ClusterSettings from './Cluster';
 import UnaryLandmarkSettings from './UnaryLandmark';
@@ -18,12 +17,12 @@ export default class SpawnIslandSettings {
     model: string;
   };
 
-  @prop({required: true})
+  @prop({required: true, type: () => [UnaryLandmarkSettings]})
   unaryLandmarks!: UnaryLandmarkSettings[];
 
-  @prop({required: true})
+  @prop({required: true, type: () => [ClusterSettings]})
   clusters!: ClusterSettings[];
 
-  @prop({required: true})
+  @prop({required: true, type: () => [BuildingSettings]})
   buildings!: BuildingSettings[];
 }

@@ -1,8 +1,8 @@
 import {Controller, Get} from '@overnightjs/core';
-import {Logger} from '@overnightjs/logger';
 import {Request, Response} from 'express';
-import {BAD_REQUEST, OK} from 'http-status-codes';
+import {OK} from 'http-status-codes';
 import {Repository} from '../../database/Repository';
+import ErrorController from '../error/ErrorController';
 
 @Controller('api/next-card')
 class SchedulerController {
@@ -12,10 +12,7 @@ class SchedulerController {
       const nextCard = await Repository.nextCard();
       return res.status(OK).json(nextCard);
     } catch (err) {
-      Logger.Err(err, true);
-      return res.status(BAD_REQUEST).json({
-        error: err.message,
-      });
+      return ErrorController.handle(res, err);
     }
   }
 }

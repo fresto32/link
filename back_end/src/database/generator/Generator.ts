@@ -1,15 +1,16 @@
-import {getModelForClass} from '@typegoose/typegoose';
-import CardSettings from '../../models/Card';
+import {CardSettings} from '../../models/CardSettings';
+import ConfigSettings from '../../models/types/Config';
 import ResourcesSettings from '../../models/types/Resources';
 import WorldSettings from '../../models/types/World';
-import {Database} from '../Database';
 import Landmarks from './Landmarks';
 
-export class Card implements CardSettings {
+export class CardSettingsGenerator implements CardSettings {
+  config: ConfigSettings;
   resources: ResourcesSettings;
   world: WorldSettings;
 
   constructor() {
+    this.config = {debug: true, showBoundingBoxes: false, touch: false};
     this.resources = {items: []};
 
     this.world = {
@@ -243,7 +244,3 @@ export class Card implements CardSettings {
     return min + Math.floor(Math.random() * (max - min));
   }
 }
-
-export const CardModel = getModelForClass(Card, {
-  existingConnection: Database.connection(),
-});

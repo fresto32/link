@@ -29,21 +29,6 @@ Objectives and Game Design copied from Notion.
 - A leaderboard / some feedback system ought to be implemented to reflect the amount of effort a student has put into their revision
 - Feedback for the speed of them answering some Remembrance Card
 
-## Usage
-
-### Install Typscript
-
-``` bash
-npm install typescript -g
-```
-
-### Start
-
-``` bash
-npm install # or yarn
-npm start
-```
-
 ## Git
 
 This project uses [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
