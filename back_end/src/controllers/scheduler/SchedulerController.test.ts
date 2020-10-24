@@ -1,5 +1,4 @@
 import {Logger} from '@overnightjs/logger';
-import {DocumentType} from '@typegoose/typegoose';
 import {fail} from 'assert';
 import * as chai from 'chai';
 import {INTERNAL_SERVER_ERROR, OK} from 'http-status-codes';
@@ -46,9 +45,9 @@ describe('SchedulerController Unit Tests', () => {
           expect(res.status).to.equal(OK);
           expect(res.body).to.not.be.empty;
 
-          const actualNextCard = res.body as DocumentType<UserCard>;
+          const actualNextCard = res.body as UserCard;
 
-          expect(actualNextCard._id).to.equal(expectedCard!.id);
+          expect(actualNextCard).to.equal(expectedCard);
           expect(actualNextCard.card).to.not.be.undefined;
         });
     });
