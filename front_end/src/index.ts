@@ -1,8 +1,21 @@
-/* eslint-disable no-undef */
+import {OK} from 'http-status-codes';
 import Application from './typescript/Application';
 import Settings from './typescript/Settings';
 
 const canvas = $('#c')[0] as HTMLCanvasElement;
-const settings = new Settings();
 
-new Application(canvas, settings);
+fetch('http://localhost:8010/proxy/api/next-card').then(response => {
+  if (response.status === OK) {
+    response.json().then(
+      userCard => {
+        new Application(canvas, userCard.card);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  } else {
+    const settings = new Settings();
+    new Application(canvas, settings);
+  }
+});
