@@ -1,13 +1,16 @@
 import {CardSettings} from '../../models/CardSettings';
+import ConfigSettings from '../../models/types/Config';
 import ResourcesSettings from '../../models/types/Resources';
 import WorldSettings from '../../models/types/World';
 import Landmarks from './Landmarks';
 
 export class CardSettingsGenerator implements CardSettings {
+  config: ConfigSettings;
   resources: ResourcesSettings;
   world: WorldSettings;
 
   constructor() {
+    this.config = {debug: true, showBoundingBoxes: false, touch: false};
     this.resources = {items: []};
 
     this.world = {
