@@ -5,7 +5,7 @@ startServer();
 
 async function startServer(): Promise<void> {
   const server = new LinkServer();
-  server.start(process.env.NODE_ENV === 'development' ? 3001 : 8081);
+  server.start(process.env.NODE_ENV === 'development' ? 8081 : 8081);
   process.env.NODE_ENV = 'development';
   await Fixtures.add();
 }
