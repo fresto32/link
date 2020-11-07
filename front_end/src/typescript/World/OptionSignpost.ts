@@ -104,11 +104,18 @@ export default class Option extends Signpost {
       this.poleMaterial.emissive = new THREE.Color('green');
 
       // Play positive sound
-      this.sounds.play('positiveTone');
+    this.sounds.play('positiveTone');
 
-      // Fire fireworks
-      const trajectoryHeight = 40;
-      const particleSpread = 10;
+    // Fire fireworks
+    this.fireFireworks();
+  }
+
+  /**
+   * Launches fireworks from the signpost.
+   */
+  private fireFireworks() {
+    const trajectoryHeight = 40;
+    const particleSpread = 10;
       const numberOfParticles = 40;
       const fireworks = [
         new Firework({
