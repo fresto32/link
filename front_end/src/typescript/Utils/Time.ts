@@ -5,8 +5,6 @@ export default class Time extends EventEmitter {
   private start: number;
   /** current time */
   private current: number;
-  /** elapsed time since start */
-  private elapsed: number;
   /** animation frame */
   private ticker!: number;
   /** time since last tick */
@@ -21,7 +19,6 @@ export default class Time extends EventEmitter {
     // Set up
     this.start = Date.now();
     this.current = this.start;
-    this.elapsed = 0;
     this.delta = 16;
 
     this.tick = this.tick.bind(this);
@@ -37,7 +34,6 @@ export default class Time extends EventEmitter {
     const current = Date.now();
 
     this.delta = current - this.current;
-    this.elapsed = current - this.start;
     this.current = current;
 
     if (this.delta > 60) this.delta = 60;
