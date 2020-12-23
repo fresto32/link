@@ -32,7 +32,7 @@ export class UserCard {
 }
 
 export function userCardModel(connection: Connection) {
-  getModelForClass(UserCard, {
+  return getModelForClass(UserCard, {
     existingConnection: connection,
   });
 }
