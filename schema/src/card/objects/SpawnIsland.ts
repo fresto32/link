@@ -1,8 +1,9 @@
+import {Severity, modelOptions, prop} from '@typegoose/typegoose';
 import BuildingSettings from './Building';
 import ClusterSettings from './Cluster';
 import UnaryLandmarkSettings from './UnaryLandmark';
-import {prop} from '@typegoose/typegoose';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export default class SpawnIslandSettings {
   @prop({required: true})
   ground!: {

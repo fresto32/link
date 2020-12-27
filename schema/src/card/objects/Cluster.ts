@@ -1,5 +1,6 @@
-import {prop} from '@typegoose/typegoose';
+import {Severity, modelOptions, prop} from '@typegoose/typegoose';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export default class ClusterSettings {
   @prop({required: true, type: () => [String]})
   models!: string[];

@@ -1,9 +1,11 @@
-import {Ref, prop} from '@typegoose/typegoose';
+import {Ref, Severity, modelOptions, prop} from '@typegoose/typegoose';
 import {CardSettings} from './CardSettings';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 /**
  * A Card that is associated with a User account.
  */
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export class UserCard {
   /**
    * The card for this UserCard.

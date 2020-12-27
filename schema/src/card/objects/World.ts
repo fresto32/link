@@ -1,9 +1,10 @@
+import {Severity, modelOptions, prop} from '@typegoose/typegoose';
 import OptionSettings from './Option';
 import PromptSettings from './Prompt';
 import SoundsSettings from './../Sounds';
 import SpawnIslandSettings from './SpawnIsland';
-import {prop} from '@typegoose/typegoose';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export default class WorldSettings {
   @prop({required: true})
   prompt!: PromptSettings;

@@ -1,6 +1,7 @@
+import {Severity, modelOptions, prop} from '@typegoose/typegoose';
 import PromptSettings from './Prompt';
-import {prop} from '@typegoose/typegoose';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export default class OptionSettings extends PromptSettings {
   @prop({required: true})
   position!: {

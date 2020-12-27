@@ -1,5 +1,6 @@
-import {prop} from '@typegoose/typegoose';
+import {Severity, modelOptions, prop} from '@typegoose/typegoose';
 
+@modelOptions({options: {allowMixed: Severity.ALLOW}})
 export default class ResourcesSettings {
   @prop({required: true, type: () => [Item]})
   items!: Item[];
