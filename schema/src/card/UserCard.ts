@@ -1,6 +1,5 @@
-import {Ref, getModelForClass, prop} from '@typegoose/typegoose';
+import {Ref, prop} from '@typegoose/typegoose';
 import {CardSettings} from './CardSettings';
-import {Connection} from 'mongoose';
 
 /**
  * A Card that is associated with a User account.
@@ -29,10 +28,4 @@ export class UserCard {
     this.dueDate = new Date();
     this.history = [];
   }
-}
-
-export function userCardModel(connection: Connection) {
-  return getModelForClass(UserCard, {
-    existingConnection: connection,
-  });
 }
