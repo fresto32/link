@@ -2,7 +2,7 @@ import {NestFactory} from '@nestjs/core';
 import {Transport, MicroserviceOptions} from '@nestjs/microservices';
 import {CardStoreModule} from './card-store.module';
 
-const KAFKA_BROKER = 'localhost:9092' as const;
+export const KAFKA_BROKER = 'localhost:9092' as const;
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
