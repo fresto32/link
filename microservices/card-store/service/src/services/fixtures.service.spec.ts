@@ -21,7 +21,7 @@ describe('FixturesService', () => {
     repositoryService = moduleRef.get<RepositoryService>(RepositoryService);
 
     await databaseService.dropDatabase();
-    expect((await repositoryService.userCards()).length).toEqual(0);
+    expect((await repositoryService.userCards()).data.length).toEqual(0);
   });
 
   describe('add()', () => {

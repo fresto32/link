@@ -36,12 +36,12 @@ describe('DatabaseService', () => {
       await fixturesService.add();
 
       const preDropCards = await repositoryService.userCards();
-      expect(preDropCards.length).toEqual(NUM_CARD_FIXTURES);
+      expect(preDropCards.data.length).toEqual(NUM_CARD_FIXTURES);
 
       await service.dropDatabase();
 
       const postDropCards = await repositoryService.userCards();
-      expect(postDropCards.length).toEqual(0);
+      expect(postDropCards.data.length).toEqual(0);
     });
 
     it('should not drop the production database', async done => {
