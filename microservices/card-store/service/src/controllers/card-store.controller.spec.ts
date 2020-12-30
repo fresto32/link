@@ -10,12 +10,12 @@ import {
   NextCardRequested,
 } from '@link/schema/src/events/card';
 import {Test, TestingModule} from '@nestjs/testing';
+import {CardStoreController} from './card-store.controller';
 import {DatabaseService} from './../services/database.service';
 import {RepositoryService} from './../services/repository.service';
-import {AppController} from './app.controller';
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('CardStoreController', () => {
+  let controller: CardStoreController;
   let repositoryService: RepositoryService;
   let clientProxyMock: {
     emit: jest.SpyInstance;
@@ -27,7 +27,7 @@ describe('AppController', () => {
     };
 
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
+      controllers: [CardStoreController],
       providers: [
         RepositoryService,
         DatabaseService,
@@ -38,7 +38,7 @@ describe('AppController', () => {
       ],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    controller = app.get<CardStoreController>(CardStoreController);
     repositoryService = app.get<RepositoryService>(RepositoryService);
   });
 
@@ -59,7 +59,7 @@ describe('AppController', () => {
         return result;
       });
 
-      await appController.handleNextCardRequested(event);
+      await controller.handleNextCardRequested(event);
 
       const result: GotNextCard = clientProxyMock.emit.mock.calls[0][1];
       expect(result.uuid).toEqual(event.uuid);
@@ -90,7 +90,7 @@ describe('AppController', () => {
           return result;
         });
 
-      await appController.handleGetAllUserCardsRequested(event);
+      await controller.handleGetAllUserCardsRequested(event);
 
       const result: GotAllUserCards = clientProxyMock.emit.mock.calls[0][1];
       expect(result.uuid).toEqual(event.uuid);
@@ -119,7 +119,7 @@ describe('AppController', () => {
         return result;
       });
 
-      appController.handleDeleteCardRequested(event);
+      controller.handleDeleteCardRequested(event);
 
       const result: DeletedCard = clientProxyMock.emit.mock.calls[0][1];
       expect(result.uuid).toEqual(event.uuid);
@@ -149,7 +149,7 @@ describe('AppController', () => {
         return result;
       });
 
-      await appController.handleCardCreated(event);
+      await controller.handleCardCreated(event);
 
       const result: CardStored = clientProxyMock.emit.mock.calls[0][1];
       expect(result.uuid).toEqual(event.uuid);

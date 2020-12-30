@@ -1,6 +1,6 @@
 import {Module} from '@nestjs/common';
 import {ClientsModule, Transport} from '@nestjs/microservices';
-import {AppController} from './controllers/app.controller';
+import {CardStoreController} from './controllers/card-store.controller';
 import {KAFKA_BROKER} from './main';
 import {DatabaseService} from './services/database.service';
 import {FixturesService} from './services/fixtures.service';
@@ -20,7 +20,7 @@ import {RepositoryService} from './services/repository.service';
       },
     ]),
   ],
-  controllers: [AppController],
+  controllers: [CardStoreController],
   providers: [DatabaseService, FixturesService, RepositoryService],
 })
 export class CardStoreModule {}

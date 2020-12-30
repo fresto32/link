@@ -14,7 +14,7 @@ import {EventPatterns} from '@link/schema/src/events';
 import {RepositoryService} from './../services/repository.service';
 
 @Controller()
-export class AppController {
+export class CardStoreController {
   constructor(
     @Inject('KAFKA') private client: ClientProxy,
     private repositoryService: RepositoryService
