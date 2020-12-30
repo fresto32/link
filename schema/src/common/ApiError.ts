@@ -1,4 +1,3 @@
 export interface ApiError {
-  isError: boolean;
-  message: string;
+  message?: string;
 }
