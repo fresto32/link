@@ -13,6 +13,10 @@ async function bootstrap() {
         client: {
           brokers: [KAFKA_BROKER],
         },
+        subscribe: {
+          // @ts-expect-error: NestJs bug.
+          topic: 'card',
+        },
       },
     }
   );
