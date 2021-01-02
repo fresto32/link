@@ -2,29 +2,45 @@ import {Test} from '@nestjs/testing';
 import {DatabaseService} from './database.service';
 import {RepositoryService} from './repository.service';
 
+type mongooseMock = {
+  populate: jest.Mock;
+  find: jest.Mock;
+  exec: jest.Mock;
+  lean: jest.Mock;
+  create: jest.Mock;
+  save: jest.Mock;
+  deleteOne: jest.Mock;
+  sort: jest.Mock;
+  findOne: jest.Mock;
+};
+
 describe('RepositoryService', () => {
   let repositoryService: RepositoryService;
-  let databaseService: DatabaseService;
 
-  let mongooseMocks: any;
-  let databaseServiceMock: any;
+  let databaseService: DatabaseService;
+  let databaseServiceMock: {
+    userCardModel: mongooseMock;
+    cardSettingsModel: mongooseMock;
+  };
+
+  let mongooseMock: mongooseMock;
 
   beforeEach(async () => {
-    mongooseMocks = {
-      populate: jest.fn(() => mongooseMocks),
-      find: jest.fn(() => mongooseMocks),
-      exec: jest.fn(() => mongooseMocks),
-      lean: jest.fn(() => mongooseMocks),
-      create: jest.fn(() => mongooseMocks),
-      save: jest.fn(() => mongooseMocks),
-      deleteOne: jest.fn(() => mongooseMocks),
-      sort: jest.fn(() => mongooseMocks),
-      findOne: jest.fn(() => mongooseMocks),
+    mongooseMock = {
+      populate: jest.fn(() => mongooseMock),
+      find: jest.fn(() => mongooseMock),
+      exec: jest.fn(() => mongooseMock),
+      lean: jest.fn(() => mongooseMock),
+      create: jest.fn(() => mongooseMock),
+      save: jest.fn(() => mongooseMock),
+      deleteOne: jest.fn(() => mongooseMock),
+      sort: jest.fn(() => mongooseMock),
+      findOne: jest.fn(() => mongooseMock),
     };
 
     databaseServiceMock = {
-      userCardModel: mongooseMocks,
-      cardSettingsModel: mongooseMocks,
+      userCardModel: mongooseMock,
+      cardSettingsModel: mongooseMock,
     };
 
     const moduleRef = await Test.createTestingModule({
@@ -43,16 +59,16 @@ describe('RepositoryService', () => {
   describe('userCards', () => {
     it('should call all the mongoose functions', async done => {
       await repositoryService.userCards();
-      expect((mongooseMocks.find as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.populate as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.exec as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.find as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.populate as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.exec as jest.Mock).mock.calls).toHaveLength(1);
 
       done();
     });
 
     it('should return all the userCard models', async done => {
       const expectedResult = 'Expected result';
-      mongooseMocks.exec = jest.fn(() => expectedResult);
+      mongooseMock.exec = jest.fn(() => expectedResult);
 
       const result = await repositoryService.userCards();
 
@@ -78,18 +94,18 @@ describe('RepositoryService', () => {
   describe('nextCard', () => {
     it('should call all the mongoose functions', async done => {
       await repositoryService.nextCard();
-      expect((mongooseMocks.findOne as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.sort as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.populate as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.lean as jest.Mock).mock.calls).toHaveLength(1);
-      expect((mongooseMocks.exec as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.findOne as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.sort as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.populate as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.lean as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.exec as jest.Mock).mock.calls).toHaveLength(1);
 
       done();
     });
 
     it('should return all the next card', async done => {
       const expectedResult = 'Next card';
-      mongooseMocks.exec = jest.fn(() => expectedResult);
+      mongooseMock.exec = jest.fn(() => expectedResult);
 
       const result = await repositoryService.nextCard();
 
@@ -116,8 +132,8 @@ describe('RepositoryService', () => {
     it('should call all the mongoose functions', async done => {
       // @ts-expect-error: The argument is not required for this unit test.
       await repositoryService.saveCard();
-      expect((mongooseMocks.create as jest.Mock).mock.calls).toHaveLength(2);
-      expect((mongooseMocks.save as jest.Mock).mock.calls).toHaveLength(2);
+      expect((mongooseMock.create as jest.Mock).mock.calls).toHaveLength(2);
+      expect((mongooseMock.save as jest.Mock).mock.calls).toHaveLength(2);
 
       done();
     });
@@ -149,7 +165,7 @@ describe('RepositoryService', () => {
     it('should call all the mongoose functions', async done => {
       // @ts-expect-error: The argument is not required for this unit test.
       repositoryService.deleteCard();
-      expect((mongooseMocks.deleteOne as jest.Mock).mock.calls).toHaveLength(1);
+      expect((mongooseMock.deleteOne as jest.Mock).mock.calls).toHaveLength(1);
 
       done();
     });
