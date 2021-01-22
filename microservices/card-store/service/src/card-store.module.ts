@@ -5,6 +5,7 @@ import {KAFKA_BROKER} from './main';
 import {DatabaseService} from './services/database.service';
 import {FixturesService} from './services/fixtures.service';
 import {RepositoryService} from './services/repository.service';
+import {EventEmitterModule} from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import {RepositoryService} from './services/repository.service';
         },
       },
     ]),
+    EventEmitterModule.forRoot(),
   ],
   controllers: [CardStoreController],
   providers: [DatabaseService, FixturesService, RepositoryService],

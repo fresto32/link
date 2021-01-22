@@ -4,11 +4,14 @@ import {
   CardStored,
   DeleteCardRequested,
   DeletedCard,
+  CardEvent,
   GetAllUserCardsRequested,
   GotAllUserCards,
   GotNextCard,
   NextCardRequested,
 } from '@link/schema/src/events/card';
+import {Topics} from '@link/schema/src/topics';
+import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
 import {ClientProxy, EventPattern} from '@nestjs/microservices';
 import {EventPatterns} from '@link/schema/src/events';
 import {RepositoryService} from './../services/repository.service';
@@ -17,10 +20,23 @@ import {RepositoryService} from './../services/repository.service';
 export class CardStoreController {
   constructor(
     @Inject('KAFKA') private client: ClientProxy,
-    private repositoryService: RepositoryService
+    private repositoryService: RepositoryService,
+    private eventEmitter: EventEmitter2
   ) {}
 
-  @EventPattern(EventPatterns.NextCardRequested)
+  /**
+   * Only listen to the `Card` topic and emit the events for
+   * our controller methods to listen to.
+   */
+  @EventPattern(Topics.Card)
+  async handleCard(event: CardEvent) {
+    this.eventEmitter.emit(event.pattern, event.payload);
+  }
+
+  /**
+   * Emits the next card.
+   */
+  @OnEvent(EventPatterns.NextCardRequested)
   async handleNextCardRequested(event: NextCardRequested) {
     const result = await this.repositoryService.nextCard();
 
@@ -35,7 +51,10 @@ export class CardStoreController {
     this.client.emit(EventPatterns.GotNextCard, eventToEmit);
   }
 
-  @EventPattern(EventPatterns.GetAllUserCardsRequested)
+  /**
+   * Get all the user cards and emit an event with all `userCards`.
+   */
+  @OnEvent(EventPatterns.GetAllUserCardsRequested)
   async handleGetAllUserCardsRequested(event: GetAllUserCardsRequested) {
     const result = await this.repositoryService.userCards();
 
@@ -50,7 +69,10 @@ export class CardStoreController {
     this.client.emit(EventPatterns.GotAllUserCards, eventToEmit);
   }
 
-  @EventPattern(EventPatterns.DeleteCardRequested)
+  /**
+   * Delete the card and emit a `DeletedCard` event.
+   */
+  @OnEvent(EventPatterns.DeleteCardRequested)
   handleDeleteCardRequested(event: DeleteCardRequested) {
     const result = this.repositoryService.deleteCard(event.cardId);
 
@@ -65,7 +87,10 @@ export class CardStoreController {
     this.client.emit(EventPatterns.DeletedCard, eventToEmit);
   }
 
-  @EventPattern(EventPatterns.CardCreated)
+  /**
+   * Store the card and emit a `CardStored` event.
+   */
+  @OnEvent(EventPatterns.CardCreated)
   async handleCardCreated(event: CardCreated) {
     const result = await this.repositoryService.saveCard(event.card);
 
