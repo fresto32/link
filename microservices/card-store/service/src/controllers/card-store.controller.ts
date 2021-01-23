@@ -40,7 +40,7 @@ export class CardStoreController {
   async handleNextCardRequested(event: NextCardRequested) {
     const result = await this.repositoryService.nextCard();
 
-    const eventToEmit: GotNextCard = {
+    const nextCard: GotNextCard = {
       uuid: event.uuid,
       timestamp: new Date(),
       source: 'Card Store',
@@ -48,7 +48,12 @@ export class CardStoreController {
       error: result.error,
     };
 
-    this.client.emit(EventPatterns.GotNextCard, eventToEmit);
+    const eventToEmit: CardEvent = {
+      pattern: EventPatterns.gotNextCard,
+      payload: nextCard,
+    };
+
+    this.client.emit(Topics.card, eventToEmit);
   }
 
   /**
@@ -58,7 +63,7 @@ export class CardStoreController {
   async handleGetAllUserCardsRequested(event: GetAllUserCardsRequested) {
     const result = await this.repositoryService.userCards();
 
-    const eventToEmit: GotAllUserCards = {
+    const userCards: GotAllUserCards = {
       uuid: event.uuid,
       timestamp: new Date(),
       source: 'Card Store',
@@ -66,7 +71,12 @@ export class CardStoreController {
       error: result.error,
     };
 
-    this.client.emit(EventPatterns.GotAllUserCards, eventToEmit);
+    const eventToEmit: CardEvent = {
+      pattern: EventPatterns.gotNextCard,
+      payload: userCards,
+    };
+
+    this.client.emit(Topics.card, eventToEmit);
   }
 
   /**
@@ -76,7 +86,7 @@ export class CardStoreController {
   handleDeleteCardRequested(event: DeleteCardRequested) {
     const result = this.repositoryService.deleteCard(event.cardId);
 
-    const eventToEmit: DeletedCard = {
+    const deletedCard: DeletedCard = {
       uuid: event.uuid,
       timestamp: new Date(),
       source: 'Card Store',
@@ -84,7 +94,12 @@ export class CardStoreController {
       error: result.error,
     };
 
-    this.client.emit(EventPatterns.DeletedCard, eventToEmit);
+    const eventToEmit: CardEvent = {
+      pattern: EventPatterns.gotNextCard,
+      payload: deletedCard,
+    };
+
+    this.client.emit(Topics.card, eventToEmit);
   }
 
   /**
@@ -94,7 +109,7 @@ export class CardStoreController {
   async handleCardCreated(event: CardCreated) {
     const result = await this.repositoryService.saveCard(event.card);
 
-    const eventToEmit: CardStored = {
+    const cardStored: CardStored = {
       uuid: event.uuid,
       timestamp: new Date(),
       source: 'Card Store',
@@ -102,6 +117,11 @@ export class CardStoreController {
       error: result.error,
     };
 
-    this.client.emit(EventPatterns.CardStored, eventToEmit);
+    const eventToEmit: CardEvent = {
+      pattern: EventPatterns.gotNextCard,
+      payload: cardStored,
+    };
+
+    this.client.emit(Topics.card, eventToEmit);
   }
 }
