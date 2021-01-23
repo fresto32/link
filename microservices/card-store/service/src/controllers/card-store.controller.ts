@@ -95,7 +95,7 @@ export class CardStoreController {
     };
 
     const eventToEmit: CardEvent = {
-      pattern: EventPatterns.gotNextCard,
+      pattern: EventPatterns.deletedCard,
       payload: deletedCard,
     };
 
@@ -118,7 +118,7 @@ export class CardStoreController {
     };
 
     const eventToEmit: CardEvent = {
-      pattern: EventPatterns.gotNextCard,
+      pattern: EventPatterns.cardStored,
       payload: cardStored,
     };
 

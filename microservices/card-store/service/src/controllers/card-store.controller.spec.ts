@@ -4,6 +4,7 @@ import {
   CardStored,
   DeleteCardRequested,
   DeletedCard,
+  EventPatterns,
   GetAllUserCardsRequested,
   GotAllUserCards,
   GotNextCard,
@@ -13,6 +14,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {CardStoreController} from './card-store.controller';
 import {DatabaseService} from './../services/database.service';
 import {RepositoryService} from './../services/repository.service';
+import {EventEmitter2} from '@nestjs/event-emitter';
 
 describe('CardStoreController', () => {
   let controller: CardStoreController;
@@ -20,9 +22,15 @@ describe('CardStoreController', () => {
   let clientProxyMock: {
     emit: jest.SpyInstance;
   };
+  let eventEmitterMock: {
+    emit: jest.SpyInstance;
+  };
 
   beforeEach(async () => {
     clientProxyMock = {
+      emit: jest.fn(() => {}),
+    };
+    eventEmitterMock = {
       emit: jest.fn(() => {}),
     };
 
@@ -34,6 +42,10 @@ describe('CardStoreController', () => {
         {
           provide: 'KAFKA',
           useValue: clientProxyMock,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: eventEmitterMock,
         },
       ],
     }).compile();
@@ -61,11 +73,13 @@ describe('CardStoreController', () => {
 
       await controller.handleNextCardRequested(event);
 
-      const result: GotNextCard = clientProxyMock.emit.mock.calls[0][1];
-      expect(result.uuid).toEqual(event.uuid);
-      expect(result.source).toEqual('Card Store');
-      expect(result.userCard).toEqual('Some next card');
-      expect(result.error?.message).toEqual('Some error');
+      const result: {pattern: EventPatterns; payload: GotNextCard} =
+        clientProxyMock.emit.mock.calls[0][1];
+      expect(result.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(result.payload.uuid).toEqual(event.uuid);
+      expect(result.payload.source).toEqual('Card Store');
+      expect(result.payload.userCard).toEqual('Some next card');
+      expect(result.payload.error?.message).toEqual('Some error');
 
       done();
     });
@@ -92,11 +106,13 @@ describe('CardStoreController', () => {
 
       await controller.handleGetAllUserCardsRequested(event);
 
-      const result: GotAllUserCards = clientProxyMock.emit.mock.calls[0][1];
-      expect(result.uuid).toEqual(event.uuid);
-      expect(result.source).toEqual('Card Store');
-      expect(result.cards).toEqual('Some cards');
-      expect(result.error?.message).toEqual('Some error');
+      const result: {pattern: EventPatterns; payload: GotAllUserCards} =
+        clientProxyMock.emit.mock.calls[0][1];
+      expect(result.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(result.payload.uuid).toEqual(event.uuid);
+      expect(result.payload.source).toEqual('Card Store');
+      expect(result.payload.cards).toEqual('Some cards');
+      expect(result.payload.error?.message).toEqual('Some error');
 
       done();
     });
@@ -121,10 +137,12 @@ describe('CardStoreController', () => {
 
       controller.handleDeleteCardRequested(event);
 
-      const result: DeletedCard = clientProxyMock.emit.mock.calls[0][1];
-      expect(result.uuid).toEqual(event.uuid);
-      expect(result.source).toEqual('Card Store');
-      expect(result.error?.message).toEqual('Some error');
+      const result: {pattern: EventPatterns; payload: DeletedCard} =
+        clientProxyMock.emit.mock.calls[0][1];
+      expect(result.pattern).toEqual(EventPatterns.deletedCard);
+      expect(result.payload.uuid).toEqual(event.uuid);
+      expect(result.payload.source).toEqual('Card Store');
+      expect(result.payload.error?.message).toEqual('Some error');
 
       done();
     });
@@ -151,11 +169,13 @@ describe('CardStoreController', () => {
 
       await controller.handleCardCreated(event);
 
-      const result: CardStored = clientProxyMock.emit.mock.calls[0][1];
-      expect(result.uuid).toEqual(event.uuid);
-      expect(result.source).toEqual('Card Store');
-      expect(result.cardId).toEqual('Some cardId');
-      expect(result.error?.message).toEqual('Some error');
+      const result: {pattern: EventPatterns; payload: CardStored} =
+        clientProxyMock.emit.mock.calls[0][1];
+      expect(result.pattern).toEqual(EventPatterns.cardStored);
+      expect(result.payload.uuid).toEqual(event.uuid);
+      expect(result.payload.source).toEqual('Card Store');
+      expect(result.payload.cardId).toEqual('Some cardId');
+      expect(result.payload.error?.message).toEqual('Some error');
 
       done();
     });
