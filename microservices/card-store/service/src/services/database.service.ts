@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {UserCard, CardSettings} from '@link/schema/src/card';
+import {UserCard, CardSettings} from '@link/schema/build/src/card';
 import * as mongoose from 'mongoose';
 import {getModelForClass, ReturnModelType} from '@typegoose/typegoose';
 

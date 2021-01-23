@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {CardSettings} from '@link/schema/src/card';
-import {CardSettingsGenerator} from '@link/schema/src/generator';
+import {CardSettings} from '@link/schema/build/src/card';
+import {CardSettingsGenerator} from '@link/schema/build/src/generator';
 import {DatabaseService} from './database.service';
 import {RepositoryService} from './repository.service';
 
