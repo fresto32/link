@@ -13,6 +13,9 @@ export class FixturesService {
     private databaseService: DatabaseService
   ) {}
 
+  /**
+   * Adds card fixtures.
+   */
   public async add() {
     await this.databaseService.dropDatabase();
     await this.addCardFixtures();
