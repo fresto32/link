@@ -33,7 +33,7 @@ const { Kafka } = require("kafkajs");
 // Create the client with the broker list
 const kafka = new Kafka({
   clientId: "Card Store",
-  brokers: ["0.0.0.0:9093"],
+  brokers: ["0.0.0.0:9092"],
 });
 
 const producer = kafka.producer();
