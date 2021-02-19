@@ -3,5 +3,5 @@ db:
 
 kafka:
   broker:
-    url: 'localhost:9092';
-  topic: 'card'
+    url: "localhost:9092"
+  topic: "card"

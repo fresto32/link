@@ -6,7 +6,7 @@ import { ConfigService as NestConfigService } from "@nestjs/config";
  * variables.
  */
 @Injectable()
-export class ConfigService {
+export class AppConfigService {
   constructor(public nestConfigService: NestConfigService) {}
 
   get databaseUrl(): string {

@@ -1,7 +1,7 @@
-import { ConfigService } from "./config.service";
+import { AppConfigService } from "./config.service";
 
 describe("ConfigService", () => {
-  let service: ConfigService;
+  let service: AppConfigService;
 
   const nestConfigServiceMock = {
     get: jest.fn().mockReturnValue("hello"),
@@ -9,7 +9,7 @@ describe("ConfigService", () => {
 
   beforeEach(async () => {
     // @ts-expect-error: Mocking next config service.
-    service = new ConfigService(nestConfigServiceMock);
+    service = new AppConfigService(nestConfigServiceMock);
   });
 
   describe("databaseUrl", () => {

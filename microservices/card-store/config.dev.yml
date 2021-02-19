@@ -1,7 +1,7 @@
 db:
-  url: "mongodb://localhost:27017/development"  
+  url: "mongodb://localhost:27017/development"
 
 kafka:
   broker:
-    url: 'localhost:9092';
-  topic: 'card'
+    url: "localhost:9092"
+  topic: "card"

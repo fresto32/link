@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { DatabaseService } from "./database.service";
 import { FixturesService, NUM_CARD_FIXTURES } from "./fixtures.service";
 import { RepositoryService } from "./repository.service";
-import { ConfigService } from "../configuration/config.service";
+import { AppConfigService } from "../configuration/config.service";
 
 describe("DatabaseService", () => {
   let service: DatabaseService;
@@ -22,10 +22,10 @@ describe("DatabaseService", () => {
         DatabaseService,
         RepositoryService,
         FixturesService,
-        ConfigService,
+        AppConfigService,
       ],
     })
-      .overrideProvider(ConfigService)
+      .overrideProvider(AppConfigService)
       .useValue(configServiceMock)
       .compile();
 

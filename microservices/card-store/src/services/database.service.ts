@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UserCard, CardSettings } from "@link/schema/build/src/card";
 import * as mongoose from "mongoose";
 import { getModelForClass, ReturnModelType } from "@typegoose/typegoose";
-import { ConfigService } from "./../configuration/config.service";
+import { AppConfigService } from "./../configuration/config.service";
 
 /**
  * Service for controlling the database connection
@@ -15,7 +15,7 @@ export class DatabaseService {
   public userCardModel: ReturnModelType<typeof UserCard, {}>;
   public cardSettingsModel: ReturnModelType<typeof CardSettings, {}>;
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: AppConfigService) {
     this.userCardModel = getModelForClass(UserCard, {
       existingConnection: this.connection(),
     });

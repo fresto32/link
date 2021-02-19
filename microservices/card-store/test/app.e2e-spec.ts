@@ -1,14 +1,15 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { INestApplication, INestMicroservice } from "@nestjs/common";
-import * as request from "supertest";
-import { KAFKA_BROKER } from "./../src/main";
+import { INestMicroservice } from "@nestjs/common";
 import { CardStoreModule } from "./../src/card-store.module";
 import { DatabaseService } from "./../src/services/database.service";
 import { RepositoryService } from "./../src/services/repository.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ClientProxy, ClientsModule, Transport } from "@nestjs/microservices";
-import { ConfigService } from "./../src/configuration/config.service";
+import { AppConfigService } from "./../src/configuration/config.service";
+import { environmentConfig } from "./../src/configuration/config";
 import { ConfigService as NestConfigService } from "@nestjs/config";
+
+const KAFKA_BROKER = environmentConfig().kafka.broker.url;
 
 describe("AppController (e2e)", () => {
   let app: INestMicroservice;
@@ -35,7 +36,7 @@ describe("AppController (e2e)", () => {
         RepositoryService,
         DatabaseService,
         EventEmitter2,
-        ConfigService,
+        AppConfigService,
         NestConfigService,
       ],
     }).compile();
