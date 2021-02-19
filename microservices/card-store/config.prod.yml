@@ -1,0 +1,7 @@
+db:
+  url: "mongodb://localhost:27017/production"
+
+kafka:
+  broker:
+    url: 'localhost:9092';
+  topic: 'card'
