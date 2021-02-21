@@ -2,9 +2,9 @@ import { readFileSync } from "fs";
 import * as yaml from "js-yaml";
 import { join } from "path";
 
-const CONFIG_PROD_FILENAME = "../../config.prod.yml";
-const CONFIG_DEV_FILENAME = "../../config.dev.yml";
-const CONFIG_BASE_FILENAME = "../../config.base.yml";
+const CONFIG_PROD_FILENAME = "./assets/config.prod.yml";
+const CONFIG_DEV_FILENAME = "./assets/config.dev.yml";
+const CONFIG_BASE_FILENAME = "./assets/config.base.yml";
 
 export function environmentConfig(): any {
   let environmentConfigFilename: string;

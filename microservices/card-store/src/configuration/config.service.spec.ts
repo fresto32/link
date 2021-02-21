@@ -27,4 +27,20 @@ describe("ConfigService", () => {
       expect(fn).toThrow(Error);
     });
   });
+
+  describe("nodeEnvironment", () => {
+    it("returns the environment as specified by the nest config service", () => {
+      const expectedNodeEnv = "some NODE_ENV";
+      nestConfigServiceMock.get.mockReturnValue(expectedNodeEnv);
+
+      expect(service.nodeEnvironment).toEqual(expectedNodeEnv);
+    });
+
+    it("throws an error when the nest config service has no db.url", () => {
+      nestConfigServiceMock.get.mockReturnValue(undefined);
+
+      const fn = () => service.nodeEnvironment;
+      expect(fn).toThrow(Error);
+    });
+  });
 });

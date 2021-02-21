@@ -1,2 +1,4 @@
 log:
   level: 'DEBUG'
+
+NODE_ENV: "development"

@@ -5,3 +5,5 @@ kafka:
   broker:
     url: "localhost:9092"
   topic: "card"
+
+NODE_ENV: "production"

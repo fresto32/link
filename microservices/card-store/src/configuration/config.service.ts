@@ -18,4 +18,14 @@ export class AppConfigService {
 
     return dbUrl;
   }
+
+  get nodeEnvironment(): string {
+    const nodeEnv = this.nestConfigService.get<string>("NODE_ENV");
+
+    if (!nodeEnv) {
+      throw new Error("NODE_ENV is not set in environment");
+    }
+
+    return nodeEnv;
+  }
 }
