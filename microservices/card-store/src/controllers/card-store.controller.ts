@@ -1,25 +1,26 @@
-import {Controller, Inject} from '@nestjs/common';
+import { EventPatterns } from "@link/schema/build/src/events";
+import { Topics } from "@link/schema/build/src/topics";
 import {
   CardCreated,
+  CardEvent,
   CardStored,
   DeleteCardRequested,
   DeletedCard,
-  CardEvent,
   GetAllUserCardsRequested,
   GotAllUserCards,
   GotNextCard,
   NextCardRequested,
-} from '@link/schema/src/events/card';
-import {Topics} from '@link/schema/build/src/topics';
-import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
-import {ClientProxy, EventPattern} from '@nestjs/microservices';
-import {EventPatterns} from '@link/schema/build/src/events';
-import {RepositoryService} from './../services/repository.service';
+} from "@link/schema/src/events/card";
+import { Controller, Inject } from "@nestjs/common";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { ClientProxy, EventPattern, Transport } from "@nestjs/microservices";
+import { KafkaMessage } from "kafkajs";
+import { RepositoryService } from "./../services/repository.service";
 
 @Controller()
 export class CardStoreController {
   constructor(
-    @Inject('KAFKA') private client: ClientProxy,
+    @Inject("KAFKA") private client: ClientProxy,
     private repositoryService: RepositoryService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -28,22 +29,24 @@ export class CardStoreController {
    * Only listen to the `Card` topic and emit the events for
    * our controller methods to listen to.
    */
-  @EventPattern(Topics.card)
-  async handleCard(event: CardEvent) {
-    this.eventEmitter.emit(event.pattern, event.payload);
+  @EventPattern(Topics.card, Transport.KAFKA)
+  async handleCard(event: KafkaMessage) {
+    const cardEvent = (event.value as unknown) as CardEvent;
+
+    this.eventEmitter.emit(cardEvent.pattern, cardEvent.payload);
   }
 
   /**
    * Emits the next card.
    */
   @OnEvent(EventPatterns.nextCardRequested)
-  async handleNextCardRequested(event: NextCardRequested) {
+  async handleNextCardRequested(payload: NextCardRequested) {
     const result = await this.repositoryService.nextCard();
 
     const nextCard: GotNextCard = {
-      uuid: event.uuid,
+      uuid: payload.uuid,
       timestamp: new Date(),
-      source: 'Card Store',
+      source: "Card Store",
       userCard: result.data,
       error: result.error,
     };
@@ -53,20 +56,20 @@ export class CardStoreController {
       payload: nextCard,
     };
 
-    this.client.emit(Topics.card, eventToEmit);
+    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
   }
 
   /**
    * Get all the user cards and emit an event with all `userCards`.
    */
   @OnEvent(EventPatterns.getAllUserCardsRequested)
-  async handleGetAllUserCardsRequested(event: GetAllUserCardsRequested) {
+  async handleGetAllUserCardsRequested(payload: GetAllUserCardsRequested) {
     const result = await this.repositoryService.userCards();
 
     const userCards: GotAllUserCards = {
-      uuid: event.uuid,
+      uuid: payload.uuid,
       timestamp: new Date(),
-      source: 'Card Store',
+      source: "Card Store",
       cards: result.data,
       error: result.error,
     };
@@ -76,21 +79,21 @@ export class CardStoreController {
       payload: userCards,
     };
 
-    this.client.emit(Topics.card, eventToEmit);
+    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
   }
 
   /**
    * Delete the card and emit a `DeletedCard` event.
    */
   @OnEvent(EventPatterns.deleteCardRequested)
-  handleDeleteCardRequested(event: DeleteCardRequested) {
-    const result = this.repositoryService.deleteCard(event.cardId);
+  handleDeleteCardRequested(payload: DeleteCardRequested) {
+    const result = this.repositoryService.deleteCard(payload.cardId);
 
     const deletedCard: DeletedCard = {
-      uuid: event.uuid,
+      uuid: payload.uuid,
       timestamp: new Date(),
-      source: 'Card Store',
-      cardId: event.cardId,
+      source: "Card Store",
+      cardId: payload.cardId,
       error: result.error,
     };
 
@@ -99,20 +102,20 @@ export class CardStoreController {
       payload: deletedCard,
     };
 
-    this.client.emit(Topics.card, eventToEmit);
+    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
   }
 
   /**
    * Store the card and emit a `CardStored` event.
    */
-  @OnEvent(EventPatterns.cardCreated)
-  async handleCardCreated(event: CardCreated) {
-    const result = await this.repositoryService.saveCard(event.card);
+  @OnEvent(EventPatterns.cardCreated, { async: true, nextTick: true })
+  async handleCardCreated(payload: CardCreated) {
+    const result = await this.repositoryService.saveCard(payload.card);
 
     const cardStored: CardStored = {
-      uuid: event.uuid,
+      uuid: payload.uuid,
       timestamp: new Date(),
-      source: 'Card Store',
+      source: "Card Store",
       cardId: result.data,
       error: result.error,
     };
@@ -122,6 +125,6 @@ export class CardStoreController {
       payload: cardStored,
     };
 
-    this.client.emit(Topics.card, eventToEmit);
+    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
   }
 }
