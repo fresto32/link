@@ -12,6 +12,7 @@ describe("DatabaseService", () => {
 
   const configServiceMock = {
     databaseUrl: "mongodb://localhost:27017/development",
+    nodeEnvironment: "production",
   };
 
   beforeEach(async () => {
@@ -22,12 +23,12 @@ describe("DatabaseService", () => {
         DatabaseService,
         RepositoryService,
         FixturesService,
-        AppConfigService,
+        {
+          provide: AppConfigService,
+          useValue: configServiceMock,
+        },
       ],
-    })
-      .overrideProvider(AppConfigService)
-      .useValue(configServiceMock)
-      .compile();
+    }).compile();
 
     service = app.get<DatabaseService>(DatabaseService);
     fixturesService = app.get<FixturesService>(FixturesService);
@@ -46,6 +47,8 @@ describe("DatabaseService", () => {
     afterEach(() => (process.env.NODE_ENV = "development"));
 
     it("should drop the database", async () => {
+      configServiceMock.nodeEnvironment = "development";
+
       await fixturesService.add();
 
       const preDropCards = await repositoryService.userCards();
@@ -58,7 +61,7 @@ describe("DatabaseService", () => {
     });
 
     it("should not drop the production database", async (done) => {
-      process.env.NODE_ENV = "production";
+      configServiceMock.nodeEnvironment = "production";
 
       const dropSpy = spyOn(service.connection(), "dropDatabase");
 

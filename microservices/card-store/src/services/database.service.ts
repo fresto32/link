@@ -43,8 +43,8 @@ export class DatabaseService {
   }
 
   public async dropDatabase() {
-    if (process.env.NODE_ENV !== "development") {
-      throw new Error("Cannot drop non-development database programmatically.");
+    if (this.configService.nodeEnvironment === "production") {
+      throw new Error("Cannot drop production database programmatically.");
     }
 
     const db = this.connection();
