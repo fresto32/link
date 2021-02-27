@@ -148,6 +148,66 @@ describe("Card Store Microservice (e2e)", () => {
     });
   });
 
+  describe("Get All User Cards", () => {
+    const getAllUserCardsUuid = "Uuid for next card requested event";
+    const cardsInDatabase = 3;
+
+    beforeEach(async () => {
+      // Reset database on start
+      await databaseService.dropDatabase();
+
+      // Start with a clean kafkaMessagesLog.
+      kafkaMessagesLog.clear();
+
+      for (let i = 0; i < cardsInDatabase; i++) {
+        await sendCardCreatedEvent(producer);
+      }
+
+      await waitFor(4000);
+
+      const getAllUserCards: GetAllUserCardsRequested = {
+        uuid: getAllUserCardsUuid,
+        timestamp: new Date(),
+        source: "Api Gateway",
+      };
+
+      const getAllUserCardsEvent: CardEvent = {
+        pattern: EventPatterns.getAllUserCardsRequested,
+        payload: getAllUserCards,
+      };
+
+      await producer.send({
+        topic: "card",
+        messages: [
+          {
+            key: getAllUserCardsUuid,
+            value: JSON.stringify(getAllUserCardsEvent),
+          },
+        ],
+      });
+    });
+
+    it("emits all the user cards", async (done) => {
+      // It takes time for Kafka to send the message and for the Card Store to
+      // register its arrival and perform relevant computation.
+      await waitFor(10000);
+
+      console.log("kafkaMessagesLog", kafkaMessagesLog.entries());
+      const gotUserCardsEvent = JSON.parse(
+        kafkaMessagesLog.get(getAllUserCardsUuid)
+      );
+      expect(gotUserCardsEvent).toBeTruthy();
+
+      console.log(gotUserCardsEvent.payload.userCard);
+      expect(gotUserCardsEvent.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(gotUserCardsEvent.payload.uuid).toEqual(getAllUserCardsUuid);
+      expect(gotUserCardsEvent.payload.cards).toBeTruthy();
+      expect(gotUserCardsEvent.payload.cards).toHaveLength(cardsInDatabase);
+
+      done();
+    });
+  });
+
   describe("Card storage", () => {
     const cardUuid = "Uuid for card created event";
 
