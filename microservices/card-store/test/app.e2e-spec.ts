@@ -95,6 +95,59 @@ describe("Card Store Microservice (e2e)", () => {
     done();
   });
 
+  describe("Next Card", () => {
+    const nextCardRequestedUuid = "Uuid for next card requested event";
+
+    beforeEach(async () => {
+      // Reset database on start
+      await databaseService.dropDatabase();
+
+      // Start with a clean kafkaMessagesLog.
+      kafkaMessagesLog.clear();
+
+      await sendCardCreatedEvent(producer);
+
+      await waitFor(4000);
+
+      const nextCard: NextCardRequested = {
+        uuid: nextCardRequestedUuid,
+        timestamp: new Date(),
+        source: "Api Gateway",
+      };
+
+      const nextCardEvent: CardEvent = {
+        pattern: EventPatterns.nextCardRequested,
+        payload: nextCard,
+      };
+
+      await producer.send({
+        topic: "card",
+        messages: [
+          { key: nextCardRequestedUuid, value: JSON.stringify(nextCardEvent) },
+        ],
+      });
+    });
+
+    it("emits the next card", async (done) => {
+      // It takes time for Kafka to send the message and for the Card Store to
+      // register its arrival and perform relevant computation.
+      await waitFor(10000);
+
+      console.log("kafkaMessagesLog", kafkaMessagesLog.entries());
+      const gotNextCardEvent = JSON.parse(
+        kafkaMessagesLog.get(nextCardRequestedUuid)
+      );
+      expect(gotNextCardEvent).toBeTruthy();
+
+      console.log(gotNextCardEvent.payload.userCard);
+      expect(gotNextCardEvent.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(gotNextCardEvent.payload.uuid).toEqual(nextCardRequestedUuid);
+      expect(gotNextCardEvent.payload.userCard).toBeTruthy();
+
+      done();
+    });
+  });
+
   describe("Card storage", () => {
     const cardUuid = "Uuid for card created event";
 
@@ -156,4 +209,35 @@ describe("Card Store Microservice (e2e)", () => {
  */
 async function waitFor(milliseconds: number) {
   await new Promise<void>((r) => setTimeout(() => r(), milliseconds));
+}
+
+let cardCreatedEventCount = 0;
+
+/**
+ * Sends a card created event to Kafka. This event should trigger the card
+ * store to save a card to its database.
+ *
+ * @returns the UUID of the event.
+ */
+async function sendCardCreatedEvent(producer: Producer): Promise<string> {
+  const cardCreatedUuid = `Card created event ${cardCreatedEventCount++}`;
+
+  const cardCreated: CardCreated = {
+    uuid: cardCreatedUuid,
+    timestamp: new Date(),
+    source: "Api Gateway",
+    card: new CardSettingsGenerator(),
+  };
+
+  const cardEvent: CardEvent = {
+    pattern: EventPatterns.cardCreated,
+    payload: cardCreated,
+  };
+
+  await producer.send({
+    topic: "card",
+    messages: [{ key: cardCreatedUuid, value: JSON.stringify(cardEvent) }],
+  });
+
+  return cardCreatedUuid;
 }
