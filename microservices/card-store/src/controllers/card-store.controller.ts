@@ -86,8 +86,8 @@ export class CardStoreController {
    * Delete the card and emit a `DeletedCard` event.
    */
   @OnEvent(EventPatterns.deleteCardRequested)
-  handleDeleteCardRequested(payload: DeleteCardRequested) {
-    const result = this.repositoryService.deleteCard(payload.cardId);
+  async handleDeleteCardRequested(payload: DeleteCardRequested) {
+    const result = await this.repositoryService.deleteCard(payload.cardId);
 
     const deletedCard: DeletedCard = {
       uuid: payload.uuid,

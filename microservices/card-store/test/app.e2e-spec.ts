@@ -1,23 +1,19 @@
-import { INestMicroservice } from "@nestjs/common";
-import { DatabaseService } from "./../src/services/database.service";
-import { RepositoryService } from "./../src/services/repository.service";
-import { environmentConfig } from "./../src/configuration/config";
+import { CardSettingsGenerator } from "@link/schema/build/src/generator";
 import {
   CardCreated,
-  CardStored,
-  DeleteCardRequested,
-  DeletedCard,
   CardEvent,
-  GetAllUserCardsRequested,
-  GotAllUserCards,
-  GotNextCard,
-  NextCardRequested,
+  DeleteCardRequested,
   EventPatterns,
+  GetAllUserCardsRequested,
+  NextCardRequested,
 } from "@link/schema/src/events/card";
-import { CardSettingsGenerator } from "@link/schema/build/src/generator";
-import { bootstrap } from "./../src/bootstrap";
-import { Consumer, Kafka, Producer } from "kafkajs";
+import { INestMicroservice } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
+import { Consumer, Kafka, Producer } from "kafkajs";
+import { bootstrap } from "./../src/bootstrap";
+import { environmentConfig } from "./../src/configuration/config";
+import { DatabaseService } from "./../src/services/database.service";
+import { RepositoryService } from "./../src/services/repository.service";
 
 describe("Card Store Microservice (e2e)", () => {
   let kafkaMessagesLog = new Map<string, any>();
@@ -133,13 +129,11 @@ describe("Card Store Microservice (e2e)", () => {
       // register its arrival and perform relevant computation.
       await waitFor(10000);
 
-      console.log("kafkaMessagesLog", kafkaMessagesLog.entries());
       const gotNextCardEvent = JSON.parse(
         kafkaMessagesLog.get(nextCardRequestedUuid)
       );
       expect(gotNextCardEvent).toBeTruthy();
 
-      console.log(gotNextCardEvent.payload.userCard);
       expect(gotNextCardEvent.pattern).toEqual(EventPatterns.gotNextCard);
       expect(gotNextCardEvent.payload.uuid).toEqual(nextCardRequestedUuid);
       expect(gotNextCardEvent.payload.userCard).toBeTruthy();
@@ -192,13 +186,11 @@ describe("Card Store Microservice (e2e)", () => {
       // register its arrival and perform relevant computation.
       await waitFor(10000);
 
-      console.log("kafkaMessagesLog", kafkaMessagesLog.entries());
       const gotUserCardsEvent = JSON.parse(
         kafkaMessagesLog.get(getAllUserCardsUuid)
       );
       expect(gotUserCardsEvent).toBeTruthy();
 
-      console.log(gotUserCardsEvent.payload.userCard);
       expect(gotUserCardsEvent.pattern).toEqual(EventPatterns.gotNextCard);
       expect(gotUserCardsEvent.payload.uuid).toEqual(getAllUserCardsUuid);
       expect(gotUserCardsEvent.payload.cards).toBeTruthy();
@@ -208,7 +200,78 @@ describe("Card Store Microservice (e2e)", () => {
     });
   });
 
-  describe("Card storage", () => {
+  describe("Card Deletion", () => {
+    const cardDeletionUuid = "Uuid for card deleted event";
+    let createdCardId = "";
+
+    beforeEach(async () => {
+      // Reset database on start
+      await databaseService.dropDatabase();
+
+      // Start with a clean kafkaMessagesLog.
+      kafkaMessagesLog.clear();
+
+      const cardCreatedUuid = await sendCardCreatedEvent(producer);
+
+      await waitFor(4000);
+
+      const createdCardEvent = JSON.parse(
+        kafkaMessagesLog.get(cardCreatedUuid)
+      );
+      createdCardId = createdCardEvent.payload.cardId;
+
+      const deleteCardRequested: DeleteCardRequested = {
+        uuid: cardDeletionUuid,
+        timestamp: new Date(),
+        source: "Api Gateway",
+        cardId: createdCardId,
+      };
+
+      const deleteCardEvent: CardEvent = {
+        pattern: EventPatterns.deleteCardRequested,
+        payload: deleteCardRequested,
+      };
+
+      await producer.send({
+        topic: "card",
+        messages: [
+          { key: cardDeletionUuid, value: JSON.stringify(deleteCardEvent) },
+        ],
+      });
+
+      await waitFor(10000);
+    });
+
+    it("deletes the card from the database", async (done) => {
+      // It takes time for Kafka to send the message and for the Card Store to
+      // register its arrival and perform relevant computation.
+      await waitFor(5000);
+
+      const userCards = (await repositoryService.userCards()).data;
+      expect(userCards).toHaveLength(0);
+
+      done();
+    });
+
+    it("emits a card deleted event to Kafka", async (done) => {
+      // It takes time for Kafka to send the message and for the Card Store to
+      // register its arrival and perform relevant computation.
+      await waitFor(5000);
+
+      const cardDeletedEvent = JSON.parse(
+        kafkaMessagesLog.get(cardDeletionUuid)
+      );
+      expect(cardDeletedEvent).toBeTruthy();
+
+      expect(cardDeletedEvent.pattern).toEqual(EventPatterns.deletedCard);
+      expect(cardDeletedEvent.payload.source).toEqual("Card Store");
+      expect(cardDeletedEvent.payload.cardId).toEqual(createdCardId);
+
+      done();
+    });
+  });
+
+  describe("Card Storage", () => {
     const cardUuid = "Uuid for card created event";
 
     beforeEach(async () => {
@@ -234,6 +297,8 @@ describe("Card Store Microservice (e2e)", () => {
         topic: "card",
         messages: [{ key: cardUuid, value: JSON.stringify(cardEvent) }],
       });
+
+      await waitFor(5000);
     });
 
     it("stores the card within a CardCreated event in mongo", async (done) => {

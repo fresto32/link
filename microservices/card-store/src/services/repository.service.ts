@@ -1,7 +1,7 @@
-import {CardSettings, UserCard} from '@link/schema/build/src/card';
-import {ApiResult} from '@link/schema/src/common';
-import {Injectable} from '@nestjs/common';
-import {DatabaseService} from './database.service';
+import { CardSettings, UserCard } from "@link/schema/build/src/card";
+import { ApiResult } from "@link/schema/src/common";
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "./database.service";
 
 @Injectable()
 export class RepositoryService {
@@ -13,7 +13,7 @@ export class RepositoryService {
     try {
       result.data = await this.databaseService.userCardModel
         .find()
-        .populate('cards')
+        .populate("cards")
         .exec();
     } catch (error) {
       result.error = {};
@@ -29,8 +29,8 @@ export class RepositoryService {
     try {
       result.data = await this.databaseService.userCardModel
         .findOne()
-        .sort({dueDate: 'ascending'})
-        .populate('card')
+        .sort({ dueDate: "ascending" })
+        .populate("card")
         .lean()
         .exec();
     } catch (error) {
@@ -60,6 +60,8 @@ export class RepositoryService {
         userCard as UserCard
       );
 
+      result.data = userCardDocument._id;
+
       await userCardDocument.save();
     } catch (error) {
       result.error = {
@@ -70,11 +72,13 @@ export class RepositoryService {
     return result;
   }
 
-  public deleteCard(cardId: string): ApiResult {
+  public async deleteCard(cardId: string): Promise<ApiResult> {
     const result: ApiResult = {};
 
     try {
-      this.databaseService.userCardModel.deleteOne({_id: cardId});
+      await this.databaseService.userCardModel
+        .deleteOne({ _id: cardId })
+        .exec();
     } catch (error) {
       result.error = {
         message: `Error when deleting card: ${error.errmsg}`,
