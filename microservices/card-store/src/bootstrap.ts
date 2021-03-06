@@ -1,6 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { Transport, KafkaOptions } from "@nestjs/microservices";
-
+import { KafkaOptions, Transport } from "@nestjs/microservices";
 import { CardStoreModule } from "./card-store.module";
 import { environmentConfig } from "./configuration/config";
 

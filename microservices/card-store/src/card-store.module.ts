@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ClientsModule, Transport } from "@nestjs/microservices";
+import { baseConfig, environmentConfig } from "./configuration/config";
+import { AppConfigService } from "./configuration/config.service";
 import { CardStoreController } from "./controllers/card-store.controller";
 import { DatabaseService } from "./services/database.service";
 import { FixturesService } from "./services/fixtures.service";
 import { RepositoryService } from "./services/repository.service";
-import { EventEmitterModule } from "@nestjs/event-emitter";
-import { baseConfig, environmentConfig } from "./configuration/config";
-import { AppConfigService } from "./configuration/config.service";
 
 const KAFKA_BROKER = environmentConfig().kafka.broker.url;
 
