@@ -3,3 +3,5 @@ export * from './CardStored';
 export * from './DeleteCard';
 export * from './GetAllUserCards';
 export * from './NextCard';
+export * from './CardEvent';
+export * from './../EventPatterns';
