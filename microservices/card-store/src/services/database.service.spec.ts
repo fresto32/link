@@ -1,22 +1,27 @@
-import { mongoose } from "@typegoose/typegoose";
+import { ConfigService } from "@link/config";
 import { Test, TestingModule } from "@nestjs/testing";
+import { mongoose } from "@typegoose/typegoose";
 import { DatabaseService } from "./database.service";
 import { FixturesService, NUM_CARD_FIXTURES } from "./fixtures.service";
 import { RepositoryService } from "./repository.service";
-import { AppConfigService } from "../configuration/config.service";
+import Sinon, { stub } from "sinon";
 
 describe("DatabaseService", () => {
   let service: DatabaseService;
   let fixturesService: FixturesService;
   let repositoryService: RepositoryService;
-
-  const configServiceMock = {
-    databaseUrl: "mongodb://localhost:27017/development",
-    nodeEnvironment: "production",
-  };
+  let configServiceMock: { get: Sinon.SinonStub };
 
   beforeEach(async () => {
-    process.env.NODE_ENV = "development";
+    configServiceMock = {
+      get: stub(),
+    };
+
+    configServiceMock.get
+      .withArgs("NODE_ENV")
+      .returns("development")
+      .withArgs("db.url")
+      .returns("mongodb://localhost:27017/development");
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -24,7 +29,7 @@ describe("DatabaseService", () => {
         RepositoryService,
         FixturesService,
         {
-          provide: AppConfigService,
+          provide: ConfigService,
           useValue: configServiceMock,
         },
       ],
@@ -47,8 +52,6 @@ describe("DatabaseService", () => {
     afterEach(() => (process.env.NODE_ENV = "development"));
 
     it("should drop the database", async () => {
-      configServiceMock.nodeEnvironment = "development";
-
       await fixturesService.add();
 
       const preDropCards = await repositoryService.userCards();
@@ -61,7 +64,7 @@ describe("DatabaseService", () => {
     });
 
     it("should not drop the production database", async (done) => {
-      configServiceMock.nodeEnvironment = "production";
+      configServiceMock.get.withArgs("NODE_ENV").returns("production");
 
       const dropSpy = spyOn(service.connection(), "dropDatabase");
 

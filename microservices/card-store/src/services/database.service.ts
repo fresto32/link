@@ -1,8 +1,8 @@
+import { ConfigService } from "@link/config";
+import { CardSettings, UserCard } from "@link/schema/build/src/card";
 import { Injectable } from "@nestjs/common";
-import { UserCard, CardSettings } from "@link/schema/build/src/card";
-import * as mongoose from "mongoose";
 import { getModelForClass, ReturnModelType } from "@typegoose/typegoose";
-import { AppConfigService } from "./../configuration/config.service";
+import * as mongoose from "mongoose";
 
 /**
  * Service for controlling the database connection
@@ -15,7 +15,7 @@ export class DatabaseService {
   public userCardModel: ReturnModelType<typeof UserCard, {}>;
   public cardSettingsModel: ReturnModelType<typeof CardSettings, {}>;
 
-  constructor(private configService: AppConfigService) {
+  constructor(private configService: ConfigService) {
     this.userCardModel = getModelForClass(UserCard, {
       existingConnection: this.connection(),
     });
@@ -27,7 +27,7 @@ export class DatabaseService {
   public connection(): mongoose.Connection {
     if (this._connection) return this._connection;
 
-    mongoose.connect(this.configService.databaseUrl, {
+    mongoose.connect(this.configService.get<string>("db.url"), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -43,7 +43,7 @@ export class DatabaseService {
   }
 
   public async dropDatabase() {
-    if (this.configService.nodeEnvironment === "production") {
+    if (this.configService.get<string>("NODE_ENV") === "production") {
       throw new Error("Cannot drop production database programmatically.");
     }
 

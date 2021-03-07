@@ -14,7 +14,18 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "paths": {
+      "@link/config": [
+        "libs/config/src"
+      ],
+      "@link/config/*": [
+        "libs/config/src/*"
+      ]
+    }
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
 }

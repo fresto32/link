@@ -162,7 +162,7 @@ describe("CardStoreController", () => {
         error: { message: "Some error" },
       });
 
-      controller.handleDeleteCardRequested(event);
+      await controller.handleDeleteCardRequested(event);
 
       const result: { pattern: EventPatterns; payload: DeletedCard } =
         clientProxyMock.emit.mock.calls[0][1].value;

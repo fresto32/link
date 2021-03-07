@@ -1,9 +1,9 @@
+import { config } from "@link/config";
 import { NestFactory } from "@nestjs/core";
 import { KafkaOptions, Transport } from "@nestjs/microservices";
 import { CardStoreModule } from "./card-store.module";
-import { environmentConfig } from "./configuration/config";
 
-const KAFKA_BROKER = environmentConfig().kafka.broker.url;
+const KAFKA_BROKER = config().kafka.broker.url;
 
 export async function bootstrap() {
   const app = await NestFactory.createMicroservice<KafkaOptions>(

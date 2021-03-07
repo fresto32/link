@@ -1,6 +1,6 @@
-import {Test} from '@nestjs/testing';
-import {DatabaseService} from './database.service';
-import {RepositoryService} from './repository.service';
+import { Test } from "@nestjs/testing";
+import { DatabaseService } from "./database.service";
+import { RepositoryService } from "./repository.service";
 
 type mongooseMock = {
   populate: jest.Mock;
@@ -14,7 +14,7 @@ type mongooseMock = {
   findOne: jest.Mock;
 };
 
-describe('RepositoryService', () => {
+describe("RepositoryService", () => {
   let repositoryService: RepositoryService;
 
   let databaseService: DatabaseService;
@@ -46,7 +46,7 @@ describe('RepositoryService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         RepositoryService,
-        {provide: DatabaseService, useValue: databaseServiceMock},
+        { provide: DatabaseService, useValue: databaseServiceMock },
       ],
     }).compile();
 
@@ -56,8 +56,8 @@ describe('RepositoryService', () => {
     jest.clearAllMocks();
   });
 
-  describe('userCards', () => {
-    it('should call all the mongoose functions', async done => {
+  describe("userCards", () => {
+    it("should call all the mongoose functions", async (done) => {
       await repositoryService.userCards();
       expect((mongooseMock.find as jest.Mock).mock.calls).toHaveLength(1);
       expect((mongooseMock.populate as jest.Mock).mock.calls).toHaveLength(1);
@@ -66,8 +66,8 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should return all the userCard models', async done => {
-      const expectedResult = 'Expected result';
+    it("should return all the userCard models", async (done) => {
+      const expectedResult = "Expected result";
       mongooseMock.exec = jest.fn(() => expectedResult);
 
       const result = await repositoryService.userCards();
@@ -77,7 +77,7 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should return the error message', async done => {
+    it("should return the error message", async (done) => {
       // @ts-expect-error: Overwriting function for testing purposes.
       databaseService.userCardModel.exec = () => {
         throw new Error();
@@ -91,8 +91,8 @@ describe('RepositoryService', () => {
     });
   });
 
-  describe('nextCard', () => {
-    it('should call all the mongoose functions', async done => {
+  describe("nextCard", () => {
+    it("should call all the mongoose functions", async (done) => {
       await repositoryService.nextCard();
       expect((mongooseMock.findOne as jest.Mock).mock.calls).toHaveLength(1);
       expect((mongooseMock.sort as jest.Mock).mock.calls).toHaveLength(1);
@@ -103,8 +103,8 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should return all the next card', async done => {
-      const expectedResult = 'Next card';
+    it("should return all the next card", async (done) => {
+      const expectedResult = "Next card";
       mongooseMock.exec = jest.fn(() => expectedResult);
 
       const result = await repositoryService.nextCard();
@@ -114,7 +114,7 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should return the error message', async done => {
+    it("should return the error message", async (done) => {
       // @ts-expect-error: Overwriting function for testing purposes.
       databaseService.userCardModel.exec = () => {
         throw new Error();
@@ -128,8 +128,8 @@ describe('RepositoryService', () => {
     });
   });
 
-  describe('saveCard', () => {
-    it('should call all the mongoose functions', async done => {
+  describe("saveCard", () => {
+    it("should call all the mongoose functions", async (done) => {
       // @ts-expect-error: The argument is not required for this unit test.
       await repositoryService.saveCard();
       expect((mongooseMock.create as jest.Mock).mock.calls).toHaveLength(2);
@@ -138,7 +138,7 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should not return data', async done => {
+    it("should not return data", async (done) => {
       // @ts-expect-error: The argument is not required for this unit test.
       const result = await repositoryService.saveCard();
 
@@ -147,7 +147,7 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should return the error message', async done => {
+    it("should return the error message", async (done) => {
       databaseService.userCardModel.create = () => {
         throw new Error();
       };
@@ -161,8 +161,8 @@ describe('RepositoryService', () => {
     });
   });
 
-  describe('deleteCard', () => {
-    it('should call all the mongoose functions', async done => {
+  describe("deleteCard", () => {
+    it("should call all the mongoose functions", async (done) => {
       // @ts-expect-error: The argument is not required for this unit test.
       repositoryService.deleteCard();
       expect((mongooseMock.deleteOne as jest.Mock).mock.calls).toHaveLength(1);
@@ -170,24 +170,26 @@ describe('RepositoryService', () => {
       done();
     });
 
-    it('should not return data', async done => {
+    it("should not return data", async (done) => {
       // @ts-expect-error: The argument is not required for this unit test.
-      const result = repositoryService.deleteCard();
+      const result = await repositoryService.deleteCard();
 
       expect(result.data).toBeUndefined();
 
       done();
     });
 
-    it('should return the error message', () => {
+    it("should return the error message", async (done) => {
       databaseService.userCardModel.deleteOne = () => {
         throw new Error();
       };
 
       // @ts-expect-error: The argument is not required for this unit test.
-      const result = repositoryService.deleteCard();
+      const result = await repositoryService.deleteCard();
 
       expect(result.error).toBeDefined();
+
+      done();
     });
   });
 });

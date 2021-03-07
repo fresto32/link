@@ -1,3 +1,4 @@
+import { config } from "@link/config";
 import { CardSettingsGenerator } from "@link/schema/build/src/generator";
 import {
   CardCreated,
@@ -11,7 +12,6 @@ import { INestMicroservice } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Consumer, Kafka, Producer } from "kafkajs";
 import { bootstrap } from "./../src/bootstrap";
-import { environmentConfig } from "./../src/configuration/config";
 import { DatabaseService } from "./../src/services/database.service";
 import { RepositoryService } from "./../src/services/repository.service";
 
@@ -23,7 +23,7 @@ describe("Card Store Microservice (e2e)", () => {
 
   // Build Kafka messaging consumer and producer for E2E testing.
   beforeAll(async () => {
-    const KAFKA_BROKER = environmentConfig().kafka.broker.url;
+    const KAFKA_BROKER = config().kafka.broker.url;
 
     kafkaMessagesLog = new Map<string, any>();
 

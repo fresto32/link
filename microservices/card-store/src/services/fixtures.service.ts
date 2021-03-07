@@ -1,8 +1,8 @@
-import {Injectable} from '@nestjs/common';
-import {CardSettings} from '@link/schema/build/src/card';
-import {CardSettingsGenerator} from '@link/schema/build/src/generator';
-import {DatabaseService} from './database.service';
-import {RepositoryService} from './repository.service';
+import { CardSettings } from "@link/schema/build/src/card";
+import { CardSettingsGenerator } from "@link/schema/build/src/generator";
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "./database.service";
+import { RepositoryService } from "./repository.service";
 
 export const NUM_CARD_FIXTURES = 20;
 

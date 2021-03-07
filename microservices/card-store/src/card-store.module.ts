@@ -1,15 +1,13 @@
+import { config, ConfigModule } from "@link/config";
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ClientsModule, Transport } from "@nestjs/microservices";
-import { baseConfig, environmentConfig } from "./configuration/config";
-import { AppConfigService } from "./configuration/config.service";
 import { CardStoreController } from "./controllers/card-store.controller";
 import { DatabaseService } from "./services/database.service";
 import { FixturesService } from "./services/fixtures.service";
 import { RepositoryService } from "./services/repository.service";
 
-const KAFKA_BROKER = environmentConfig().kafka.broker.url;
+const KAFKA_BROKER = config().kafka.broker.url;
 
 @Module({
   imports: [
@@ -24,17 +22,10 @@ const KAFKA_BROKER = environmentConfig().kafka.broker.url;
         },
       },
     ]),
-    ConfigModule.forRoot({
-      load: [environmentConfig, baseConfig],
-    }),
     EventEmitterModule.forRoot(),
+    ConfigModule,
   ],
   controllers: [CardStoreController],
-  providers: [
-    DatabaseService,
-    FixturesService,
-    RepositoryService,
-    AppConfigService,
-  ],
+  providers: [DatabaseService, FixturesService, RepositoryService],
 })
 export class CardStoreModule {}
