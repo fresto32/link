@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
+import { ono } from "ono";
 
 /**
  * Service that handles the card store's configuration
@@ -17,7 +18,7 @@ export class ConfigService {
     const value = this.nestConfigService.get<T>(key);
 
     if (!value) {
-      throw new Error(`Key of ${key} is not set in environment.`);
+      throw ono(`Key of ${key} is not set in environment.`);
     }
 
     return value;

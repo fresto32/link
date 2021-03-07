@@ -3,6 +3,7 @@ import { CardSettings, UserCard } from "@link/schema/build/src/card";
 import { Injectable } from "@nestjs/common";
 import { getModelForClass, ReturnModelType } from "@typegoose/typegoose";
 import * as mongoose from "mongoose";
+import ono from "ono";
 
 /**
  * Service for controlling the database connection
@@ -43,8 +44,11 @@ export class DatabaseService {
   }
 
   public async dropDatabase() {
-    if (this.configService.get<string>("NODE_ENV") === "production") {
-      throw new Error("Cannot drop production database programmatically.");
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "production") {
+      throw ono("Cannot drop production database programmatically.", {
+        nodeEnv,
+      });
     }
 
     const db = this.connection();
