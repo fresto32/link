@@ -1,5 +1,6 @@
 import {config} from '@link/config';
 import {CardSettingsGenerator} from '@link/schema/build/src/generator';
+import {Topics} from '@link/schema/build/src/topics';
 import {
   CardCreated,
   CardEvent,
@@ -8,53 +9,20 @@ import {
   GetAllUserCardsRequested,
   NextCardRequested,
 } from '@link/schema/src/events/card';
+import {KafkaLink, waitFor} from '@link/test';
 import {INestMicroservice} from '@nestjs/common';
 import {ClientProxy} from '@nestjs/microservices';
-import {Consumer, Kafka, Producer} from 'kafkajs';
-import ono from 'ono';
 import {bootstrap} from './../src/bootstrap';
 import {DatabaseService} from './../src/services/database.service';
 import {RepositoryService} from './../src/services/repository.service';
 
 describe('Card Store Microservice (e2e)', () => {
-  let kafkaMessagesLog = new Map<string, string>();
-  let kafka: Kafka;
-  let producer: Producer;
-  let consumer: Consumer;
+  let kafkaLink: KafkaLink;
 
-  // Build Kafka messaging consumer and producer for E2E testing.
   beforeAll(async () => {
-    const KAFKA_BROKER = config().kafka.broker.url;
-
-    kafkaMessagesLog = new Map<string, string>();
-
-    kafka = new Kafka({
-      clientId: 'Card Store',
-      brokers: [KAFKA_BROKER],
-    });
-
-    producer = kafka.producer();
-
-    consumer = kafka.consumer({groupId: 'E2E Testing Consumer'});
-
-    await consumer.connect().then(() => {
-      consumer.subscribe({topic: 'card', fromBeginning: false}).then(() => {
-        consumer.run({
-          eachMessage: async ({message}) => {
-            if (!message.value) {
-              throw ono(`No value for key: ${message.key}`);
-            }
-
-            kafkaMessagesLog.set(
-              message.key.toString(),
-              message.value.toString()
-            );
-          },
-        });
-      });
-    });
-
-    await producer.connect();
+    const kafkaBroker = config().kafka.broker.url;
+    kafkaLink = new KafkaLink('Card Store', Topics.card, kafkaBroker);
+    await kafkaLink.setup();
   });
 
   let app: INestMicroservice;
@@ -89,7 +57,7 @@ describe('Card Store Microservice (e2e)', () => {
   });
 
   afterAll(async done => {
-    await Promise.all([producer.disconnect(), consumer.disconnect()]);
+    await kafkaLink.destroy();
     await client.close();
     await app.close();
 
@@ -103,10 +71,9 @@ describe('Card Store Microservice (e2e)', () => {
       // Reset database on start
       await databaseService.dropDatabase();
 
-      // Start with a clean kafkaMessagesLog.
-      kafkaMessagesLog.clear();
+      kafkaLink.log.clear();
 
-      await sendCardCreatedEvent(producer);
+      await kafkaLink.sendCardCreatedEvent();
 
       await waitFor(4000);
 
@@ -121,7 +88,7 @@ describe('Card Store Microservice (e2e)', () => {
         payload: nextCard,
       };
 
-      await producer.send({
+      await kafkaLink.send({
         topic: 'card',
         messages: [
           {key: nextCardRequestedUuid, value: JSON.stringify(nextCardEvent)},
@@ -134,8 +101,7 @@ describe('Card Store Microservice (e2e)', () => {
       // register its arrival and perform relevant computation.
       await waitFor(10000);
 
-      const gotNextCardEvent = tryGetMessageFrom(
-        kafkaMessagesLog,
+      const gotNextCardEvent = kafkaLink.log.tryGetMessageOf(
         nextCardRequestedUuid
       );
       expect(gotNextCardEvent).toBeTruthy();
@@ -156,11 +122,10 @@ describe('Card Store Microservice (e2e)', () => {
       // Reset database on start
       await databaseService.dropDatabase();
 
-      // Start with a clean kafkaMessagesLog.
-      kafkaMessagesLog.clear();
+      kafkaLink.log.clear();
 
       for (let i = 0; i < cardsInDatabase; i++) {
-        await sendCardCreatedEvent(producer);
+        await kafkaLink.sendCardCreatedEvent();
       }
 
       await waitFor(4000);
@@ -176,7 +141,7 @@ describe('Card Store Microservice (e2e)', () => {
         payload: getAllUserCards,
       };
 
-      await producer.send({
+      await kafkaLink.send({
         topic: 'card',
         messages: [
           {
@@ -192,8 +157,7 @@ describe('Card Store Microservice (e2e)', () => {
       // register its arrival and perform relevant computation.
       await waitFor(10000);
 
-      const gotUserCardsEvent = tryGetMessageFrom(
-        kafkaMessagesLog,
+      const gotUserCardsEvent = kafkaLink.log.tryGetMessageOf(
         getAllUserCardsUuid
       );
       expect(gotUserCardsEvent).toBeTruthy();
@@ -215,17 +179,13 @@ describe('Card Store Microservice (e2e)', () => {
       // Reset database on start
       await databaseService.dropDatabase();
 
-      // Start with a clean kafkaMessagesLog.
-      kafkaMessagesLog.clear();
+      kafkaLink.log.clear();
 
-      const cardCreatedUuid = await sendCardCreatedEvent(producer);
+      const cardCreatedUuid = await kafkaLink.sendCardCreatedEvent();
 
       await waitFor(4000);
 
-      const createdCardEvent = tryGetMessageFrom(
-        kafkaMessagesLog,
-        cardCreatedUuid
-      );
+      const createdCardEvent = kafkaLink.log.tryGetMessageOf(cardCreatedUuid);
 
       createdCardId = createdCardEvent.payload.cardId;
 
@@ -241,7 +201,7 @@ describe('Card Store Microservice (e2e)', () => {
         payload: deleteCardRequested,
       };
 
-      await producer.send({
+      await kafkaLink.send({
         topic: 'card',
         messages: [
           {key: cardDeletionUuid, value: JSON.stringify(deleteCardEvent)},
@@ -267,10 +227,7 @@ describe('Card Store Microservice (e2e)', () => {
       // register its arrival and perform relevant computation.
       await waitFor(5000);
 
-      const cardDeletedEvent = tryGetMessageFrom(
-        kafkaMessagesLog,
-        cardDeletionUuid
-      );
+      const cardDeletedEvent = kafkaLink.log.tryGetMessageOf(cardDeletionUuid);
 
       expect(cardDeletedEvent).toBeTruthy();
       expect(cardDeletedEvent.pattern).toEqual(EventPatterns.deletedCard);
@@ -300,10 +257,9 @@ describe('Card Store Microservice (e2e)', () => {
       // Reset database on start
       await databaseService.dropDatabase();
 
-      // Start with a clean kafkaMessagesLog.
-      kafkaMessagesLog.clear();
+      kafkaLink.log.clear();
 
-      await producer.send({
+      await kafkaLink.send({
         topic: 'card',
         messages: [{key: cardUuid, value: JSON.stringify(cardEvent)}],
       });
@@ -327,7 +283,7 @@ describe('Card Store Microservice (e2e)', () => {
       // register its arrival and perform relevant computation.
       await waitFor(5000);
 
-      const cardStoredEvent = tryGetMessageFrom(kafkaMessagesLog, cardUuid);
+      const cardStoredEvent = kafkaLink.log.tryGetMessageOf(cardUuid);
 
       expect(cardStoredEvent).toBeTruthy();
       expect(cardStoredEvent.pattern).toEqual(EventPatterns.cardStored);
@@ -338,56 +294,3 @@ describe('Card Store Microservice (e2e)', () => {
     });
   });
 });
-
-/**
- * Pauses on the current line for `milliseconds`.
- */
-async function waitFor(milliseconds: number) {
-  await new Promise<void>(r => setTimeout(() => r(), milliseconds));
-}
-
-let cardCreatedEventCount = 0;
-
-/**
- * Sends a card created event to Kafka. This event should trigger the card
- * store to save a card to its database.
- *
- * @returns the UUID of the event.
- */
-async function sendCardCreatedEvent(producer: Producer): Promise<string> {
-  const cardCreatedUuid = `Card created event ${cardCreatedEventCount++}`;
-
-  const cardCreated: CardCreated = {
-    uuid: cardCreatedUuid,
-    timestamp: new Date(),
-    source: 'Api Gateway',
-    card: new CardSettingsGenerator(),
-  };
-
-  const cardEvent: CardEvent = {
-    pattern: EventPatterns.cardCreated,
-    payload: cardCreated,
-  };
-
-  await producer.send({
-    topic: 'card',
-    messages: [{key: cardCreatedUuid, value: JSON.stringify(cardEvent)}],
-  });
-
-  return cardCreatedUuid;
-}
-
-/**
- * Tries to get the message of key `uuid` from `messages`.
- */
-function tryGetMessageFrom(messages: Map<string, string>, uuid: string) {
-  const message = messages.get(uuid);
-  if (!message) {
-    fail(`No message for UUID: ${uuid}`);
-  }
-  try {
-    return JSON.parse(message);
-  } catch (err) {
-    throw ono(err, 'Could not parse message', {message});
-  }
-}

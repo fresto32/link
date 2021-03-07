@@ -12,6 +12,8 @@
   },
   "moduleNameMapper": {
     "@link/config/(.*)": "<rootDir>/../libs/config/src/$1",
-    "@link/config": "<rootDir>/../libs/config/src"
+    "@link/config": "<rootDir>/../libs/config/src",
+    "@link/test/(.*)": "<rootDir>/../libs/test/src/$1",
+    "@link/test": "<rootDir>/../libs/test/src"
   }
 }
