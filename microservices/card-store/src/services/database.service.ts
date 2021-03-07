@@ -1,9 +1,9 @@
-import { ConfigService } from "@link/config";
-import { CardSettings, UserCard } from "@link/schema/build/src/card";
-import { Injectable } from "@nestjs/common";
-import { getModelForClass, ReturnModelType } from "@typegoose/typegoose";
-import * as mongoose from "mongoose";
-import ono from "ono";
+import {ConfigService} from '@link/config';
+import {CardSettings, UserCard} from '@link/schema/build/src/card';
+import {Injectable} from '@nestjs/common';
+import {getModelForClass, ReturnModelType} from '@typegoose/typegoose';
+import * as mongoose from 'mongoose';
+import ono from 'ono';
 
 /**
  * Service for controlling the database connection
@@ -28,15 +28,15 @@ export class DatabaseService {
   public connection(): mongoose.Connection {
     if (this._connection) return this._connection;
 
-    mongoose.connect(this.configService.get<string>("db.url"), {
+    mongoose.connect(this.configService.get<string>('db.url'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
     const dbConnection = mongoose.connection;
     dbConnection.on(
-      "error",
-      console.error.bind(console, "MongoDB connection error:")
+      'error',
+      console.error.bind(console, 'MongoDB connection error:')
     );
 
     this._connection = dbConnection;
@@ -44,9 +44,9 @@ export class DatabaseService {
   }
 
   public async dropDatabase() {
-    const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (nodeEnv === "production") {
-      throw ono("Cannot drop production database programmatically.", {
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
+    if (nodeEnv === 'production') {
+      throw ono('Cannot drop production database programmatically.', {
         nodeEnv,
       });
     }

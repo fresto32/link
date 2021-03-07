@@ -1,16 +1,16 @@
-import { ConfigService } from "@link/config";
-import { Test, TestingModule } from "@nestjs/testing";
-import { mongoose } from "@typegoose/typegoose";
-import { DatabaseService } from "./database.service";
-import { FixturesService, NUM_CARD_FIXTURES } from "./fixtures.service";
-import { RepositoryService } from "./repository.service";
-import Sinon, { stub } from "sinon";
+import {ConfigService} from '@link/config';
+import {Test, TestingModule} from '@nestjs/testing';
+import {mongoose} from '@typegoose/typegoose';
+import {DatabaseService} from './database.service';
+import {FixturesService, NUM_CARD_FIXTURES} from './fixtures.service';
+import {RepositoryService} from './repository.service';
+import Sinon, {stub} from 'sinon';
 
-describe("DatabaseService", () => {
+describe('DatabaseService', () => {
   let service: DatabaseService;
   let fixturesService: FixturesService;
   let repositoryService: RepositoryService;
-  let configServiceMock: { get: Sinon.SinonStub };
+  let configServiceMock: {get: Sinon.SinonStub};
 
   beforeEach(async () => {
     configServiceMock = {
@@ -18,10 +18,10 @@ describe("DatabaseService", () => {
     };
 
     configServiceMock.get
-      .withArgs("NODE_ENV")
-      .returns("development")
-      .withArgs("db.url")
-      .returns("mongodb://localhost:27017/development");
+      .withArgs('NODE_ENV')
+      .returns('development')
+      .withArgs('db.url')
+      .returns('mongodb://localhost:27017/development');
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -40,18 +40,18 @@ describe("DatabaseService", () => {
     repositoryService = app.get<RepositoryService>(RepositoryService);
   });
 
-  describe("connection()", () => {
-    it("should return a mongoose.Connection", () => {
+  describe('connection()', () => {
+    it('should return a mongoose.Connection', () => {
       const dbConnection = service.connection();
 
       expect(dbConnection instanceof mongoose.Connection).toBeTruthy();
     });
   });
 
-  describe("drop()", () => {
-    afterEach(() => (process.env.NODE_ENV = "development"));
+  describe('drop()', () => {
+    afterEach(() => (process.env.NODE_ENV = 'development'));
 
-    it("should drop the database", async () => {
+    it('should drop the database', async () => {
       await fixturesService.add();
 
       const preDropCards = await repositoryService.userCards();
@@ -63,10 +63,10 @@ describe("DatabaseService", () => {
       expect(postDropCards.data.length).toEqual(0);
     });
 
-    it("should not drop the production database", async (done) => {
-      configServiceMock.get.withArgs("NODE_ENV").returns("production");
+    it('should not drop the production database', async done => {
+      configServiceMock.get.withArgs('NODE_ENV').returns('production');
 
-      const dropSpy = spyOn(service.connection(), "dropDatabase");
+      const dropSpy = spyOn(service.connection(), 'dropDatabase');
 
       await expect(service.dropDatabase()).rejects.toThrow(Error);
       expect(dropSpy.wasCalled).toBeFalsy();

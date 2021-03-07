@@ -1,10 +1,10 @@
-import { Module } from "@nestjs/common";
+import {Module} from '@nestjs/common';
 import {
   ConfigModule as NestConfigModule,
   ConfigService as NestConfigService,
-} from "@nestjs/config";
-import { baseConfig, config } from "./config";
-import { ConfigService } from "./config.service";
+} from '@nestjs/config';
+import {baseConfig, config} from './config';
+import {ConfigService} from './config.service';
 
 @Module({
   imports: [

@@ -1,5 +1,5 @@
-import { EventPatterns } from "@link/schema/build/src/events";
-import { Topics } from "@link/schema/build/src/topics";
+import {EventPatterns} from '@link/schema/build/src/events';
+import {Topics} from '@link/schema/build/src/topics';
 import {
   CardCreated,
   CardEvent,
@@ -10,17 +10,17 @@ import {
   GotAllUserCards,
   GotNextCard,
   NextCardRequested,
-} from "@link/schema/src/events/card";
-import { Controller, Inject } from "@nestjs/common";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
-import { ClientProxy, EventPattern, Transport } from "@nestjs/microservices";
-import { KafkaMessage } from "kafkajs";
-import { RepositoryService } from "./../services/repository.service";
+} from '@link/schema/src/events/card';
+import {Controller, Inject} from '@nestjs/common';
+import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
+import {ClientProxy, EventPattern, Transport} from '@nestjs/microservices';
+import {KafkaMessage} from 'kafkajs';
+import {RepositoryService} from './../services/repository.service';
 
 @Controller()
 export class CardStoreController {
   constructor(
-    @Inject("KAFKA") private client: ClientProxy,
+    @Inject('KAFKA') private client: ClientProxy,
     private repositoryService: RepositoryService,
     private eventEmitter: EventEmitter2
   ) {}
@@ -46,7 +46,7 @@ export class CardStoreController {
     const nextCard: GotNextCard = {
       uuid: payload.uuid,
       timestamp: new Date(),
-      source: "Card Store",
+      source: 'Card Store',
       userCard: result.data,
       error: result.error,
     };
@@ -56,7 +56,7 @@ export class CardStoreController {
       payload: nextCard,
     };
 
-    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
+    this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
   /**
@@ -69,7 +69,7 @@ export class CardStoreController {
     const userCards: GotAllUserCards = {
       uuid: payload.uuid,
       timestamp: new Date(),
-      source: "Card Store",
+      source: 'Card Store',
       cards: result.data,
       error: result.error,
     };
@@ -79,7 +79,7 @@ export class CardStoreController {
       payload: userCards,
     };
 
-    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
+    this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
   /**
@@ -92,7 +92,7 @@ export class CardStoreController {
     const deletedCard: DeletedCard = {
       uuid: payload.uuid,
       timestamp: new Date(),
-      source: "Card Store",
+      source: 'Card Store',
       cardId: payload.cardId,
       error: result.error,
     };
@@ -102,20 +102,20 @@ export class CardStoreController {
       payload: deletedCard,
     };
 
-    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
+    this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
   /**
    * Store the card and emit a `CardStored` event.
    */
-  @OnEvent(EventPatterns.cardCreated, { async: true, nextTick: true })
+  @OnEvent(EventPatterns.cardCreated, {async: true, nextTick: true})
   async handleCardCreated(payload: CardCreated) {
     const result = await this.repositoryService.saveCard(payload.card);
 
     const cardStored: CardStored = {
       uuid: payload.uuid,
       timestamp: new Date(),
-      source: "Card Store",
+      source: 'Card Store',
       cardId: result.data,
       error: result.error,
     };
@@ -125,6 +125,6 @@ export class CardStoreController {
       payload: cardStored,
     };
 
-    this.client.emit(Topics.card, { key: payload.uuid, value: eventToEmit });
+    this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 }

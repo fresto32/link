@@ -1,10 +1,10 @@
-import { ConfigService } from "./config.service";
+import {ConfigService} from './config.service';
 
-describe("ConfigService", () => {
+describe('ConfigService', () => {
   let service: ConfigService;
 
   const nestConfigServiceMock = {
-    get: jest.fn().mockReturnValue("hello"),
+    get: jest.fn().mockReturnValue('hello'),
   };
 
   beforeEach(async () => {
@@ -12,18 +12,18 @@ describe("ConfigService", () => {
     service = new ConfigService(nestConfigServiceMock);
   });
 
-  describe("databaseUrl", () => {
-    it("returns the value as specified by the nest config service for a given key", () => {
-      const expectedUrl = "expectedUrl";
+  describe('databaseUrl', () => {
+    it('returns the value as specified by the nest config service for a given key', () => {
+      const expectedUrl = 'expectedUrl';
       nestConfigServiceMock.get.mockReturnValue(expectedUrl);
 
-      expect(service.get<string>("url")).toEqual(expectedUrl);
+      expect(service.get<string>('url')).toEqual(expectedUrl);
     });
 
-    it("throws an error when the nest config service has no value for the key", () => {
+    it('throws an error when the nest config service has no value for the key', () => {
       nestConfigServiceMock.get.mockReturnValue(undefined);
 
-      const fn = () => service.get("db.url");
+      const fn = () => service.get('db.url');
       expect(fn).toThrow(Error);
     });
   });

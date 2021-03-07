@@ -1,9 +1,9 @@
-import { Test } from "@nestjs/testing";
-import { DatabaseService } from "./database.service";
-import { FixturesService, NUM_CARD_FIXTURES } from "./fixtures.service";
-import { RepositoryService } from "./repository.service";
+import {Test} from '@nestjs/testing';
+import {DatabaseService} from './database.service';
+import {FixturesService, NUM_CARD_FIXTURES} from './fixtures.service';
+import {RepositoryService} from './repository.service';
 
-describe("FixturesService", () => {
+describe('FixturesService', () => {
   let fixturesService: FixturesService;
 
   let repositoryServiceMock: {
@@ -21,7 +21,7 @@ describe("FixturesService", () => {
       saveCard: jest.fn(),
     };
 
-    process.env.NODE_ENV = "development";
+    process.env.NODE_ENV = 'development';
 
     const moduleRef = await Test.createTestingModule({
       providers: [FixturesService, DatabaseService, RepositoryService],
@@ -35,8 +35,8 @@ describe("FixturesService", () => {
     fixturesService = moduleRef.get<FixturesService>(FixturesService);
   });
 
-  describe("add()", () => {
-    it("drops the current database", async (done) => {
+  describe('add()', () => {
+    it('drops the current database', async done => {
       await fixturesService.add();
 
       expect(databaseServiceMock.dropDatabase).toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe("FixturesService", () => {
       done();
     });
 
-    it("drops the current database", async (done) => {
+    it('drops the current database', async done => {
       await fixturesService.add();
 
       expect(repositoryServiceMock.saveCard).toHaveBeenCalledTimes(

@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService as NestConfigService } from "@nestjs/config";
-import { ono } from "ono";
+import {Injectable} from '@nestjs/common';
+import {ConfigService as NestConfigService} from '@nestjs/config';
+import {ono} from 'ono';
 
 /**
  * Service that handles the card store's configuration
