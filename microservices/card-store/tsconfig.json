@@ -16,22 +16,14 @@
     "incremental": true,
     "noEmitOnError": false,
     "paths": {
-      "@link/config": [
-        "libs/config/src"
-      ],
-      "@link/config/*": [
-        "libs/config/src/*"
-      ],
-      "@link/test": [
-        "libs/test/src"
-      ],
-      "@link/test/*": [
-        "libs/test/src/*"
-      ]
+      "@link/config": ["libs/config/src"],
+      "@link/config/*": ["libs/config/src/*"],
+      "@link/test": ["libs/test/src"],
+      "@link/test/*": ["libs/test/src/*"],
+      "@link/logger": ["libs/logger/src"],
+      "@link/logger/*": ["libs/logger/src/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
+
