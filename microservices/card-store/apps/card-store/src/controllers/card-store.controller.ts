@@ -1,16 +1,16 @@
-import {EventPatterns} from '@link/schema/build/src/events';
-import {Topics} from '@link/schema/build/src/topics';
 import {
   CardCreated,
   CardEvent,
   CardStored,
   DeleteCardRequested,
   DeletedCard,
+  EventPatterns,
   GetAllUserCardsRequested,
   GotAllUserCards,
   GotNextCard,
   NextCardRequested,
-} from '@link/schema/src/events/card';
+  Topics,
+} from '@link/schema';
 import {Controller, Inject} from '@nestjs/common';
 import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
 import {ClientProxy, EventPattern, Transport} from '@nestjs/microservices';

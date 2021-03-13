@@ -1,9 +1,9 @@
 import {
   CardCreated,
   CardEvent,
+  CardSettingsGenerator,
   EventPatterns,
-} from '@link/schema/src/events/card';
-import {CardSettingsGenerator} from '@link/schema/build/src/generator';
+} from '@link/schema';
 import {Consumer, Kafka, Producer, ProducerRecord} from 'kafkajs';
 import {KafkaLog} from './kafka-log';
 

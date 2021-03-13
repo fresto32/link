@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -18,7 +18,7 @@
     "test:watch": "jest --watch --onlyChanged",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": ". ./scripts/setEnvironmentForDev.sh && jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e": ". ./scripts/setEnvironmentForDev.sh && jest --config ./apps/card-store/test/jest-e2e.json --runInBand",
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
@@ -94,8 +94,8 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/src/",
-      "<rootDir>/libs/"
+      "<rootDir>/libs/",
+      "<rootDir>/apps/"
     ],
     "moduleNameMapper": {
       "@link/config/(.*)": "<rootDir>/libs/config/src/$1",

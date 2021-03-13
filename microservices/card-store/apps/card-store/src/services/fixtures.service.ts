@@ -1,5 +1,4 @@
-import {CardSettings} from '@link/schema/build/src/card';
-import {CardSettingsGenerator} from '@link/schema/build/src/generator';
+import {CardSettings, CardSettingsGenerator} from '@link/schema';
 import {Injectable} from '@nestjs/common';
 import {DatabaseService} from './database.service';
 import {RepositoryService} from './repository.service';

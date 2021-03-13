@@ -1,5 +1,4 @@
-import {CardSettings, UserCard} from '@link/schema/build/src/card';
-import {ApiResult} from '@link/schema/src/common';
+import {ApiResult, CardSettings, UserCard} from '@link/schema';
 import {Injectable} from '@nestjs/common';
 import {DatabaseService} from './database.service';
 

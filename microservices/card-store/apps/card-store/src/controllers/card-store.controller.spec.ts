@@ -1,4 +1,3 @@
-import {Topics} from '@link/schema/build/src/topics';
 import {
   CardCreated,
   CardStored,
@@ -9,7 +8,8 @@ import {
   GotAllUserCards,
   GotNextCard,
   NextCardRequested,
-} from '@link/schema/src/events/card';
+  Topics,
+} from '@link/schema';
 import {EventEmitter2} from '@nestjs/event-emitter';
 import {Test, TestingModule} from '@nestjs/testing';
 import {RepositoryService} from './../services/repository.service';

@@ -1,6 +1,6 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/card-store/src",
   "assets": [
     "/**/*.yml"
   ],
@@ -32,9 +32,19 @@
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
+    },
+    "card-store": {
+      "type": "application",
+      "root": "apps/card-store",
+      "entryFile": "main",
+      "sourceRoot": "apps/card-store/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/card-store/tsconfig.app.json"
     }
   },
   "compilerOptions": {
     "webpack": true
   }
+  "monorepo": true,
+  "root": "apps/card-store"
 }
