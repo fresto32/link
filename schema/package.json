@@ -2,7 +2,7 @@
   "name": "@link/schema",
   "version": "0.0.1",
   "description": "The schema of the Link project.",
-  "main": "index.js",
+  "main": "./build/index.js",
   "scripts": {
     "test": "jest",
     "lint": "gts lint",
