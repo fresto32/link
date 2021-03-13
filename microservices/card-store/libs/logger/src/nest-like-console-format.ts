@@ -3,6 +3,7 @@ import bare from 'cli-color/bare';
 import {greenBright, red, yellow, magentaBright, cyanBright} from 'cli-color';
 import {format} from 'winston';
 import safeStringify from 'fast-safe-stringify';
+import {isEmpty} from 'lodash';
 
 const nestLikeColorScheme: Record<string, bare.Format> = {
   info: greenBright,
@@ -23,7 +24,7 @@ export const nestLikeConsoleFormat = (): Format =>
       ('undefined' !== typeof timestamp
         ? `${new Date(timestamp).toLocaleString()} `
         : '') +
-      `${color(message)} - ` +
-      `${safeStringify(meta)}`
+      `${color(message)}` +
+      `${isEmpty(meta) ? ' ' : ' - ' + safeStringify(meta)}`
     );
   });
