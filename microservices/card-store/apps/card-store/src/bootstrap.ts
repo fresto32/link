@@ -1,4 +1,5 @@
 import {config} from '@link/config';
+import {LoggerService} from '@link/logger';
 import {NestFactory} from '@nestjs/core';
 import {KafkaOptions, Transport} from '@nestjs/microservices';
 import {CardStoreModule} from './card-store.module';
@@ -17,6 +18,7 @@ export async function bootstrap() {
         },
         subscribe: {},
       },
+      logger: new LoggerService(),
     }
   );
   app.listen(() =>
