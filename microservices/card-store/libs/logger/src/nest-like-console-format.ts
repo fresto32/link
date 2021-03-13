@@ -18,9 +18,7 @@ export const nestLikeConsoleFormat = (): Format =>
       nestLikeColorScheme[level] || ((text: string): string => text);
 
     return (
-      ('undefined' !== typeof context
-        ? `${yellow('[' + context + ']')} `
-        : '') +
+      ('undefined' !== typeof context ? `${yellow(context)} ` : '') +
       `${color(level.charAt(0).toUpperCase() + level.slice(1))}\t` +
       ('undefined' !== typeof timestamp
         ? `${new Date(timestamp).toLocaleString()} `

@@ -3,6 +3,14 @@ import {Logger as WinstonLogger} from 'winston';
 import {Logger} from './logger';
 
 /**
+ * Default context for the logger service.
+ *
+ * Since this service is exclusively used by NestJS, the default
+ * context represents that.
+ */
+export const DEFAULT_CONTEXT = 'NestJS';
+
+/**
  * LoggerService is constructed to be used by NestJS bootstrapping
  * code.
  *
@@ -14,10 +22,12 @@ import {Logger} from './logger';
 export class LoggerService extends NestLogger {
   private logger: WinstonLogger;
 
-  public context = 'NestJS';
+  public context = DEFAULT_CONTEXT;
 
-  constructor() {
-    super();
+  constructor(context?: string) {
+    super(context);
+
+    if (context) this.context = context;
 
     this.logger = Logger.create(this.context);
   }
@@ -27,7 +37,7 @@ export class LoggerService extends NestLogger {
   }
 
   public log(message: any, context?: string): any {
-    context = context || this.context;
+    context = Logger.padContext(context || this.context);
 
     if (typeof message === 'object') {
       const {message: msg, ...meta} = message;
@@ -39,7 +49,7 @@ export class LoggerService extends NestLogger {
   }
 
   public error(message: any, trace?: string, context?: string): any {
-    context = context || this.context;
+    context = Logger.padContext(context || this.context);
 
     if (message instanceof Error) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,7 +76,7 @@ export class LoggerService extends NestLogger {
   }
 
   public warn(message: any, context?: string): any {
-    context = context || this.context;
+    context = Logger.padContext(context || this.context);
 
     if (typeof message === 'object') {
       const {message: msg, ...meta} = message;
@@ -78,7 +88,7 @@ export class LoggerService extends NestLogger {
   }
 
   public debug(message: any, context?: string): any {
-    context = context || this.context;
+    context = Logger.padContext(context || this.context);
 
     if (typeof message === 'object') {
       const {message: msg, ...meta} = message;
@@ -90,7 +100,7 @@ export class LoggerService extends NestLogger {
   }
 
   public verbose(message: any, context?: string): any {
-    context = context || this.context;
+    context = Logger.padContext(context || this.context);
 
     if (typeof message === 'object') {
       const {message: msg, ...meta} = message;

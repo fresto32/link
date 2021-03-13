@@ -1,7 +1,8 @@
 import {ConfigService} from '@link/config';
 import {Test, TestingModule} from '@nestjs/testing';
 import Sinon, {stub} from 'sinon';
-import {LoggerService} from './logger.service';
+import {Logger} from './logger';
+import {DEFAULT_CONTEXT, LoggerService} from './logger.service';
 
 describe('LoggerService', () => {
   let service: LoggerService;
@@ -61,10 +62,11 @@ describe('LoggerService', () => {
     expect(service).toBeDefined();
   });
 
+  const expectedContext = Logger.padContext(DEFAULT_CONTEXT);
   const messageObject = {some: 'object'};
-  const expectedObject = {context: 'NestJS', some: 'object'};
+  const expectedObject = {context: expectedContext, some: 'object'};
   const message = 'Some message';
-  const expectedMessage = {context: 'NestJS'};
+  const expectedMessage = {context: expectedContext};
 
   loggingFunctions
     .filter(funcName => funcName !== 'log' && funcName !== 'error')
@@ -111,7 +113,7 @@ describe('LoggerService', () => {
   it('logs an error message', () => {
     service.error(message);
 
-    const expectedErrorObject = {context: 'NestJS', stack: [undefined]};
+    const expectedErrorObject = {context: expectedContext, stack: [undefined]};
     expect(loggerMocks.error).toHaveBeenCalledWith(
       message,
       expectedErrorObject
@@ -122,7 +124,7 @@ describe('LoggerService', () => {
     service.error(expectedObject);
 
     const expectedErrorObject = {
-      context: 'NestJS',
+      context: expectedContext,
       some: 'object',
       stack: [undefined],
     };
