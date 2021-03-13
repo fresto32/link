@@ -1,5 +1,5 @@
 import {config} from '@link/config';
-import {LoggerService} from '@link/logger';
+import {LoggerService, Logger} from '@link/logger';
 import {NestFactory} from '@nestjs/core';
 import {KafkaOptions, Transport} from '@nestjs/microservices';
 import {CardStoreModule} from './card-store.module';
@@ -21,9 +21,11 @@ export async function bootstrap() {
       logger: new LoggerService(),
     }
   );
-  app.listen(() =>
-    console.log(`Microservice is listening to Kafka on ${KAFKA_BROKER}`)
-  );
+
+  app.listen(() => {
+    const logger = Logger.create('NestMicroservice');
+    logger.info(`Microservice is listening to Kafka on ${KAFKA_BROKER}`);
+  });
 
   return app;
 }

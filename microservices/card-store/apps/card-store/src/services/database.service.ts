@@ -1,5 +1,6 @@
 import {ConfigService} from '@link/config';
 import {CardSettings, UserCard} from '@link/schema';
+import {Logger} from '@link/logger';
 import {Injectable} from '@nestjs/common';
 import {getModelForClass, ReturnModelType} from '@typegoose/typegoose';
 import * as mongoose from 'mongoose';
@@ -11,6 +12,7 @@ import ono from 'ono';
  */
 @Injectable()
 export class DatabaseService {
+  private _logger = Logger.create('DatabaseService');
   private _connection: mongoose.Connection | undefined = undefined;
 
   public userCardModel: ReturnModelType<typeof UserCard, {}>;
@@ -34,10 +36,7 @@ export class DatabaseService {
     });
 
     const dbConnection = mongoose.connection;
-    dbConnection.on(
-      'error',
-      console.error.bind(console, 'MongoDB connection error:')
-    );
+    dbConnection.on('error', error => this._logger.error(error));
 
     this._connection = dbConnection;
     return dbConnection;
