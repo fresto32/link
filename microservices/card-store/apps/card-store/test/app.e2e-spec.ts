@@ -1,14 +1,14 @@
 import {config} from '@link/config';
-import {CardSettingsGenerator} from '@link/schema/build/src/generator';
-import {Topics} from '@link/schema/build/src/topics';
 import {
   CardCreated,
   CardEvent,
+  CardSettingsGenerator,
   DeleteCardRequested,
   EventPatterns,
   GetAllUserCardsRequested,
   NextCardRequested,
-} from '@link/schema/src/events/card';
+  Topics,
+} from '@link/schema';
 import {KafkaLink, waitFor} from '@link/test';
 import {INestMicroservice} from '@nestjs/common';
 import {ClientProxy} from '@nestjs/microservices';
@@ -162,7 +162,7 @@ describe('Card Store Microservice (e2e)', () => {
       );
       expect(gotUserCardsEvent).toBeTruthy();
 
-      expect(gotUserCardsEvent.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(gotUserCardsEvent.pattern).toEqual(EventPatterns.gotAllUserCards);
       expect(gotUserCardsEvent.payload.uuid).toEqual(getAllUserCardsUuid);
       expect(gotUserCardsEvent.payload.cards).toBeTruthy();
       expect(gotUserCardsEvent.payload.cards).toHaveLength(cardsInDatabase);

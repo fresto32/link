@@ -136,7 +136,7 @@ describe('CardStoreController', () => {
       const result: {pattern: EventPatterns; payload: GotAllUserCards} =
         clientProxyMock.emit.mock.calls[0][1].value;
 
-      expect(result.pattern).toEqual(EventPatterns.gotNextCard);
+      expect(result.pattern).toEqual(EventPatterns.gotAllUserCards);
       expect(result.payload.uuid).toEqual(event.uuid);
       expect(result.payload.source).toEqual('Card Store');
       expect(result.payload.cards).toEqual('Some cards');

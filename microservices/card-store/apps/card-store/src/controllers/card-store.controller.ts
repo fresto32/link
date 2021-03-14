@@ -83,7 +83,7 @@ export class CardStoreController {
     };
 
     const eventToEmit: CardEvent = {
-      pattern: EventPatterns.gotNextCard,
+      pattern: EventPatterns.gotAllUserCards,
       payload: userCards,
     };
 
