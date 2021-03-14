@@ -1,9 +1,12 @@
+import {Logger} from '@link/logger';
 import {ApiResult, CardSettings, UserCard} from '@link/schema';
 import {Injectable} from '@nestjs/common';
 import {DatabaseService} from './database.service';
 
 @Injectable()
 export class RepositoryService {
+  private logger = Logger.create('RepositoryService');
+
   constructor(private databaseService: DatabaseService) {}
 
   public async userCards() {
@@ -15,10 +18,12 @@ export class RepositoryService {
         .populate('cards')
         .exec();
     } catch (error) {
-      result.error = {};
-      result.error.message = `Error when retrieving all cards: ${error}`;
+      const message = 'Error when retrieving all cards';
+      result.error = {message, error};
+      this.logger.error(message, error);
     }
 
+    this.logger.verbose('User cards retrieved', result);
     return result;
   }
 
@@ -33,10 +38,12 @@ export class RepositoryService {
         .lean()
         .exec();
     } catch (error) {
-      result.error = {};
-      result.error.message = `Error when retrieving next card: ${error}`;
+      const message = 'Error when retrieving next card';
+      result.error = {message, error};
+      this.logger.error(message, error);
     }
 
+    this.logger.verbose('Next card retrieved', result);
     return result;
   }
 
@@ -63,11 +70,12 @@ export class RepositoryService {
 
       await userCardDocument.save();
     } catch (error) {
-      result.error = {
-        message: `Error when saving card: ${error.errmsg}`,
-      };
+      const message = 'Error when saving card';
+      result.error = {message, error};
+      this.logger.error(message, error);
     }
 
+    this.logger.verbose('Saved card', result);
     return result;
   }
 
@@ -77,11 +85,12 @@ export class RepositoryService {
     try {
       await this.databaseService.userCardModel.deleteOne({_id: cardId}).exec();
     } catch (error) {
-      result.error = {
-        message: `Error when deleting card: ${error.errmsg}`,
-      };
+      const message = 'Error when deleting card';
+      result.error = {message, error};
+      this.logger.error(message, error);
     }
 
+    this.logger.verbose('Deleted card', result);
     return result;
   }
 }

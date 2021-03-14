@@ -1,3 +1,4 @@
+import {Logger} from '@link/logger';
 import {
   CardCreated,
   CardEvent,
@@ -19,6 +20,8 @@ import {RepositoryService} from './../services/repository.service';
 
 @Controller()
 export class CardStoreController {
+  private logger = Logger.create('CardStoreController');
+
   constructor(
     @Inject('KAFKA') private client: ClientProxy,
     private repositoryService: RepositoryService,
@@ -32,6 +35,7 @@ export class CardStoreController {
   @EventPattern(Topics.card, Transport.KAFKA)
   async handleCard(event: KafkaMessage) {
     const cardEvent = (event.value as unknown) as CardEvent;
+    this.logger.info('Received card event from Kafka', event);
 
     this.eventEmitter.emit(cardEvent.pattern, cardEvent.payload);
   }
@@ -56,6 +60,10 @@ export class CardStoreController {
       payload: nextCard,
     };
 
+    this.logger.info(
+      `Emitting ${EventPatterns.gotNextCard} event`,
+      eventToEmit
+    );
     this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
@@ -79,6 +87,10 @@ export class CardStoreController {
       payload: userCards,
     };
 
+    this.logger.info(
+      `Emitting ${EventPatterns.gotAllUserCards} event`,
+      eventToEmit
+    );
     this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
@@ -102,6 +114,10 @@ export class CardStoreController {
       payload: deletedCard,
     };
 
+    this.logger.info(
+      `Emitting ${EventPatterns.deletedCard} event`,
+      eventToEmit
+    );
     this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 
@@ -125,6 +141,7 @@ export class CardStoreController {
       payload: cardStored,
     };
 
+    this.logger.info(`Emitting ${EventPatterns.cardStored} event`, eventToEmit);
     this.client.emit(Topics.card, {key: payload.uuid, value: eventToEmit});
   }
 }

@@ -37,6 +37,9 @@ export class DatabaseService {
 
     const dbConnection = mongoose.connection;
     dbConnection.on('error', error => this._logger.error(error));
+    dbConnection.on('connected', () =>
+      this._logger.info('Connected to database')
+    );
 
     this._connection = dbConnection;
     return dbConnection;
@@ -52,5 +55,7 @@ export class DatabaseService {
 
     const db = this.connection();
     await db.dropDatabase();
+
+    this._logger.warn('Dropped database');
   }
 }
