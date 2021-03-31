@@ -21,10 +21,9 @@ describe('Card Store Microservice (e2e)', () => {
 
   beforeAll(async () => {
     const kafkaBroker = config().kafka.broker.url;
-    kafkaLink = new KafkaLink('Card Store', Topics.card, kafkaBroker);
+    kafkaLink = new KafkaLink('Card Store E2E', Topics.card, kafkaBroker);
     await kafkaLink.setup();
   });
-
   let app: INestMicroservice;
   let repositoryService: RepositoryService;
   let databaseService: DatabaseService;
@@ -260,7 +259,7 @@ describe('Card Store Microservice (e2e)', () => {
       kafkaLink.log.clear();
 
       await kafkaLink.send({
-        topic: 'card',
+        topic: Topics.card,
         messages: [{key: cardUuid, value: JSON.stringify(cardEvent)}],
       });
 
