@@ -58,7 +58,7 @@ services:
     image: mongo
     restart: always
     volumes:
-      - ./card-store/data:/data/db
+      - ./data/card-store/data:/data/db
     ports:
       - "27017:27017"
     logging:
@@ -77,4 +77,12 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+
+  card-watcher-redis:
+    image: "redis:6.2.1"
+    command: redis-server
+    ports:
+     - "6379:6379"
+    environment:
+     - REDIS_REPLICATION_MODE=master
 

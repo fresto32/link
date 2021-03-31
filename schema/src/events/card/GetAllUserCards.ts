@@ -1,5 +1,5 @@
-import {UserCard} from '../../card';
 import {Event} from '../Event';
+import {UserCard} from '../../card';
 
 export interface GetAllUserCardsRequested extends Event {}
 

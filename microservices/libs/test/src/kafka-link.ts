@@ -28,7 +28,9 @@ export class KafkaLink {
     });
 
     this.producer = this.kafka.producer();
-    this.consumer = this.kafka.consumer({groupId: 'E2E Testing Consumer'});
+    this.consumer = this.kafka.consumer({
+      groupId: `E2E Testing Consumer - ${topic}`,
+    });
 
     this.log = new KafkaLog(this.consumer);
   }

@@ -36,7 +36,7 @@ export class KafkaLog {
    */
   public tryGetMessageOf(uuid: string) {
     const message = this.messages.get(uuid);
-    if (!message) fail(`No message for UUID: ${uuid}`);
+    if (!message) return undefined;
 
     try {
       return JSON.parse(message);

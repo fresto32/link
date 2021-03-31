@@ -50,6 +50,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
+    },
+    "card-watcher": {
+      "type": "application",
+      "root": "apps/card-watcher",
+      "entryFile": "main",
+      "sourceRoot": "apps/card-watcher/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/card-watcher/tsconfig.app.json"
+      }
     }
   },
   "compilerOptions": {
