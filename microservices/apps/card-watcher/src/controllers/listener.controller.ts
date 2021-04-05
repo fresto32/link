@@ -3,7 +3,7 @@ import {CardEvent, Topics} from '@link/schema';
 import {Controller, Inject} from '@nestjs/common';
 import {ClientProxy, EventPattern, Transport} from '@nestjs/microservices';
 import {KafkaMessage} from 'kafkajs';
-import {RedisService} from './../services/redis.service';
+import {WatchedCardsService} from './../services/watched-cards.service';
 
 @Controller()
 export class ListenerController {
@@ -11,7 +11,7 @@ export class ListenerController {
 
   constructor(
     @Inject('KAFKA') private client: ClientProxy,
-    private redisService: RedisService
+    private watchedCardsService: WatchedCardsService
   ) {}
 
   /**
@@ -24,7 +24,7 @@ export class ListenerController {
     this.logger.debug('Received card event from Kafka', event);
 
     const uuid = cardEvent.payload.uuid;
-    const cardIsInWatchList = await this.redisService.isInWatchList({
+    const cardIsInWatchList = await this.watchedCardsService.isInWatchList({
       uuid,
       pattern: cardEvent.pattern,
     });
@@ -34,7 +34,7 @@ export class ListenerController {
 
       this.client.emit(Topics.cardSeen, {key: uuid, value: cardEvent});
 
-      this.redisService.deleteFromWatchList(uuid);
+      this.watchedCardsService.deleteFromWatchList(uuid);
     }
   }
 }

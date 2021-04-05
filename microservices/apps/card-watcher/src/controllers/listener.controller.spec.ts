@@ -1,7 +1,7 @@
 import {Topics} from '@link/schema';
 import {Test, TestingModule} from '@nestjs/testing';
 import {SinonStub, stub} from 'sinon';
-import {RedisService} from '../services/redis.service';
+import {WatchedCardsService} from '../services/watched-cards.service';
 import {ListenerController} from './listener.controller';
 
 describe('ListenerController', () => {
@@ -9,7 +9,7 @@ describe('ListenerController', () => {
   let clientProxyMock: {
     emit: SinonStub;
   };
-  let redisServiceMock: {
+  let watchedCardsServiceMock: {
     isInWatchList: SinonStub;
   };
 
@@ -18,7 +18,7 @@ describe('ListenerController', () => {
     clientProxyMock = {
       emit: stub(),
     };
-    redisServiceMock = {
+    watchedCardsServiceMock = {
       isInWatchList: stub(),
     };
 
@@ -30,8 +30,8 @@ describe('ListenerController', () => {
           useValue: clientProxyMock,
         },
         {
-          provide: RedisService,
-          useValue: redisServiceMock,
+          provide: WatchedCardsService,
+          useValue: watchedCardsServiceMock,
         },
       ],
     }).compile();
@@ -54,7 +54,7 @@ describe('ListenerController', () => {
     };
 
     it('should not emit a card event not found in the watch list', () => {
-      redisServiceMock.isInWatchList.returns(false);
+      watchedCardsServiceMock.isInWatchList.returns(false);
 
       // @ts-expect-error: For testing purposes...
       listenerController.handleCard(event);
@@ -63,7 +63,7 @@ describe('ListenerController', () => {
     });
 
     it('emits a card event that is in the watch list', () => {
-      redisServiceMock.isInWatchList.returns(true);
+      watchedCardsServiceMock.isInWatchList.returns(true);
 
       // @ts-expect-error: For testing purposes...
       listenerController.handleCard(event);

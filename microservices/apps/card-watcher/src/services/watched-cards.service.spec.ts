@@ -1,12 +1,14 @@
 import {ConfigService} from '@link/config';
+import {RedisService} from '@link/redis';
 import {EventPatterns} from '@link/schema';
 import {Test} from '@nestjs/testing';
 import {SinonStub, stub} from 'sinon';
-import {RedisService} from './redis.service';
+import {WatchedCardsService} from './watched-cards.service';
 
 describe('RedisService', () => {
-  let redisService: RedisService;
-  let clientMock: {
+  let watchedCardsService: WatchedCardsService;
+  let redisClientMock: {
+    install: SinonStub;
     get: SinonStub;
     set: SinonStub;
     del: SinonStub;
@@ -15,7 +17,8 @@ describe('RedisService', () => {
 
   beforeEach(async () => {
     // Build mocks...
-    clientMock = {
+    redisClientMock = {
+      install: stub(),
       get: stub(),
       set: stub(),
       del: stub(),
@@ -24,32 +27,30 @@ describe('RedisService', () => {
       get: stub(),
     };
 
-    configServiceMock.get
-      .withArgs('NODE_ENV')
-      .returns('development')
-      .withArgs('redis.port')
-      .returns(6379)
-      .withArgs('redis.host')
-      .returns('localhost');
-
     const moduleRef = await Test.createTestingModule({
       providers: [
-        RedisService,
+        WatchedCardsService,
         {
           provide: ConfigService,
           useValue: configServiceMock,
         },
+        {
+          provide: RedisService,
+          useValue: redisClientMock,
+        },
       ],
     }).compile();
 
-    redisService = moduleRef.get<RedisService>(RedisService);
+    watchedCardsService = moduleRef.get<WatchedCardsService>(
+      WatchedCardsService
+    );
 
     // @ts-expect-error: For testing purposes...
-    redisService['client'] = clientMock;
+    watchedCardsService['client'] = redisClientMock;
   });
 
   it('should be instantiated', () => {
-    expect(redisService).toBeTruthy();
+    expect(watchedCardsService).toBeTruthy();
   });
 
   describe('addToWatchList', () => {
@@ -57,12 +58,12 @@ describe('RedisService', () => {
       const expectedUuid = 'some uuid';
       const expectedPattern = EventPatterns.gotNextCard;
 
-      await redisService.addToWatchList({
+      await watchedCardsService.addToWatchList({
         uuid: expectedUuid,
         pattern: expectedPattern,
       });
 
-      expect(clientMock.set.calledWith(expectedUuid, expectedPattern));
+      expect(redisClientMock.set.calledWith(expectedUuid, expectedPattern));
     });
   });
 
@@ -70,9 +71,9 @@ describe('RedisService', () => {
     it('returns true if the pattern exists in the watch list', () => {
       const uuid = 'some uuid';
       const pattern = EventPatterns.gotNextCard;
-      clientMock.get.withArgs(uuid).returns(EventPatterns.gotNextCard);
+      redisClientMock.get.withArgs(uuid).returns(EventPatterns.gotNextCard);
 
-      const result = redisService.isInWatchList({uuid, pattern});
+      const result = watchedCardsService.isInWatchList({uuid, pattern});
 
       expect(result).toBeTruthy();
     });
@@ -80,9 +81,9 @@ describe('RedisService', () => {
     it('returns false if the pattern does not exists in the watch list', async () => {
       const uuid = 'some uuid';
       const pattern = EventPatterns.gotNextCard;
-      clientMock.get.withArgs(uuid).returns(EventPatterns.cardStored);
+      redisClientMock.get.withArgs(uuid).returns(EventPatterns.cardStored);
 
-      const result = await redisService.isInWatchList({uuid, pattern});
+      const result = await watchedCardsService.isInWatchList({uuid, pattern});
 
       expect(result).toBeFalsy();
     });
@@ -92,9 +93,9 @@ describe('RedisService', () => {
     it('deletes the uuid from the watch list', () => {
       const expectedUuid = 'some uuid';
 
-      redisService.deleteFromWatchList(expectedUuid);
+      watchedCardsService.deleteFromWatchList(expectedUuid);
 
-      expect(clientMock.del.calledWith(expectedUuid));
+      expect(redisClientMock.del.calledWith(expectedUuid));
     });
   });
 });

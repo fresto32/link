@@ -4,7 +4,7 @@ import {EventEmitterModule} from '@nestjs/event-emitter';
 import {ClientsModule, Transport} from '@nestjs/microservices';
 import {ListenerController} from './controllers/listener.controller';
 import {RegisterController} from './controllers/register.controller';
-import {RedisService} from './services/redis.service';
+import {WatchedCardsService} from './services/watched-cards.service';
 
 const KAFKA_BROKER = config().kafka.broker.url;
 
@@ -25,6 +25,6 @@ const KAFKA_BROKER = config().kafka.broker.url;
     ConfigModule,
   ],
   controllers: [ListenerController, RegisterController],
-  providers: [RedisService],
+  providers: [WatchedCardsService],
 })
 export class CardWatcherModule {}

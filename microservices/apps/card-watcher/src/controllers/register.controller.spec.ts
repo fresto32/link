@@ -1,16 +1,16 @@
 import {CardToWatch, EventPatterns} from '@link/schema';
 import {Test, TestingModule} from '@nestjs/testing';
 import {SinonStub, stub} from 'sinon';
-import {RedisService} from '../services/redis.service';
+import {WatchedCardsService} from '../services/watched-cards.service';
 import {RegisterController} from './register.controller';
 
 describe('RegisterController', () => {
   let registerController: RegisterController;
-  let redisServiceMock: {addToWatchList: SinonStub};
+  let watchedCardsServiceMock: {addToWatchList: SinonStub};
 
   beforeEach(async () => {
     // Build mocks...
-    redisServiceMock = {
+    watchedCardsServiceMock = {
       addToWatchList: stub(),
     };
 
@@ -18,8 +18,8 @@ describe('RegisterController', () => {
       controllers: [RegisterController],
       providers: [
         {
-          provide: RedisService,
-          useValue: redisServiceMock,
+          provide: WatchedCardsService,
+          useValue: watchedCardsServiceMock,
         },
       ],
     }).compile();
@@ -43,7 +43,7 @@ describe('RegisterController', () => {
       // @ts-expect-error: For testing purposes...
       registerController.handleCardToWatchEvent(cardToWatch);
 
-      expect(redisServiceMock.addToWatchList.calledWith(cardToWatch));
+      expect(watchedCardsServiceMock.addToWatchList.calledWith(cardToWatch));
     });
   });
 });

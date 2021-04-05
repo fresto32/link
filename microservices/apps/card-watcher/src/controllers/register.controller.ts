@@ -3,13 +3,13 @@ import {CardToWatchEvent, Topics} from '@link/schema';
 import {Controller} from '@nestjs/common';
 import {EventPattern, Transport} from '@nestjs/microservices';
 import {KafkaMessage} from 'kafkajs';
-import {RedisService} from '../services/redis.service';
+import {WatchedCardsService} from '../services/watched-cards.service';
 
 @Controller()
 export class RegisterController {
   private logger = Logger.create('RegisterController');
 
-  constructor(private redisService: RedisService) {}
+  constructor(private watchedCardsService: WatchedCardsService) {}
 
   /**
    * Only listen to the cardToWatch topic and emit the events for
@@ -21,6 +21,6 @@ export class RegisterController {
 
     this.logger.info('Received card to watch event from Kafka', event);
 
-    await this.redisService.addToWatchList(cardToWatchEvent.cardToWatch);
+    await this.watchedCardsService.addToWatchList(cardToWatchEvent.cardToWatch);
   }
 }
