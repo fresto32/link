@@ -8,6 +8,15 @@ kafka:
 
 NODE_ENV: "development"
 
-redis:
-  port: 6379
-  host: "localhost"
+card-watch-list:
+  redis:
+    port: 6379
+    host: "localhost"
+
+user-repository:
+  redis:
+    port: 6380
+    host: "localhost"
+
+json-web-token:
+  secret: "4KZ2IsFnZhqNDjO0WcXla_6WwioKKhXabalggWLl"
