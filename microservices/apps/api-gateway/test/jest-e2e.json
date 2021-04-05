@@ -1,0 +1,25 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@link/config/(.*)": "<rootDir>/../../../libs/config/src/$1",
+    "@link/config": "<rootDir>/../../../libs/config/src",
+    "@link/crypto/(.*)": "<rootDir>/../../../libs/crypto/src/$1",
+    "@link/crypto": "<rootDir>/../../../libs/crypto/src",
+    "@link/test/(.*)": "<rootDir>/../../../libs/test/src/$1",
+    "@link/test": "<rootDir>/../../../libs/test/src",
+    "@link/logger/(.*)": "<rootDir>/../../../libs/logger/src/$1",
+    "@link/logger": "<rootDir>/../../../libs/logger/src",
+    "@link/users/(.*)": "<rootDir>/../../../libs/users/src/$1",
+    "@link/users": "<rootDir>/../../../libs/users/src",
+    "@link/redis/(.*)": "<rootDir>/../../../libs/redis/src/$1",
+    "@link/redis": "<rootDir>/../../../libs/redis/src",
+    "@link/auth/(.*)": "<rootDir>/../../../libs/auth/src/$1",
+    "@link/auth": "<rootDir>/../../../libs/auth/src"
+  }
+}

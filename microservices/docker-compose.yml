@@ -86,3 +86,11 @@ services:
     environment:
      - REDIS_REPLICATION_MODE=master
 
+  user-repository:
+    image: "redis:6.2.1"
+    command: redis-server
+    ports:
+     - "6380:6379"
+    environment:
+     - REDIS_REPLICATION_MODE=master
+

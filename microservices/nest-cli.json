@@ -59,6 +59,42 @@
       "compilerOptions": {
         "tsConfigPath": "apps/card-watcher/tsconfig.app.json"
       }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "users": {
+      "type": "library",
+      "root": "libs/users",
+      "entryFile": "index",
+      "sourceRoot": "libs/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/users/tsconfig.lib.json"
+      }
+    },
+    "crypto": {
+      "type": "library",
+      "root": "libs/crypto",
+      "entryFile": "index",
+      "sourceRoot": "libs/crypto/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/crypto/tsconfig.lib.json"
+      }
+    },
+    "redis": {
+      "type": "library",
+      "root": "libs/redis",
+      "entryFile": "index",
+      "sourceRoot": "libs/redis/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/redis/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

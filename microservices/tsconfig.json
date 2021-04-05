@@ -33,6 +33,30 @@
       ],
       "@link/logger/*": [
         "libs/logger/src/*"
+      ],
+      "@link/auth": [
+        "libs/auth/src"
+      ],
+      "@link/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@link/users": [
+        "libs/users/src"
+      ],
+      "@link/users/*": [
+        "libs/users/src/*"
+      ],
+      "@link/crypto": [
+        "libs/crypto/src"
+      ],
+      "@link/crypto/*": [
+        "libs/crypto/src/*"
+      ],
+      "@link/redis": [
+        "libs/redis/src"
+      ],
+      "@link/redis/*": [
+        "libs/redis/src/*"
       ]
     }
   },
