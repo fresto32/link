@@ -3,3 +3,4 @@ export * from './common';
 export * from './events';
 export * from './generator';
 export * from './topics';
+export * from './user';

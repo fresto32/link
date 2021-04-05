@@ -21,8 +21,9 @@
   },
   "dependencies": {
     "@typegoose/typegoose": "7.4.5",
+    "@types/mongoose": "^5.10.2",
     "mongoose": "5.10.18",
-    "@types/mongoose": "^5.10.2"
+    "ono": "^7.1.3"
   },
   "peerDependencies": {
     "@typegoose/typegoose": "7.4.5",
