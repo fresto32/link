@@ -22,13 +22,15 @@ Outgoing Object:
 1. Create a project scaffold - (feature/scheduler/scaffold)
   - venv
   - look up best practices for directory structure of Python project
+    - considering unit testing, integration testing, and classes etc.
 
 2. Create the incoming and outgoing object classes - (feature/scheduler/message-schema)
   - Use pytype https://github.com/google/pytype/blob/master/docs/user_guide.md
-  - Add these interfaces to the Schema
+  - Add these interfaces to the Schema (see the `schema` directory of project root)
+    - In here, you will see TypeScript Schema's for all the other objects in this project.
 
 3. Implement a simple algorithm to convert a history to a due date - (feature/scheduler/algorithm)
-  - Unit test this code
+  - Unit test this code (see pytest or similar - 100% test coverage - consider edge cases etc)
 
 4. Run a docker container running Kafka
   - See `../microservices/docker-compose.yml`
