@@ -1,7 +1,0 @@
-{
-  "extends": "./node_modules/gts/",
-  "env": {
-    "node": true,
-    "mocha": true
-  }
-}
