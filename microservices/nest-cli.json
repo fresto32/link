@@ -1,0 +1,106 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/card-store/src",
+  "assets": [
+    "/**/*.yml"
+  ],
+  "watchAssets": true,
+  "projects": {
+    "config": {
+      "type": "library",
+      "root": "libs/config",
+      "entryFile": "index",
+      "sourceRoot": "libs/config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/config/tsconfig.lib.json"
+      }
+    },
+    "test": {
+      "type": "library",
+      "root": "libs/test",
+      "entryFile": "index",
+      "sourceRoot": "libs/test/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/test/tsconfig.lib.json"
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    },
+    "card-store": {
+      "type": "application",
+      "root": "apps/card-store",
+      "entryFile": "main",
+      "sourceRoot": "apps/card-store/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/card-store/tsconfig.app.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "card-watcher": {
+      "type": "application",
+      "root": "apps/card-watcher",
+      "entryFile": "main",
+      "sourceRoot": "apps/card-watcher/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/card-watcher/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "users": {
+      "type": "library",
+      "root": "libs/users",
+      "entryFile": "index",
+      "sourceRoot": "libs/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/users/tsconfig.lib.json"
+      }
+    },
+    "crypto": {
+      "type": "library",
+      "root": "libs/crypto",
+      "entryFile": "index",
+      "sourceRoot": "libs/crypto/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/crypto/tsconfig.lib.json"
+      }
+    },
+    "redis": {
+      "type": "library",
+      "root": "libs/redis",
+      "entryFile": "index",
+      "sourceRoot": "libs/redis/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/redis/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/card-store/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/card-store"
+}

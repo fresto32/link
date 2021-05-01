@@ -1,0 +1,68 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2018",
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "noEmitOnError": false,
+    "paths": {
+      "@link/config": [
+        "libs/config/src"
+      ],
+      "@link/config/*": [
+        "libs/config/src/*"
+      ],
+      "@link/test": [
+        "libs/test/src"
+      ],
+      "@link/test/*": [
+        "libs/test/src/*"
+      ],
+      "@link/logger": [
+        "libs/logger/src"
+      ],
+      "@link/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@link/auth": [
+        "libs/auth/src"
+      ],
+      "@link/auth/*": [
+        "libs/auth/src/*"
+      ],
+      "@link/users": [
+        "libs/users/src"
+      ],
+      "@link/users/*": [
+        "libs/users/src/*"
+      ],
+      "@link/crypto": [
+        "libs/crypto/src"
+      ],
+      "@link/crypto/*": [
+        "libs/crypto/src/*"
+      ],
+      "@link/redis": [
+        "libs/redis/src"
+      ],
+      "@link/redis/*": [
+        "libs/redis/src/*"
+      ]
+    }
+  },
+  "include": [
+    "apps/**/*.ts",
+    "libs/**/*.ts",
+    "test/**/*.ts"
+  ]
+}
