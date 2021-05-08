@@ -98,64 +98,69 @@ export default class Option extends Signpost {
   public interaction() {
     if (this.hasHadInteraction) return;
 
-    if (this.isCorrectOption) {
-      // Set material to be emissive
-      this.plankMaterial.emissive = new THREE.Color('green');
-      this.poleMaterial.emissive = new THREE.Color('green');
+    this.isCorrectOption
+      ? this.correctOptionResponse()
+      : this.incorrectOptionResponse();
 
-      // Play positive sound
-    this.sounds.play('positiveTone');
-
-    // Fire fireworks
-    this.fireFireworks();
+    this.hasHadInteraction = true;
   }
 
   /**
-   * Launches fireworks from the signpost.
+   * Response to user selecting the correct option.
    */
-  private fireFireworks() {
+  private correctOptionResponse() {
+    // Set material to be emissive
+    this.plankMaterial.emissive = new THREE.Color('green');
+    this.poleMaterial.emissive = new THREE.Color('green');
+
+    // Play positive sound
+    this.sounds.play('positiveTone');
+
+    // Fire fireworks
     const trajectoryHeight = 40;
     const particleSpread = 10;
-      const numberOfParticles = 40;
-      const fireworks = [
-        new Firework({
-          sizes: this.sizes,
-          time: this.time,
-          startingPosition: new THREE.Vector3(
-            -this.distanceBetweenPoles / 2,
-            0,
-            0
-          ),
-          trajectoryHeight: trajectoryHeight,
-          particleSpread: particleSpread,
-          numberOfParticles: numberOfParticles,
-        }),
-        new Firework({
-          sizes: this.sizes,
-          time: this.time,
-          startingPosition: new THREE.Vector3(
-            this.distanceBetweenPoles / 2,
-            0,
-            0
-          ),
-          trajectoryHeight: trajectoryHeight,
-          particleSpread: particleSpread,
-          numberOfParticles: numberOfParticles,
-        }),
-      ];
+    const numberOfParticles = 40;
+    const fireworks = [
+      new Firework({
+        sizes: this.sizes,
+        time: this.time,
+        startingPosition: new THREE.Vector3(
+          -this.distanceBetweenPoles / 2,
+          0,
+          0
+        ),
+        trajectoryHeight: trajectoryHeight,
+        particleSpread: particleSpread,
+        numberOfParticles: numberOfParticles,
+      }),
+      new Firework({
+        sizes: this.sizes,
+        time: this.time,
+        startingPosition: new THREE.Vector3(
+          this.distanceBetweenPoles / 2,
+          0,
+          0
+        ),
+        trajectoryHeight: trajectoryHeight,
+        particleSpread: particleSpread,
+        numberOfParticles: numberOfParticles,
+      }),
+    ];
 
-      // Launch each firework...
-      fireworks.forEach(firework => {
-        this.container.add(firework.container);
-        firework.launch();
-      });
-    } else {
-      this.plankMaterial.emissive = new THREE.Color('red');
-      this.poleMaterial.emissive = new THREE.Color('red');
-      this.sounds.play('glitch');
-    }
+    // Launch each firework...
+    fireworks.forEach(firework => {
+      this.container.add(firework.container);
+      firework.launch();
+    });
+  }
 
-    this.hasHadInteraction = true;
+  /**
+   * Response to user selecting the incorrect option.
+   */
+  private incorrectOptionResponse() {
+    this.plankMaterial.emissive = new THREE.Color('red');
+    this.poleMaterial.emissive = new THREE.Color('red');
+    this.sounds.play('glitch');
   }
 }
 
@@ -182,7 +187,7 @@ function addSignpostBanner($canvas: HTMLCanvasElement, sizes: Sizes) {
  * @param $canvas The canvas to remove from the client's banner.
  */
 function removeSignpostBanner($canvas: HTMLCanvasElement) {
-  $('.' + $canvas.className).each((e, i) => i.remove());
+  $('.' + $canvas.className).each((_, i) => i.remove());
 }
 
 /**
