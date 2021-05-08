@@ -204,7 +204,7 @@ export default class Controls extends EventEmitter {
       joystick.$element.style.backgroundColor = '';
       joystick.$element.style.opacity = '0';
       joystick.$element.className = 'joystick';
-      this.camera.setDraggingDeadzones([
+      this.camera.setDraggingDeadzone([
         {
           min: new THREE.Vector2(0, this.sizes.height - 400),
           max: new THREE.Vector2(400, this.sizes.height),
