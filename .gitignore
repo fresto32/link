@@ -54,3 +54,7 @@ yarn.lock
 
 # awesome-typescript
 .awcache
+
+# pycache files
+__pycache__/
+*.pyc
