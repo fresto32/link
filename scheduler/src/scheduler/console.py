@@ -1,10 +1,9 @@
-#src/scheduler/console.py
+# src/scheduler/console.py
 import textwrap  # standard library
 
 import click  # Third party packages
-import requests
 
-from . import __version__, wikipedia # Local imports
+from . import __version__, wikipedia  # Local imports
 
 
 @click.command()
