@@ -56,8 +56,8 @@ yarn.lock
 .awcache
 
 # pycache files
-**/__pycache__/
-*/.pyc
+**/__pycache__
+*.pyc
 
 # Visual Studio files
-.converage
+**/.coverage
